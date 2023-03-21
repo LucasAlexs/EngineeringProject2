@@ -31,5 +31,7 @@ int main()
     printf("%s \t %s \n", name3, matri3);
     printf("%s \t %s \n", name4, matri4);
     
+    //eh okay
+    
     return 0;
 }
