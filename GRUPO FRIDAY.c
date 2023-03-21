@@ -9,6 +9,7 @@ int main()
     char name1[]= "LUCAS ALEXSANDRO LEAL DOS SANTOS;";
     char name2[]= "GABRIEL DE JESUS DOS SANTOS COSTA;";
     char name3[]= "SAULO MATTHEUS RIBEIRO DE OLIVEIRA;";
+    char name4[]= "JOSE HENRIQUE BARBOSA PENA;";
 
     char str2[]= "MATRICULA";
 
@@ -16,6 +17,7 @@ int main()
     char * matri1= "(202207040035)";
     char * matri2= "(202206840044)";
     char * matri3= "(202206840041)";
+    char * matri4= "(202206840036)";
 
     char divisoria[]= "------------------------------------";
     char divisoria2[]= " --------------";
@@ -27,6 +29,7 @@ int main()
     printf("%s \t %s \n", name1, matri1);
     printf("%s \t %s \n", name2, matri2);
     printf("%s \t %s \n", name3, matri3);
+    printf("%s \t %s \n", name4, matri4);
     
     return 0;
 }
