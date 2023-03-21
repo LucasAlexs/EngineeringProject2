@@ -7,11 +7,13 @@ int main()
 
     //nome aqui
     char name1[]= "LUCAS ALEXSANDRO LEAL DOS SANTOS:";
+    char name2[]= "GABRIEL DE JESUS DOS SANTOS COSTA:";
 
     char str2[]= "MATRICULA";
 
     //matricula aqui
     char * matri1= "(202207040035)";
+    char * matri2= "(202206840044)";
 
     char divisoria[]= "------------------------------------";
     char divisoria2[]= " --------------";
@@ -21,6 +23,6 @@ int main()
     printf("%s \t", divisoria);
     printf("%s \n", divisoria2);
     printf("%s \t %s \n", name1, matri1);
-
+    printf("%s \t %s \n", name2, matri2);
     return 0;
 }
