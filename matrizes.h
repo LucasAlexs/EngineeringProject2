@@ -1,9 +1,12 @@
 #ifndef MATRIZES_H
 #define MATRIZES_H
 
-typedef struct complexo{
-    float real;
-    float img;
+typedef struct ComplexNumber
+{
+
+    double real;
+    double img;
+
 };
 
 #endif
