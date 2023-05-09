@@ -1,12 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "matrizes.c"
 
 int main()
 {
-    teste_soma();
-    teste_subtracao();
-    teste_conjulgada();
-    teste_transposta();
-    teste_hermitiano();
+    teste_todos();
     return 0;
 }
