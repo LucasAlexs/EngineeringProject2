@@ -46,102 +46,93 @@ print_name()
         printf(" %s\n %s\n %s\n %s\n\n", name1,name2, name3, name4);
 }
 
-int soma(struct ComplexNumber a[][tam], struct ComplexNumber b[][tam], struct ComplexNumber result[][tam])
+struct ComplexNumber **soma(struct ComplexNumber **matrix1,struct ComplexNumber **matrix2, int linhas, int colunas)
 {
-    int i,j;
-    for(i = 0; i < tam; i++)
-    {
-        for(j = 0; j < tam; j++)
-            {
-                result[i][j].real = a[i][j].real + b[i][j].real;
-                result[i][j].img = a[i][j].img + b[i][j].img;
-            }
+    struct ComplexNumber **rmtx;
+
+    // aloca memória para a matriz de saída
+    rmtx = (struct ComplexNumber **)malloc(linhas * sizeof(struct ComplexNumber *));
+    for(int i=0; i<linhas; i++){
+        rmtx[i] = (struct ComplexNumber *)malloc(colunas * sizeof(struct ComplexNumber));
     }
-    return 0;
+
+    // somar as matrizes
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            rmtx[i][j].real = matrix1[i][j].real + matrix2[i][j].real;
+            rmtx[i][j].imag = matrix1[i][j].imag + matrix2[i][j].imag;
+        }
+    }
+
+    return rmtx;
 }
 
 int teste_soma()
 {
-    int i,j;
-    printf("======Teste da Operacao de Soma========\n\n");
-    printf("Operando A:\n\n");
+    int linhas = 3;
+    int colunas = 3;
+    struct ComplexNumber **matrix1;
+    struct ComplexNumber **matrix2;
+    struct ComplexNumber **rmtx;
 
-     for(i = 0;i < tam; i++)
-        {
-            for(j = 0; j < tam; j++)
-            {
-                    printf("\t%.2f ",a[i][j].real);
-                }
-                printf("\n");
+     printf("======Teste da Operacao de Soma========\n\n");
+
+    // alocar memória para as matrizes
+    matrix1 = (struct ComplexNumber **)malloc(linhas * sizeof(struct ComplexNumber *));
+    matrix2 = (struct ComplexNumber **)malloc(linhas * sizeof(struct ComplexNumber *));
+    for(int i=0; i<linhas; i++){
+        matrix1[i] = (struct ComplexNumber *)malloc(colunas * sizeof(struct ComplexNumber));
+        matrix2[i] = (struct ComplexNumber *)malloc(colunas * sizeof(struct ComplexNumber));
+    }
+
+    // inicializar as matrizes
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            matrix1[i][j].real = 1;
+            matrix1[i][j].imag = 1;
+            matrix2[i][j].real = -1;
+            matrix2[i][j].imag = -1;
+        }
+    }
+
+    // imprimir as matrizes operandas
+    printf("operando A:\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].imag);
         }
         printf("\n");
+    }
 
-    printf("Operando B:\n\n");
-
-     for(i = 0;i < tam; i++)
-        {
-            for(j = 0; j < tam; j++)
-                {
-                    printf("\t%.2f ",b[i][j].real);
-                }
-                printf("\n");
+    printf("operando B:\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f + %.2fi\t", matrix2[i][j].real, matrix2[i][j].imag);
         }
         printf("\n");
+    }
 
-    soma(a,b,result);
+    // somar as matrizes usando a função auxiliar
+    rmtx = soma(matrix1, matrix2, linhas, colunas);
 
-     printf("Resultado A + B: \n\n");
-
-     for(i = 0;i < tam; i++)
-        {
-            for(j = 0; j < tam; j++)
-                {
-                    printf("\t%.2f ",result[i][j].real);
-                }
-                printf("\n");
+    // imprimir a soma das matrizes
+    printf("A soma das matrizes :\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f + %.2fi\t", rmtx[i][j].real, rmtx[i][j].imag);
         }
-        printf("\n\n");
+        printf("\n");
+    }
 
-    printf("Operando C:\n\n");
-
-    for(i = 0; i < tam; i++)
-        {
-            for(j = 0; j < tam; j++)
-                {
-                    printf("\t(%.2f) + (%.2fi)",c[i][j].real,c[i][j].img);
-                }
-                printf("\n");
-        }
-    printf("\n\n");
-
-    printf("Operando D:\n\n");
-
-    for(i = 0; i < tam; i++)
-        {
-            for(j = 0; j < tam; j++)
-                {
-                    printf("\t(%.2f) + (%.2fi)",d[i][j].real,d[i][j].img);
-                }
-                printf("\n");
-        }
-        printf("\n\n");
-
-
-    soma(c,d,result);
-     printf("Resultado C + D: \n\n");
-
-     for(i = 0; i < tam; i++)
-        {
-            for(j = 0; j < tam; j++)
-                {
-                    printf("\t[(%.2f) + (%.2fi)]",result[i][j].real,result[i][j].img);
-                }
-                printf("\n");
-        }
-        printf("\n\n");
-
-
-
+    // desalocar a memória alocada
+    for(int i=0; i<linhas; i++){
+        free(matrix1[i]);
+        free(matrix2[i]);
+        free(rmtx[i]);
+    }
+    free(matrix1);
+    free(matrix2);
+    free(rmtx);
 
     return 0;
 }
