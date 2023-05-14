@@ -12,6 +12,10 @@ struct ComplexNumber result[tam][tam];
 
 // FUNCÕES
 int print_name();
+
+struct ComplexNumber somanc(struct ComplexNumber a,struct ComplexNumber b)
+struct ComplexNumber multiplicacao(struct ComplexNumber x,struct ComplexNumber y)
+    
 struct ComplexNumber **soma(struct ComplexNumber **matrix1,struct ComplexNumber **matrix2, int linhas, int colunas);
 int teste_soma();
 
@@ -30,7 +34,7 @@ int teste_hermitiana();
 struct ComplexNumber produto_escalar(struct ComplexNumber *vet1,struct ComplexNumber *vet2, int neu, int nev);
 int teste_produto_escalar();
 
-int produto_matricial(struct ComplexNumber a[][tam], struct ComplexNumber b[][tam], struct ComplexNumber result[][tam]);
+struct ComplexNumber **produto_matricial(struct ComplexNumber **matrix1,struct ComplexNumber **matrix2, int linhas, int colunas);
 int teste_produto_matricial();
 
 
@@ -468,6 +472,16 @@ int teste_hermitiano()
     return 0;
 }
 
+struct ComplexNumber somanc(struct ComplexNumber a,struct ComplexNumber b) {
+    
+    struct ComplexNumber result;
+    
+    result.real = a.real + b.real;
+    result.img = a.img + b.img;
+    
+    return result;
+}
+
 struct ComplexNumber multiplicacao(struct ComplexNumber x,struct ComplexNumber y)
 {
     struct ComplexNumber rmtx;
@@ -481,159 +495,101 @@ struct ComplexNumber multiplicacao(struct ComplexNumber x,struct ComplexNumber y
     return rmtx;
 }
 
-struct ComplexNumber produto_escalar(struct ComplexNumber *vet1,struct ComplexNumber *vet2, int neu, int nev)
+struct ComplexNumber **produto_matricial(struct ComplexNumber **matrix1,struct ComplexNumber **matrix2, int linhas, int colunas)
 {
-    struct ComplexNumber rmtx, aux;
+    struct ComplexNumber **rmtx, aux, sum;
 
-    rmtx.real= 0;
-    rmtx.img= 0;
+    // aloca memória para a matriz de saída
+    rmtx = (struct ComplexNumber **)malloc(linhas * sizeof(struct ComplexNumber *));
 
-    if(neu == nev){
-    // multiplicar as matrizes
-    for(int i=0; i<neu; i++){
-            aux= multiplicacao(vet1[i],vet2[i]);
-            rmtx.real = rmtx.real + aux.real;
-            rmtx.img = rmtx.img + aux.img;
-    }
-
-    }
-
-    else{
-            printf("impossivel calcular o produto escalar entre estes vetores.");
-    }
-
-    return rmtx;
-}
-
-int teste_produto_escalar(){
-    int linhas = 3;
-    struct ComplexNumber *vet1;
-    struct ComplexNumber *vet2;
-    struct ComplexNumber result;
-
-     printf("======Teste da Operacao produto escalar========\n\n");
-
-    // alocar memória para a matrizes
-    vet1 = (struct ComplexNumber *)malloc(linhas * sizeof(struct ComplexNumber ));
-    vet2 = (struct ComplexNumber *)malloc(linhas * sizeof(struct ComplexNumber ));
-
-    // inicializar os vetores
     for(int i=0; i<linhas; i++){
-            vet1[i].real = 1;
-            vet1[i].img = 1;
-            vet2[i].real = 1;
-            vet2[i].img = 1;
+        rmtx[i] = (struct ComplexNumber *)malloc(colunas * sizeof(struct ComplexNumber));
+
     }
 
-    // imprimir os vetores operandos
-    printf("operando A:\n");
-    for(int i=0; i<linhas; i++){
-            printf("%.2f + %.2fi\t",vet1[i].real, vet1[i].img);
-    }
-
-    printf("\n");
-
-    printf("operando B:\n");
-    for(int i=0; i<linhas; i++){
-            printf("%.2f + %.2fi\t",vet2[i].real, vet2[i].img);
-    }
-
-    printf("\n");
-
-    // fazer a matriz conjulgada usando a função auxiliar
-    result = produto_escalar(vet1, vet2, linhas,linhas);
-
-    // imprimir o conjulgada da matriz
-    printf("a conjulgada da matriz:\n");
-    printf("%.2f + %.2fi\t", result.real, result.img);
-    printf("\n");
-
-    // desalocar a memória alocada
-    free(vet1);
-    free(vet2);
-
-    return 0;
-}
-
-int produto_matricial(struct ComplexNumber a[][tam], struct ComplexNumber b[][tam], struct ComplexNumber result[][tam])
-{
-        int i,j;
-        for(i = 0 ; i < tam; i++)
-        {
-            for(j = 0; j < tam; j++)
-            {
-               result[i][j].real = a[i][j].real * b [j][i].real;
-               result[i][j].img = a[i][j].img * b [j][i].img;
-            }
+    // somar as matrizes
+    for (int i = 0; i < linhas; i++) {
+    for (int j = 0; j < colunas; j++) {
+        sum.real = 0;
+        sum.img = 0;
+        for (int k = 0; k < colunas; k++) {
+            aux = multiplicacao(matrix1[i][k], matrix2[k][j]);
+            sum = somanc(sum, aux);
         }
+        rmtx[i][j] = sum;
+    }
+}
+    return rmtx;
 }
 
 int teste_produto_matricial()
 {
-    int i,j;
-    printf("======Teste do Produto Matricial========\n\n");
-    printf("Operando A:\n\n");
-    for(i = 0; i < tam; i++)
-    {
-        for(j = 0; j < tam; j++)
-            {
-                printf("\t%.2f",a[i][j].real);
-            }
+    int linhas = 3;
+    int colunas = 3;
+    struct ComplexNumber **matrix1;
+    struct ComplexNumber **matrix2;
+    struct ComplexNumber **rmtx;
+
+     printf("======Teste da Operacao de produto matricial========\n\n");
+
+    // alocar memória para as matrizes
+    matrix1 = (struct ComplexNumber **)malloc(linhas * sizeof(struct ComplexNumber *));
+    matrix2 = (struct ComplexNumber **)malloc(linhas * sizeof(struct ComplexNumber *));
+    for(int i=0; i<linhas; i++){
+        matrix1[i] = (struct ComplexNumber *)malloc(colunas * sizeof(struct ComplexNumber));
+        matrix2[i] = (struct ComplexNumber *)malloc(colunas * sizeof(struct ComplexNumber));
+    }
+
+    // inicializar as matrizes
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            matrix1[i][j].real = 1;
+            matrix1[i][j].img = 1;
+            matrix2[i][j].real = -1;
+            matrix2[i][j].img = -1;
+        }
+    }
+
+    // imprimir as matrizes operandas
+    printf("operando A:\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
+        }
         printf("\n");
     }
-    printf("\n");
-    printf("Operando B:\n\n");
-    for(i = 0; i < tam; i++)
-    {
-        for(j = 0; j < tam; j++)
-            {
-                printf("\t%.2f",b[i][j].real);
-            }
+
+    printf("operando B:\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f + %.2fi\t", matrix2[i][j].real, matrix2[i][j].img);
+        }
         printf("\n");
     }
-    printf("\n");
-    produto_matricial(a,b,result);
-    printf("Produto dos elementos de A e B:\n\n");
-    for(i = 0; i < tam; i++)
-    {
-        for(j = 0; j < tam; j++)
-            {
-                printf("\t%.2f",result[i][j].real);
-            }
+
+    // somar as matrizes usando a função auxiliar
+    rmtx = produto_matricial(matrix1, matrix2, linhas, colunas);
+
+    // imprimir o produto matricial
+    printf("A soma das matrizes :\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f + %.2fi\t", rmtx[i][j].real, rmtx[i][j].img);
+        }
         printf("\n");
     }
-     printf("\n");
-    printf("Operando C:\n\n");
-    for(i = 0; i < tam; i++)
-    {
-        for(j = 0; j < tam; j++)
-            {
-                printf("\t(%.2f) + (%.2fi)",c[i][j].real,c[i][j].img);
-            }
-        printf("\n");
+
+    // desalocar a memória alocada
+    for(int i=0; i<linhas; i++){
+        free(matrix1[i]);
+        free(matrix2[i]);
+        free(rmtx[i]);
     }
-    printf("\n");
-    printf("Operando D:\n\n");
-    for(i = 0; i < tam; i++)
-    {
-        for(j = 0; j < tam; j++)
-            {
-                printf("\t(%.2f) + (%.2fi)",d[i][j].real,d[i][j].img);
-            }
-        printf("\n");
-    }
-    printf("\n");
-    produto_matricial(c,d,result);
-    printf("Produto Matricial de C * D:\n\n");
-    for(i = 0; i < tam; i++)
-    {
-        for(j = 0; j < tam; j++)
-            {
-                printf("\t%.2f",result[i][j].real+result[i][j].img); //AQUI NÃO IMPLEMENTEI A SOMA REAL + IMG DIRETO NA FUNÇÃO
-            }
-        printf("\n");
-    }
-    printf("\n");
+    free(matrix1);
+    free(matrix2);
+    free(rmtx);
+
+    return 0;
 }
 
 teste_todos()
