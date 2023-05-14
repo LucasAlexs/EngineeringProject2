@@ -468,90 +468,93 @@ int teste_hermitiano()
     return 0;
 }
 
-int produto_escalar(struct ComplexNumber a[][tam], struct ComplexNumber b[][tam], struct ComplexNumber result[][tam])
+struct ComplexNumber multiplicacao(struct ComplexNumber x,struct ComplexNumber y)
 {
-        int i,j;
-        for(i = 0; i < tam; i++)
-        {
-            for(j = 0; j < tam; j++)
-                {
-                    result[i][j].real = ((a[i][j].real) * (b[i][j].real));
-                    result[i][j].img = ((a[i][j].img) * (b[i][j].img));
+    struct ComplexNumber rmtx;
 
-                }
-        }
+    // multiplicar as matrizes
+    for(int i=0; i<1; i++){
+            rmtx.real = (x.real * y.real) + (x.img * y.img) * (-1);
+            rmtx.img = (x.real * y.img)  +  (x.img * y.real);
+    }
 
-
-
-        return 0;
+    return rmtx;
 }
-int teste_produto_escalar()
+
+struct ComplexNumber produto_escalar(struct ComplexNumber *vet1,struct ComplexNumber *vet2, int neu, int nev)
 {
-    int i,j;
-    printf("======Teste do Produto Escalar========\n\n");
-    printf("Operando A:\n\n");
-    for(i = 0; i < tam; i++)
-    {
-        for(j = 0; j < tam; j++)
-            {
-                printf("\t%.2f",a[i][j].real);
-            }
-        printf("\n");
+    struct ComplexNumber rmtx, aux;
+
+    rmtx.real= 0;
+    rmtx.img= 0;
+
+    if(neu == nev){
+    // multiplicar as matrizes
+    for(int i=0; i<neu; i++){
+            aux= multiplicacao(vet1[i],vet2[i]);
+            rmtx.real = rmtx.real + aux.real;
+            rmtx.img = rmtx.img + aux.img;
     }
-    printf("\n");
-    printf("Operando B:\n\n");
-    for(i = 0; i < tam; i++)
-    {
-        for(j = 0; j < tam; j++)
-            {
-                printf("\t%.2f",b[i][j].real);
-            }
-        printf("\n");
+
     }
-    printf("\n");
-    produto_escalar(a,b,result);
-    printf("Produto dos elementos de A e B:\n\n");
-    for(i = 0; i < tam; i++)
-    {
-        for(j = 0; j < tam; j++)
-            {
-                printf("\t%.2f",result[i][j].real);
-            }
-        printf("\n");
+
+    else{
+            printf("impossivel calcular o produto escalar entre estes vetores.");
     }
-     printf("\n");
-    printf("Operando C:\n\n");
-    for(i = 0; i < tam; i++)
-    {
-        for(j = 0; j < tam; j++)
-            {
-                printf("\t(%.2f) + (%.2fi)",c[i][j].real,c[i][j].img);
-            }
-        printf("\n");
-    }
-    printf("\n");
-    printf("Operando D:\n\n");
-    for(i = 0; i < tam; i++)
-    {
-        for(j = 0; j < tam; j++)
-            {
-                printf("\t(%.2f) + (%.2fi)",d[i][j].real,d[i][j].img);
-            }
-        printf("\n");
-    }
-    printf("\n");
-    produto_escalar(c,d,result);
-    printf("Produto Escalar de C * D:\n\n");
-    for(i = 0; i < tam; i++)
-    {
-        for(j = 0; j < tam; j++)
-            {
-                printf("\t(%.2f)",result[i][j].real + result[i][j].img); //AQUI NÃO IMPLEMENTEI A SOMA REAL + IMG DIRETO NA FUNÇÃO
-            }
-        printf("\n");
-    }
-    printf("\n");
+
+    return rmtx;
 }
+
+int teste_produto_escalar(){
+    int linhas = 3;
+    struct ComplexNumber *vet1;
+    struct ComplexNumber *vet2;
+    struct ComplexNumber result;
+
+     printf("======Teste da Operacao produto escalar========\n\n");
+
+    // alocar memória para a matrizes
+    vet1 = (struct ComplexNumber *)malloc(linhas * sizeof(struct ComplexNumber ));
+    vet2 = (struct ComplexNumber *)malloc(linhas * sizeof(struct ComplexNumber ));
+
+    // inicializar os vetores
+    for(int i=0; i<linhas; i++){
+            vet1[i].real = 1;
+            vet1[i].img = 1;
+            vet2[i].real = 1;
+            vet2[i].img = 1;
+    }
+
+    // imprimir os vetores operandos
+    printf("operando A:\n");
+    for(int i=0; i<linhas; i++){
+            printf("%.2f + %.2fi\t",vet1[i].real, vet1[i].img);
+    }
+
+    printf("\n");
+
+    printf("operando B:\n");
+    for(int i=0; i<linhas; i++){
+            printf("%.2f + %.2fi\t",vet2[i].real, vet2[i].img);
+    }
+
+    printf("\n");
+
+    // fazer a matriz conjulgada usando a função auxiliar
+    result = produto_escalar(vet1, vet2, linhas,linhas);
+
+    // imprimir o conjulgada da matriz
+    printf("a conjulgada da matriz:\n");
+    printf("%.2f + %.2fi\t", result.real, result.img);
+    printf("\n");
+
+    // desalocar a memória alocada
+    free(vet1);
+    free(vet2);
+
+    return 0;
+}
+
 int produto_matricial(struct ComplexNumber a[][tam], struct ComplexNumber b[][tam], struct ComplexNumber result[][tam])
 {
         int i,j;
