@@ -27,7 +27,7 @@ int teste_conjugada();
 struct ComplexNumber **hermitiano(struct ComplexNumber **matrix1, int linhas, int colunas);
 int teste_hermitiana();
 
-int produto_escalar(struct ComplexNumber a[][tam], struct ComplexNumber b[][tam], struct ComplexNumber result[][tam]);
+struct ComplexNumber produto_escalar(struct ComplexNumber *vet1,struct ComplexNumber *vet2, int neu, int nev);
 int teste_produto_escalar();
 
 int produto_matricial(struct ComplexNumber a[][tam], struct ComplexNumber b[][tam], struct ComplexNumber result[][tam]);
