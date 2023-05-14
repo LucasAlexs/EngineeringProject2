@@ -60,7 +60,7 @@ struct ComplexNumber **soma(struct ComplexNumber **matrix1,struct ComplexNumber 
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             rmtx[i][j].real = matrix1[i][j].real + matrix2[i][j].real;
-            rmtx[i][j].imag = matrix1[i][j].imag + matrix2[i][j].imag;
+            rmtx[i][j].img = matrix1[i][j].img + matrix2[i][j].img;
         }
     }
 
@@ -89,9 +89,9 @@ int teste_soma()
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             matrix1[i][j].real = 1;
-            matrix1[i][j].imag = 1;
+            matrix1[i][j].img = 1;
             matrix2[i][j].real = -1;
-            matrix2[i][j].imag = -1;
+            matrix2[i][j].img = -1;
         }
     }
 
@@ -99,7 +99,7 @@ int teste_soma()
     printf("operando A:\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].imag);
+            printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
         }
         printf("\n");
     }
@@ -107,7 +107,7 @@ int teste_soma()
     printf("operando B:\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", matrix2[i][j].real, matrix2[i][j].imag);
+            printf("%.2f + %.2fi\t", matrix2[i][j].real, matrix2[i][j].img);
         }
         printf("\n");
     }
@@ -119,7 +119,7 @@ int teste_soma()
     printf("A soma das matrizes :\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", rmtx[i][j].real, rmtx[i][j].imag);
+            printf("%.2f + %.2fi\t", rmtx[i][j].real, rmtx[i][j].img);
         }
         printf("\n");
     }
@@ -151,7 +151,7 @@ struct ComplexNumber **subtracao(struct ComplexNumber **matrix1,struct ComplexNu
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             rmtx[i][j].real = matrix1[i][j].real - matrix2[i][j].real;
-            rmtx[i][j].imag = matrix1[i][j].imag - matrix2[i][j].imag;
+            rmtx[i][j].img = matrix1[i][j].img - matrix2[i][j].img;
         }
     }
 
@@ -180,9 +180,9 @@ int teste_subtracao()
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             matrix1[i][j].real = 1;
-            matrix1[i][j].imag = 1;
+            matrix1[i][j].img = 1;
             matrix2[i][j].real = 1;
-            matrix2[i][j].imag = 1;
+            matrix2[i][j].img = 1;
         }
     }
 
@@ -190,7 +190,7 @@ int teste_subtracao()
     printf("operando A:\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].imag);
+            printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
         }
         printf("\n");
     }
@@ -198,7 +198,7 @@ int teste_subtracao()
     printf("operando B:\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", matrix2[i][j].real, matrix2[i][j].imag);
+            printf("%.2f + %.2fi\t", matrix2[i][j].real, matrix2[i][j].img);
         }
         printf("\n");
     }
@@ -210,7 +210,7 @@ int teste_subtracao()
     printf("A subtracao das matrizes :\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", rmtx[i][j].real, rmtx[i][j].imag);
+            printf("%.2f + %.2fi\t", rmtx[i][j].real, rmtx[i][j].img);
         }
         printf("\n");
     }
