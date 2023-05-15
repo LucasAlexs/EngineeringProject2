@@ -1,21 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "matrizes.h"
-#define tam 3
-
-// MATRIZ TESTE (CADA ELEMENTO DA MATRIZ É UM VETOR)
-struct ComplexNumber a[tam][tam] = { {{5,2},{7,-3},{9,1}   }  ,   {   {1,-6},{-5,3},{4,7}    }   ,   {   {2,5},{1,4},{-9,-3} }   };
-struct ComplexNumber b[tam][tam] = { {{7,-5},{3,-1},{1,-6} }    ,   {   {4,2},{-1,1},{2,9}   }   ,   {   {3,8},{2,4},{8,8}   }  };
-struct ComplexNumber c[tam][tam] = { {{1,-2},{-3,-3},{1,8}   }  ,   {    {7,3},{0,2},{7,1}   }   ,   {   {2,3},{9,2},{-1,-5} }    };
-struct ComplexNumber d[tam][tam] = { {{6,-4},{-8,1},{3,1}  } ,   { {7,2},{1,9},{2,6}   }   ,   {   {6,6},{3,11},{-23,-1}   }  };
-struct ComplexNumber result[tam][tam];
 
 // FUNCÕES
 int print_name();
 
-struct ComplexNumber somanc(struct ComplexNumber a,struct ComplexNumber b)
-struct ComplexNumber multiplicacao(struct ComplexNumber x,struct ComplexNumber y)
-    
+struct ComplexNumber somanc(struct ComplexNumber a,struct ComplexNumber b);
+struct ComplexNumber multiplicacao(struct ComplexNumber x,struct ComplexNumber y);
+
 struct ComplexNumber **soma(struct ComplexNumber **matrix1,struct ComplexNumber **matrix2, int linhas, int colunas);
 int teste_soma();
 
@@ -472,13 +464,81 @@ int teste_hermitiano()
     return 0;
 }
 
-struct ComplexNumber somanc(struct ComplexNumber a,struct ComplexNumber b) {
-    
+    struct ComplexNumber produto_escalar(struct ComplexNumber *vet1,struct ComplexNumber *vet2, int neu, int nev){
+struct ComplexNumber rmtx, aux;
+
+    rmtx.real= 0;
+    rmtx.img= 0;
+
+    if(neu == nev){
+    // multiplicar as matrizes
+    for(int i=0; i<neu; i++){
+            aux= multiplicacao(vet1[i],vet2[i]);
+            rmtx.real = rmtx.real + aux.real;
+            rmtx.img = rmtx.img + aux.img;
+            }
+            }
+     else{
+            printf("impossivel calcular o produto escalar entre estes vetores.");
+    }
+    return rmtx;
+}
+
+int teste_produto_escalar(){
+    int linhas = 3;
+    struct ComplexNumber *vet1;
+    struct ComplexNumber *vet2;
     struct ComplexNumber result;
-    
+
+     printf("======Teste da Operacao produto escalar========\n\n");
+
+    // alocar memória para a matrizes
+    vet1 = (struct ComplexNumber *)malloc(linhas * sizeof(struct ComplexNumber ));
+    vet2 = (struct ComplexNumber *)malloc(linhas * sizeof(struct ComplexNumber ));
+
+    // inicializar os vetores
+    for(int i=0; i<linhas; i++){
+            vet1[i].real = 1;
+            vet1[i].img = 1;
+            vet2[i].real = 1;
+            vet2[i].img = 1;
+            }
+            // imprimir os vetores operandos
+    printf("operando A:\n");
+    for(int i=0; i<linhas; i++){
+            printf("%.2f + %.2fi\t",vet1[i].real, vet1[i].img);
+    }
+
+    printf("\n");
+    printf("operando B:\n");
+    for(int i=0; i<linhas; i++){
+            printf("%.2f + %.2fi\t",vet2[i].real, vet2[i].img);
+    }
+
+    printf("\n");
+
+    // fazer a matriz conjulgada usando a função auxiliar
+    result = produto_escalar(vet1, vet2, linhas,linhas);
+
+    // imprimir o conjulgada da matriz
+    printf("a conjulgada da matriz:\n");
+    printf("%.2f + %.2fi\t", result.real, result.img);
+    printf("\n");
+
+    // desalocar a memória alocada
+    free(vet1);
+    free(vet2);
+
+    return 0;
+}
+
+struct ComplexNumber somanc(struct ComplexNumber a,struct ComplexNumber b) {
+
+    struct ComplexNumber result;
+
     result.real = a.real + b.real;
     result.img = a.img + b.img;
-    
+
     return result;
 }
 
@@ -567,7 +627,7 @@ int teste_produto_matricial()
         printf("\n");
     }
 
-    // somar as matrizes usando a função auxiliar
+    // formar o produto das matrizes usando a função auxiliar
     rmtx = produto_matricial(matrix1, matrix2, linhas, colunas);
 
     // imprimir o produto matricial
@@ -595,17 +655,14 @@ int teste_produto_matricial()
 teste_todos()
 {
     printf("======Teste Geral========\n\n");
-    //MATRIZ PARA TESTE GERAL
-    struct ComplexNumber x[tam][tam] = { {{5,2},{7,-3},{9,1}   }  ,   {   {1,-6},{-5,3},{4,7}    }   ,   {   {2,5},{1,4},{-9,-3} }   };
-    struct ComplexNumber y[tam][tam] = { {{5,2},{7,-3},{9,1}   }  ,   {   {1,-6},{-5,3},{4,7}    }   ,   {   {2,5},{1,4},{-9,-3} }   };
 
     //FUNÇÕES
+    print_name();
     teste_soma();
     teste_subtracao();
     teste_transposta();
-    teste_conjugada();
-    teste_hermitiana();
+    teste_conjulgada();
+    teste_hermitiano();
     teste_produto_escalar();
     teste_produto_matricial();
 }
-
