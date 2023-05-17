@@ -481,7 +481,7 @@ struct Complex rmtx, aux;
 }
 
 int teste_produto_escalar(){
-    int linhas = 1;
+    int linhas = 3;
     struct Complex *vet1;
     struct Complex *vet2;
     struct Complex result;
