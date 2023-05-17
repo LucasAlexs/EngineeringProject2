@@ -520,7 +520,7 @@ int teste_produto_escalar(){
     printf("Produto Escalar A . B:\n\n");
 
 
-            printf("%.2fi\t", result.real + result.img);
+            printf("%.2f + %.2fi\t", result.real , result.img);
 
         printf("\n\n");
 
