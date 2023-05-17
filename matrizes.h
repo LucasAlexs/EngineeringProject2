@@ -1,7 +1,7 @@
 #ifndef MATRIZES_H
 #define MATRIZES_H
 
-typedef struct ComplexNumber
+typedef struct Complex
 {
 
     double real;
