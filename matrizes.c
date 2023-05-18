@@ -21,8 +21,9 @@ print_name()
 
 struct Complex **soma(struct Complex **matrix1,struct Complex **matrix2, int linhas, int colunas)
 {
-    struct Complex **rmtx;
 
+    struct Complex **rmtx;
+    if(linhas == colunas){
     // aloca memória para a matriz de saída
     rmtx = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
     for(int i=0; i<linhas; i++){
@@ -31,7 +32,6 @@ struct Complex **soma(struct Complex **matrix1,struct Complex **matrix2, int lin
 
     // somar as matrizes
 
-    if(linhas == colunas){
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             rmtx[i][j].real = matrix1[i][j].real + matrix2[i][j].real;
@@ -39,12 +39,6 @@ struct Complex **soma(struct Complex **matrix1,struct Complex **matrix2, int lin
         }
       }
     }
-    else{
-        printf("ERRO!\n\n");
-        printf("A operacao de soma nao pode ser iniciada\n\n");
-
-    }
-
     return rmtx;
 
 }
@@ -58,7 +52,7 @@ int teste_soma()
     struct Complex **rmtx;
 
      printf("======Teste da Operacao de Soma========\n\n");
-
+    if(linhas == colunas){
     // alocar memória para as matrizes
     matrix1 = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
     matrix2 = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
@@ -148,14 +142,20 @@ int teste_soma()
     free(matrix1);
     free(matrix2);
     free(rmtx);
+    }
+     else{
 
+        printf("ERRO!\n\n");
+        printf("A operacao de soma nao pode ser iniciada pois os elementos nao coincidem\n\n");
+
+    }
     return 0;
 }
 
 struct Complex **subtracao(struct Complex **matrix1,struct Complex **matrix2, int linhas, int colunas)
 {
     struct Complex **rmtx;
-
+    if(linhas == colunas){
     // aloca memória para a matriz de saída
     rmtx = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
     for(int i=0; i<linhas; i++){
@@ -169,7 +169,7 @@ struct Complex **subtracao(struct Complex **matrix1,struct Complex **matrix2, in
             rmtx[i][j].img = matrix1[i][j].img - matrix2[i][j].img;
         }
     }
-
+    }
     return rmtx;
 }
 
@@ -182,7 +182,7 @@ int teste_subtracao()
     struct Complex **rmtx;
 
      printf("======Teste da Operacao de Subtracao========\n\n");
-
+    if(linhas == colunas){
     // alocar memória para as matrizes
     matrix1 = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
     matrix2 = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
@@ -268,7 +268,13 @@ int teste_subtracao()
     free(matrix1);
     free(matrix2);
     free(rmtx);
+    }
+     else{
 
+        printf("ERRO!\n\n");
+        printf("A operacao de soma nao pode ser iniciada pois os elementos nao coincidem\n\n");
+
+    }
     return 0;
 }
 
@@ -631,7 +637,7 @@ int teste_produto_escalar(){
     printf("\n\n");
 
     // fazer a matriz conjugada usando a função auxiliar
-    result = produto_escalar(vet1, vet2, linhas,2);
+    result = produto_escalar(vet1, vet2, linhas,linhas);
 
     // imprimir o conjugada da matriz
     printf("Produto Escalar A . B:\n\n");
@@ -656,7 +662,7 @@ int teste_produto_escalar(){
     printf("\n\n");
 
     // fazer a matriz conjugada usando a função auxiliar
-    result = produto_escalar(vet1, vet2, linhas,2);
+    result = produto_escalar(vet1, vet2, linhas,linhas);
 
     // imprimir o conjugada da matriz
     printf("Produto Escalar C . D:\n\n");
