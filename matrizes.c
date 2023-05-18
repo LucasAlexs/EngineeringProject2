@@ -108,7 +108,7 @@ int teste_soma()
     printf("Operando C:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
+            printf("%.2f + %.2fj\t", matrix1[i][j].real, matrix1[i][j].img);
         }
         printf("\n\n");
     }
@@ -116,7 +116,7 @@ int teste_soma()
     printf("Operando D:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", matrix2[i][j].real, matrix2[i][j].img);
+            printf("%.2f + %.2fj\t", matrix2[i][j].real, matrix2[i][j].img);
         }
         printf("\n\n");
     }
@@ -128,7 +128,7 @@ int teste_soma()
     printf("A soma das matrizes :\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", rmtx[i][j].real, rmtx[i][j].img);
+            printf("%.2f + %.2fj\t", rmtx[i][j].real, rmtx[i][j].img);
         }
         printf("\n\n");
     }
@@ -234,7 +234,7 @@ int teste_subtracao()
     printf("Operando C:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
+            printf("%.2f + %.2fj\t", matrix1[i][j].real, matrix1[i][j].img);
         }
         printf("\n\n");
     }
@@ -242,7 +242,7 @@ int teste_subtracao()
     printf("Operando D:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", matrix2[i][j].real, matrix2[i][j].img);
+            printf("%.2f + %.2fj\t", matrix2[i][j].real, matrix2[i][j].img);
         }
         printf("\n\n");
     }
@@ -254,7 +254,7 @@ int teste_subtracao()
     printf("A subtracao das matrizes :\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", rmtx[i][j].real, rmtx[i][j].img);
+            printf("%.2f + %.2fj\t", rmtx[i][j].real, rmtx[i][j].img);
         }
         printf("\n\n");
     }
@@ -350,7 +350,7 @@ int teste_transposta()
     printf("Operando B:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
+            printf("%.2f + %.2fj\t", matrix1[i][j].real, matrix1[i][j].img);
         }
         printf("\n\n");
     }
@@ -362,7 +362,7 @@ int teste_transposta()
     printf("A transposta da matriz:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", rmtx[i][j].real, rmtx[i][j].img);
+            printf("%.2f + %.2fj\t", rmtx[i][j].real, rmtx[i][j].img);
         }
         printf("\n\n");
     }
@@ -428,7 +428,7 @@ int teste_conjugada()
     printf("Operando A:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2fi\t",matrix1[i][j].img);
+            printf("%.2fj\t",matrix1[i][j].img);
         }
         printf("\n\n");
     }
@@ -440,7 +440,7 @@ int teste_conjugada()
     printf("A conjugada da matriz:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2fi\t",rmtx[i][j].img);
+            printf("%.2fj\t",rmtx[i][j].img);
         }
         printf("\n\n");
     }
@@ -449,7 +449,7 @@ int teste_conjugada()
     printf("Operando B:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
+            printf("%.2f + %.2fj\t", matrix1[i][j].real, matrix1[i][j].img);
         }
         printf("\n\n");
     }
@@ -461,7 +461,7 @@ int teste_conjugada()
     printf("A conjugada da matriz:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", rmtx[i][j].real, rmtx[i][j].img);
+            printf("%.2f + %.2fj\t", rmtx[i][j].real, rmtx[i][j].img);
         }
         printf("\n\n");
     }
@@ -530,7 +530,7 @@ int teste_hermitiano()
     printf("Operando A:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2fi\t", matrix1[i][j].img);
+            printf("%.2fj\t", matrix1[i][j].img);
         }
         printf("\n\n");
     }
@@ -542,7 +542,7 @@ int teste_hermitiano()
     printf("Hermitiano da matriz:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2fi\t",rmtx[i][j].img);
+            printf("%.2fj\t",rmtx[i][j].img);
         }
         printf("\n\n");
     }
@@ -551,7 +551,7 @@ int teste_hermitiano()
     printf("Operando B:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
+            printf("%.2f + %.2fj\t", matrix1[i][j].real, matrix1[i][j].img);
         }
         printf("\n\n");
     }
@@ -563,7 +563,7 @@ int teste_hermitiano()
     printf("Hermitiano da matriz:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", rmtx[i][j].real, rmtx[i][j].img);
+            printf("%.2f + %.2fj\t", rmtx[i][j].real, rmtx[i][j].img);
         }
         printf("\n\n");
     }
@@ -650,13 +650,13 @@ int teste_produto_escalar(){
 
     printf("Operando C:\n\n");
     for(int i=0; i<linhas; i++){
-            printf("%.2f + %.2fi\t",vet1[i].real, vet1[i].img);
+            printf("%.2f + %.2fj\t",vet1[i].real, vet1[i].img);
     }
 
     printf("\n\n");
     printf("Operando D:\n\n");
     for(int i=0; i<linhas; i++){
-            printf("%.2f + %.2fi\t",vet2[i].real, vet2[i].img);
+            printf("%.2f + %.2fj\t",vet2[i].real, vet2[i].img);
     }
 
     printf("\n\n");
@@ -668,7 +668,7 @@ int teste_produto_escalar(){
     printf("Produto Escalar C . D:\n\n");
 
 
-            printf("%.2f + %.2fi\t", result.real , result.img);
+            printf("%.2f + %.2fj\t", result.real , result.img);
 
         printf("\n\n");
 
@@ -805,7 +805,7 @@ int teste_produto_matricial()
     printf("Operando C:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
+            printf("%.2f + %.2fj\t", matrix1[i][j].real, matrix1[i][j].img);
         }
         printf("\n\n");
     }
@@ -813,7 +813,7 @@ int teste_produto_matricial()
     printf("Operando D:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", matrix2[i][j].real, matrix2[i][j].img);
+            printf("%.2f + %.2fj\t", matrix2[i][j].real, matrix2[i][j].img);
         }
         printf("\n\n");
     }
@@ -825,7 +825,7 @@ int teste_produto_matricial()
     printf("A soma das matrizes :\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
-            printf("%.2f + %.2fi\t", rmtx[i][j].real, rmtx[i][j].img);
+            printf("%.2f + %.2fj\t", rmtx[i][j].real, rmtx[i][j].img);
         }
         printf("\n\n");
     }
