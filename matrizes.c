@@ -30,14 +30,23 @@ struct Complex **soma(struct Complex **matrix1,struct Complex **matrix2, int lin
     }
 
     // somar as matrizes
+
+    if(linhas == colunas){
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             rmtx[i][j].real = matrix1[i][j].real + matrix2[i][j].real;
             rmtx[i][j].img = matrix1[i][j].img + matrix2[i][j].img;
         }
+      }
+    }
+    else{
+        printf("ERRO!\n\n");
+        printf("A operacao de soma nao pode ser iniciada\n\n");
+
     }
 
     return rmtx;
+
 }
 
 int teste_soma()
@@ -69,7 +78,40 @@ int teste_soma()
     }
 
     // imprimir as matrizes operandas
+
+
+
     printf("Operando A:\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f\t", matrix1[i][j].real);
+        }
+        printf("\n\n");
+    }
+
+    printf("Operando B:\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f\t", matrix2[i][j].real);
+        }
+        printf("\n\n");
+    }
+
+    // somar as matrizes usando a função auxiliar
+    rmtx = soma(matrix1, matrix2, linhas, colunas);
+
+    // imprimir a soma das matrizes
+    printf("A soma das matrizes :\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f\t", rmtx[i][j].real);
+        }
+        printf("\n\n");
+    }
+
+
+
+    printf("Operando C:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
@@ -77,7 +119,7 @@ int teste_soma()
         printf("\n\n");
     }
 
-    printf("Operando B:\n\n");
+    printf("Operando D:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             printf("%.2f + %.2fi\t", matrix2[i][j].real, matrix2[i][j].img);
@@ -160,7 +202,36 @@ int teste_subtracao()
     }
 
     // imprimir as matrizes operandas
+
     printf("Operando A:\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f\t", matrix1[i][j].real);
+        }
+        printf("\n\n");
+    }
+
+    printf("Operando B:\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f\t", matrix2[i][j].real);
+        }
+        printf("\n\n");
+    }
+
+    // somar as matrizes usando a função auxiliar
+    rmtx = subtracao(matrix1, matrix2, linhas, colunas);
+
+    // imprimir a soma das matrizes
+    printf("A subtracao das matrizes :\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f\t", rmtx[i][j].real);
+        }
+        printf("\n\n");
+    }
+
+    printf("Operando C:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
@@ -168,7 +239,7 @@ int teste_subtracao()
         printf("\n\n");
     }
 
-    printf("Operando B:\n\n");
+    printf("Operando D:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             printf("%.2f + %.2fi\t", matrix2[i][j].real, matrix2[i][j].img);
@@ -248,7 +319,29 @@ int teste_transposta()
     }
 
     // imprimir a matrize operando
+
     printf("Operando A:\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f\t", matrix1[i][j].real);
+        }
+        printf("\n\n");
+    }
+
+    // fazer a matriz transposta usando a função auxiliar
+    rmtx = transposta(matrix1, linhas, colunas);
+
+    // imprimir a matriz transposta
+    printf("A transposta da matriz:\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f\t", rmtx[i][j].real);
+        }
+        printf("\n\n");
+    }
+
+
+    printf("Operando B:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
@@ -325,7 +418,29 @@ int teste_conjugada()
     }
 
     // imprimir a matrize operando
+
     printf("Operando A:\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2fi\t",matrix1[i][j].img);
+        }
+        printf("\n\n");
+    }
+
+    // fazer a matriz conjugada usando a função auxiliar
+    rmtx = conjugado(matrix1, linhas, colunas);
+
+    // imprimir o conjugada da matriz
+    printf("A conjugada da matriz:\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2fi\t",rmtx[i][j].img);
+        }
+        printf("\n\n");
+    }
+
+
+    printf("Operando B:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
@@ -405,7 +520,29 @@ int teste_hermitiano()
     }
 
     // imprimir a matrize operando
+
     printf("Operando A:\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2fi\t", matrix1[i][j].img);
+        }
+        printf("\n\n");
+    }
+
+    // fazer a matriz hermitiana usando a função auxiliar
+    rmtx = hermitiano(matrix1, linhas, colunas);
+
+    // imprimir o hermitiano da matriz
+    printf("Hermitiano da matriz:\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2fi\t",rmtx[i][j].img);
+        }
+        printf("\n\n");
+    }
+
+
+    printf("Operando B:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
@@ -449,10 +586,12 @@ struct Complex rmtx, aux;
             rmtx.real = rmtx.real + aux.real;
             rmtx.img = rmtx.img + aux.img;
             }
-            }
+        }
      else{
-            printf("impossivel calcular o produto escalar entre estes vetores.\n");
+            printf("ERRO!\n\n");
+            printf("O produto escalar nao pode ser calculado porque entre estes vetores pois o numero de elementos dos vetores nao coincidem.\n\n");
     }
+
 
     return rmtx;
 }
@@ -477,13 +616,39 @@ int teste_produto_escalar(){
             vet2[i].img = 1;
             }
     // imprimir os vetores operandos
+
     printf("Operando A:\n\n");
+    for(int i=0; i<linhas; i++){
+            printf("%.2f\t",vet1[i].real);
+    }
+
+    printf("\n\n");
+    printf("Operando B:\n\n");
+    for(int i=0; i<linhas; i++){
+            printf("%.2f\t",vet2[i].real);
+    }
+
+    printf("\n\n");
+
+    // fazer a matriz conjugada usando a função auxiliar
+    result = produto_escalar(vet1, vet2, linhas,2);
+
+    // imprimir o conjugada da matriz
+    printf("Produto Escalar A . B:\n\n");
+
+
+            printf("%.2f\t", result.real);
+
+        printf("\n\n");
+
+
+    printf("Operando C:\n\n");
     for(int i=0; i<linhas; i++){
             printf("%.2f + %.2fi\t",vet1[i].real, vet1[i].img);
     }
 
     printf("\n\n");
-    printf("Operando B:\n\n");
+    printf("Operando D:\n\n");
     for(int i=0; i<linhas; i++){
             printf("%.2f + %.2fi\t",vet2[i].real, vet2[i].img);
     }
@@ -491,10 +656,10 @@ int teste_produto_escalar(){
     printf("\n\n");
 
     // fazer a matriz conjugada usando a função auxiliar
-    result = produto_escalar(vet1, vet2, linhas,linhas);
+    result = produto_escalar(vet1, vet2, linhas,2);
 
     // imprimir o conjugada da matriz
-    printf("Produto Escalar A . B:\n\n");
+    printf("Produto Escalar C . D:\n\n");
 
 
             printf("%.2f + %.2fi\t", result.real , result.img);
@@ -544,6 +709,8 @@ struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **mat
 
     }
 
+    if(linhas==colunas){
+
     // somar as matrizes
     for (int i = 0; i < linhas; i++) {
     for (int j = 0; j < colunas; j++) {
@@ -555,7 +722,14 @@ struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **mat
         }
         rmtx[i][j] = sum;
     }
-}
+    }
+    }
+    else{
+
+            printf("ERRO!\n\n");
+            printf("A operacao de Produto Matricial nao pode ser iniciada porque o numero de linhas e colunas nao coincidem.\n\n");
+
+        }
     return rmtx;
 }
 
@@ -570,6 +744,9 @@ int teste_produto_matricial()
      printf("======Teste da Operacao de produto matricial========\n\n");
 
     // alocar memória para as matrizes
+
+    if(linhas==colunas){
+
     matrix1 = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
     matrix2 = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
     for(int i=0; i<linhas; i++){
@@ -588,7 +765,38 @@ int teste_produto_matricial()
     }
 
     // imprimir as matrizes operandas
+
     printf("Operando A:\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f\t", matrix1[i][j].real);
+        }
+        printf("\n\n");
+    }
+
+    printf("Operando B:\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f\t", matrix2[i][j].real);
+        }
+        printf("\n\n");
+    }
+
+    // formar o produto das matrizes usando a função auxiliar
+    rmtx = produto_matricial(matrix1, matrix2, linhas, colunas);
+
+    // imprimir o produto matricial
+    printf("A soma das matrizes :\n\n");
+    for(int i=0; i<linhas; i++){
+        for(int j=0; j<colunas; j++){
+            printf("%.2f\t", rmtx[i][j].real);
+        }
+        printf("\n\n");
+    }
+
+
+
+    printf("Operando C:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             printf("%.2f + %.2fi\t", matrix1[i][j].real, matrix1[i][j].img);
@@ -596,7 +804,7 @@ int teste_produto_matricial()
         printf("\n\n");
     }
 
-    printf("Operando B:\n\n");
+    printf("Operando D:\n\n");
     for(int i=0; i<linhas; i++){
         for(int j=0; j<colunas; j++){
             printf("%.2f + %.2fi\t", matrix2[i][j].real, matrix2[i][j].img);
@@ -625,6 +833,11 @@ int teste_produto_matricial()
     free(matrix1);
     free(matrix2);
     free(rmtx);
+
+    }
+
+    else{rmtx = produto_matricial(matrix1, matrix2, linhas, colunas);}
+
 
     return 0;
 }
