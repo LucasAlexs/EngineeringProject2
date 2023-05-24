@@ -25,8 +25,8 @@ all: $(obj) $(acao) doc
 $(acao):$(obj)/main.o $(obj)/matrizes.o
 	@echo -e "\n Gerando o arquivo $@ ... "
 	gcc $< $(obj)/matrizes.o -I $(obj) -o $@.exe $(flags)
-	@echo -e "\n=== To run the code from 'main.c': run the file $(obj)/$@.exe or the rule command 'make teste'!! ==="
-	@echo -e "\n=== To run the project webpage: run the file $(html)/index.html or the rule command 'make webpage'!! ==="
+	@echo -e "\n Para executar o arquivo a partir de 'main.c': execute o arquivo $(obj)/$@.exe ou a regra de comando 'make teste'."
+	@echo -e "\n Para executar o projeto webpage: execute o arquivo $(html)/index.html ou a regra de comando 'make webpage'."
 
 $(obj)/main.o: $(src)/main.c
 	@echo -e "\n Gerando o arquivo $@... "
@@ -37,7 +37,7 @@ $(obj)/matrizes.o: $(src)/matrizes.c
 	gcc -c $< -I $(obj) -o $@ $(flags)
 
 $(obj):
-	mkdir$(dir)
+	mkdir$(obj)
 
 
 .PHONY: doc
