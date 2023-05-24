@@ -64,7 +64,7 @@ clean:
 	rm - rf $(obj)/*exe
 	rm - rf $(obj)/*exe
 	
-	find doc -type f ! -path "doc/figures/*" ! -path "doc/tema/*" -delete
+	find doc -type f ! -path "doc/rtf/*" ! -path "doc/html/*" -delete
 	find doc -type d -empty -delete
 	
 	@echo -e "\n Arquivos '.o' e '.exe' sendo deletados"
