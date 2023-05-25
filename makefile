@@ -36,9 +36,13 @@ $(obj)/matrizes.o: $(src)/matrizes.c
 	@echo -e "\n Gerando o arquivo $@... "
 	gcc -c $< -I $(obj) -o $@ $(flags)
 
+
 $(obj):
 	mkdir$(obj)
 
+
+teste: $(obj)/$(acao).exe 
+         $(obj)/$(acao).exe
 
 .PHONY: doc
 
