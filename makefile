@@ -44,6 +44,7 @@ $(obj):
 
 teste: $(obj)/$(acao).exe
 	$(obj)/$(acao).exe
+@echo -e "\n criando $@..."
 
 
 .PHONY: doc
