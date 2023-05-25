@@ -24,7 +24,7 @@ all: $(obj) $(acao) doc
 
 
 $(acao): $(obj)/main.o $(obj)/matrizes.o
-	gcc $< $(obj)/matrizes.o -J $(obj) -o $@.exe $(flags)
+	gcc $< $(obj)/matrizes.o -I $(obj) -o $@.exe $(flags)
 	@echo -e "\n Arquivo $@ gerado"
 
 
