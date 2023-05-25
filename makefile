@@ -51,11 +51,6 @@ webpage: $(html)/index.html
 	@echo -e "\n Abrindo o documento de pagina web... "
 	start "$(html)/index.html"
 
-.PHONY: cyg
-cyg: $(html)/index.html
-	@echo -e "\n Abrindo o documento de pagina web... "
-	cygstart "$(html)/index.html"
-
 clean:
 	@echo -e "\n Arquivos '.o' e '.exe' sendo deletados"
 	rm -rf $(obj)/*.exe
