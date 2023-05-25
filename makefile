@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Pasta source
 src = ./src
 
@@ -42,8 +42,8 @@ $(obj):
 	mkdir$(obj)
 
 
-teste: $(obj)/$(acao).exe 
-         $(obj)/$(acao).exe
+teste: $(obj)/$(acao).exe
+	$(obj)/$(acao).exe
 
 .PHONY: doc
 
@@ -73,25 +73,3 @@ clean:
 	find doc -type d -empty -delete
 	
 	@echo -e "\n Arquivos '.o' e '.exe' sendo deletados"
-=======
-#makefile
-
-all: teste doc
-
-
-aplicacao: teste doc
-	gcc -o aplicacao teste doc
-
-teste: aplicacao
-
-teste: main.o matrizes.o
-	gcc -o teste main.o matrizes.o
-
-main.o: main.c matrizes/matrizes.c
-	gcc -o main.o main.c
-
-matrizes.o: matrizes.c matrizes.h
-	gcc -o matrizes.o matrizes.c
-
-
->>>>>>> make
