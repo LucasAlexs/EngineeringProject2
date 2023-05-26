@@ -16,15 +16,15 @@ html = ./doc/html
 # Bandeiras para o compilador
 flags = -W         \
         -Wall      \
-        -ansi      \
+        #-ansi      \
         -pedantic
 
 
-all: $(obj) $(acao) doc
+all: $(obj) $(acao) #doc
 
 
 $(acao): $(obj)/main.o $(obj)/matrizes.o
-	gcc $< $(obj)/matrizes.o -I $(obj) -o $@.exe $(flags)
+	gcc $^ -I $(obj) -o $@.exe $(flags)
 	@echo -e "\n Arquivo $@ gerado"
 
 
@@ -43,7 +43,7 @@ $(obj):
 
 teste: $(obj)/$(acao).exe
 	$(obj)/$(acao).exe
-@echo -e "\n $@ criado"
+	@echo -e "\n $@ criado"
 
 
 .PHONY: doc
