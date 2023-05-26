@@ -16,7 +16,6 @@ html = ./doc/html
 # Bandeiras para o compilador
 flags = -W         \
         -Wall      \
-        #-ansi      \
         -pedantic
 
 
@@ -24,9 +23,10 @@ all: $(obj) $(acao) #doc
 
 
 $(acao): $(obj)/main.o $(obj)/matrizes.o
-	gcc $^ -I $(obj) -o $@.exe $(flags)
+	gcc $^ -I $(obj) -o $(obj)/$@.exe $(flags)
 	@echo -e "\n Arquivo $@ gerado"
-
+	@echo -e "\n Voce pode utilizar make teste para testar o arquivo aplicacao"
+	@echo -e "\n Voce pode utilizar make webpage para abrir a documentacao online"
 
 $(obj)/main.o: $(src)/main.c
 	gcc -c $< -J $(obj) -o $@ $(flags)
@@ -43,7 +43,7 @@ $(obj):
 
 teste: $(obj)/$(acao).exe
 	$(obj)/$(acao).exe
-	@echo -e "\n $@ criado"
+	@echo -e "\n gerando $@"
 
 
 .PHONY: doc
