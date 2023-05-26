@@ -59,7 +59,7 @@ webpage: $(html)/index.html
 
 
 clean:
-	rm -rf *.exe
+	rm -rf $*.exe
 	rm -rf $(obj)/*.exe
 	rm -rf $(obj)/*.o
 	@echo -e "\n Arquivos '.o' e '.exe' deletados"
