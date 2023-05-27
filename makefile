@@ -19,7 +19,7 @@ flags = -W         \
         -pedantic
 
 
-all: $(obj) $(acao) #doc
+all: $(obj) $(acao) doc
 
 
 $(acao): $(obj)/main.o $(obj)/matrizes.o
