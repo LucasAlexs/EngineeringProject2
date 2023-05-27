@@ -1,10 +1,10 @@
 # Pasta source
 src = ./src
 
-# Pasta onde estao os codigos-fonte das matrizes
+# Pasta onde estão os códigos-fonte das matrizes
 matrizes = ./src/matrizes
 
-# Pasta de arquivos de saída do doc 
+# Pasta de arquivos de saída do doc
 obj = ./build
 
 # Regra aplicacao
@@ -19,56 +19,49 @@ flags = -W         \
         -pedantic
 
 
-all: $(obj) $(acao) doc
+all: $(obj) $(acao) #doc
 
 
-$(acao):$(obj)/main.o $(obj)/matrizes.o
-	@echo -e "\n Gerando o arquivo $@ ... "
-	gcc $< $(obj)/matrizes.o -I $(obj) -o $@.exe $(flags)
-	@echo -e "\n Para executar o arquivo a partir de 'main.c': execute o arquivo $(obj)/$@.exe ou a regra de comando 'make teste'."
-	@echo -e "\n Para executar o projeto webpage: execute o arquivo $(html)/index.html ou a regra de comando 'make webpage'."
+$(acao): $(obj)/main.o $(obj)/matrizes.o
+	gcc $^ -I $(obj) -o $(obj)/$@.exe $(flags)
+	@echo -e "\n Arquivo $@ gerado"
+	@echo -e "\n Voce pode utilizar make teste para testar o arquivo aplicacao"
+	@echo -e "\n Voce pode utilizar make webpage para abrir a documentacao online"
 
 $(obj)/main.o: $(src)/main.c
-	@echo -e "\n Gerando o arquivo $@... "
-	gcc -c $< -I $(obj) -o $@ $(flags)
+	gcc -c $< -J $(obj) -o $@ $(flags)
+	@echo -e "\n Arquivo $@ gerado"
 
-$(obj)/matrizes.o: $(src)/matrizes.c
-	@echo -e "\n Gerando o arquivo $@... "
-	gcc -c $< -I $(obj) -o $@ $(flags)
 
+$(obj)/matrizes.o: $(matrizes)/matrizes.c
+	gcc -c $< -J $(obj) -o $@ $(flags)
+	@echo -e "\n Arquivo $@ gerado"
 
 $(obj):
-	mkdir$(obj)
+	mkdir $(obj)
 
 
-teste: $(obj)/$(acao).exe 
-         $(obj)/$(acao).exe
+teste: $(obj)/$(acao).exe
+	$(obj)/$(acao).exe
+	@echo -e "\n gerando $@"
+
 
 .PHONY: doc
-
 doc: Doxyfile
-	@echo -e "\n Gerando documentacao dos arquivos... "
 	doxygen Doxyfile
+	@echo -e "\n Documentacao de arquivos gerada "
 
 
 .PHONY: webpage
-
 webpage: $(html)/index.html
-	@echo -e "\n Abrindo o documento de pagina web... "
+	@echo -e "\n Abrindo o documento de pagina web: index"
 	start "$(html)/index.html"
 
 
-.PHONY: cyg
-
-cyg: $(html)/index.html
-	@echo -e "\n Abrindo o documento de pagina web... "
-	cygstart "$(html)/index.html"
-
 clean:
-	rm - rf $(obj)/*exe
-	rm - rf $(obj)/*exe
-	
+	rm -rf $*.exe
+	rm -rf $(obj)/*.exe
+	rm -rf $(obj)/*.o
+	@echo -e "\n Arquivos '.o' e '.exe' deletados"
 	find doc -type f ! -path "doc/rtf/*" ! -path "doc/html/*" -delete
 	find doc -type d -empty -delete
-	
-	@echo -e "\n Arquivos '.o' e '.exe' sendo deletados"
