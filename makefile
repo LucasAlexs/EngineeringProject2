@@ -5,7 +5,7 @@ src = ./src
 matrizes = ./src/matrizes
 
 # Pasta de arquivos de saída do doc
-obj = build
+obj = ./build
 
 # Regra aplicacao
 acao = aplicacao
