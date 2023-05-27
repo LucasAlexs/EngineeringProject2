@@ -4,5 +4,6 @@
 int main()
 {
     teste_todos();
+    system("pause");
     return 0;
 }
