@@ -25,8 +25,7 @@ all: $(obj) $(acao) doc
 $(acao): $(obj)/main.o $(obj)/matrizes.o
 	gcc $^ -I $(obj) -o $(obj)/$@.exe $(flags)
 	@echo -e "\n Arquivo $@ gerado"
-	@echo -e "\n Voce pode utilizar make teste para testar o arquivo aplicacao"
-	@echo -e "\n Voce pode utilizar make webpage para abrir a documentacao online"
+
 
 $(obj)/main.o: $(src)/main.c
 	gcc -c $< -J $(obj) -o $@ $(flags)
@@ -50,6 +49,9 @@ teste: $(obj)/$(acao).exe
 doc: Doxyfile
 	doxygen Doxyfile
 	@echo -e "\n Documentacao de arquivos gerada "
+	@echo -e "\n Voce pode utilizar 'make teste' para testar o arquivo aplicacao"
+	@echo -e "\n Voce pode utilizar 'make webpage' para abrir a documentacao online"
+	@echo -e "\n Voce pode utilizar 'make clean' para deitar as pastas 'doc' e '$(obj)'"
 
 
 .PHONY: webpage
@@ -59,9 +61,6 @@ webpage: $(html)/index.html
 
 
 clean:
-	rm -rf $*.exe
-	rm -rf $(obj)/*.exe
-	rm -rf $(obj)/*.o
-	@echo -e "\n Arquivos '.o' e '.exe' deletados"
-	find doc -type f ! -path "doc/rtf/*" ! -path "doc/html/*" -delete
-	find doc -type d -empty -delete
+	rm -rf doc
+	rm -rf $(obj)
+	@echo -e "\n pastas '$(obj)' e 'doc' deletadas"
