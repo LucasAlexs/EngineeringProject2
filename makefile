@@ -45,7 +45,6 @@ teste: $(obj)/$(acao).exe
 	@echo -e "\n gerando $@"
 
 
-.PHONY: doc
 doc: Doxyfile
 	doxygen Doxyfile
 	@echo -e "\n Documentacao de arquivos gerada "
