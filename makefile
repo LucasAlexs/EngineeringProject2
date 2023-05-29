@@ -42,7 +42,7 @@ $(obj):
 
 teste: $(obj)/$(acao).exe
 	$(obj)/$(acao).exe
-	@echo -e "\n gerando $@"
+	@echo -e "\n $@ gerado "
 
 
 doc: Doxyfile
@@ -50,7 +50,7 @@ doc: Doxyfile
 	@echo -e "\n Documentacao de arquivos gerada "
 	@echo -e "\n Voce pode utilizar 'make teste' para testar o arquivo aplicacao"
 	@echo -e "\n Voce pode utilizar 'make webpage' para abrir a documentacao online"
-	@echo -e "\n Voce pode utilizar 'make clean' para deitar as pastas 'doc' e '$(obj)'"
+	@echo -e "\n Voce pode utilizar 'make clean' para deitar as pastas 'doc' e 'build'"
 
 
 .PHONY: webpage
@@ -62,4 +62,4 @@ webpage: $(html)/index.html
 clean:
 	rm -rf doc
 	rm -rf $(obj)
-	@echo -e "\n pastas '$(obj)' e 'doc' deletadas"
+	@echo -e "\n pastas 'build' e 'doc' deletadas"
