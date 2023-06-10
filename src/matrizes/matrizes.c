@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "matrizes.h"
+#include <gsl/gsl_complex_math.h>
+#include <gsl/gsl_linalg.h>
 
 // FUNCÕES
 
@@ -861,4 +863,85 @@ teste_todos()
     teste_hermitiano();
     teste_produto_escalar();
     teste_produto_matricial();
+}
+
+void calc_svd(ComplexNumber **matrix, size_t linhas, size_t colunas) {
+    int is_complex = 0;
+
+    // Verificar se a matriz é complexa
+    for (size_t i = 0; i < linhas; i++) {
+        for (size_t j = 0; j < colunas; j++) {
+            if (matrix[i][j].img != 0) {
+                is_complex = 1;
+                break;
+            }
+        }
+    }
+
+    if (is_complex == 1) {
+        printf("Aviso: Será calculada apenas a SVD da parte real da matriz complexa.\n");
+        return;
+    }
+
+    double *matrix_real = malloc(linhas * colunas * sizeof(double));
+    for (size_t i = 0; i < linhas; i++) {
+        for (size_t j = 0; j < colunas; j++) {
+            double element = matrix[i][j].real;
+            matrix_real[i * colunas + j] = element;
+        }
+    }
+
+    gsl_matrix *matrix_gsl = gsl_matrix_alloc(linhas, colunas);
+    for (size_t i = 0; i < linhas; i++) {
+        for (size_t j = 0; j < colunas; j++) {
+            gsl_matrix_set(matrix_gsl, i, j, matrix_real[i * colunas + j]);
+        }
+    }
+
+    gsl_matrix *U = gsl_matrix_alloc(linhas, linhas);
+    gsl_matrix *V = gsl_matrix_alloc(colunas, colunas);
+    gsl_vector *singular_values = gsl_vector_alloc(colunas);
+
+    gsl_linalg_SV_decomp(matrix_gsl, V, singular_values, U);
+
+    printf("Valores singulares:\n");
+    for (size_t i = 0; i < colunas; i++) {
+        printf("%f\n", gsl_vector_get(singular_values, i));
+    }
+
+    // Liberar memória
+    free(matrix_real);
+    gsl_matrix_free(matrix_gsl);
+    gsl_matrix_free(U);
+    gsl_matrix_free(V);
+    gsl_vector_free(singular_values);
+}
+
+int teste_calc_svd() {
+    // Exemplo de uso
+    size_t linhas = 3;
+    size_t colunas = 3;
+
+    ComplexNumber **matrix = malloc(linhas * sizeof(ComplexNumber *));
+    for (size_t i = 0; i < linhas; i++) {
+        matrix[i] = malloc(colunas * sizeof(ComplexNumber));
+    }
+
+    // Definir a matriz usando um loop
+    for (size_t i = 0; i < linhas; i++) {
+        for (size_t j = 0; j < colunas; j++) {
+            matrix[i][j].real = i + j + 1;
+            matrix[i][j].img = i - j - 1;
+        }
+    }
+
+    svd_real_part(matrix, linhas, colunas);
+
+    // Liberar memória
+    for (size_t i = 0; i < linhas; i++) {
+        free(matrix[i]);
+    }
+    free(matrix);
+
+    return 0;
 }
