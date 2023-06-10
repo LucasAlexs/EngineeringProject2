@@ -880,7 +880,7 @@ void calc_svd(ComplexNumber **matrix, size_t linhas, size_t colunas) {
 
     if (is_complex == 1) {
         printf("Aviso: Será calculada apenas a SVD da parte real da matriz complexa.\n");
-        return;
+        return 0 ;
     }
 
     double *matrix_real = malloc(linhas * colunas * sizeof(double));
