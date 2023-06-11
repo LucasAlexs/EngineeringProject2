@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "matrizes.h"
-#include <gsl/gsl_complex_math.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_vector.h>
 #include <gsl/gsl_linalg.h>
 
 // FUNCÕES
@@ -907,35 +908,110 @@ void calc_svd(ComplexNumber **matrix, size_t linhas, size_t colunas) {
 }
 
 int teste_calc_svd() {
-    // Exemplo de uso
-    size_t linhas = 3;
-    size_t colunas = 3;
+    // Matriz 3x2
+    size_t linhas1 = 3;
+    size_t colunas1 = 2;
 
-    ComplexNumber **matrix = malloc(linhas * sizeof(ComplexNumber *));
-    for (size_t i = 0; i < linhas; i++) {
-        matrix[i] = malloc(colunas * sizeof(ComplexNumber));
+    ComplexNumber **matrix1 = malloc(linhas1 * sizeof(ComplexNumber *));
+    for (size_t i = 0; i < linhas1; i++) {
+        matrix1[i] = malloc(colunas1 * sizeof(ComplexNumber));
     }
 
     // Definir a matriz usando um loop
-    for (size_t i = 0; i < linhas; i++) {
-        for (size_t j = 0; j < colunas; j++) {
-            matrix[i][j].real = i + j + 1;
-            matrix[i][j].img = i - j - 1;
+    for (size_t i = 0; i < linhas1; i++) {
+        for (size_t j = 0; j < colunas1; j++) {
+            matrix1[i][j].real = i + j + 1;
+            matrix1[i][j].img = 0;
         }
     }
 
-    svd_real_part(matrix, linhas, colunas);
-
-    printf("Valores singulares:\n");
-    for (size_t i = 0; i < colunas; i++) {
-        printf("%f\n", gsl_vector_get(singular_values, i));
-    }
+    printf("SVD da matriz 3x2:\n");
+    calc_svd(matrix1, linhas1, colunas1);
 
     // Liberar memória
-    for (size_t i = 0; i < linhas; i++) {
-        free(matrix[i]);
+    for (size_t i = 0; i < linhas1; i++) {
+        free(matrix1[i]);
     }
-    free(matrix);
+    free(matrix1);
+
+    // Matriz 4x4
+    size_t linhas2 = 4;
+    size_t colunas2 = 4;
+
+    ComplexNumber **matrix2 = malloc(linhas2 * sizeof(ComplexNumber *));
+    for (size_t i = 0; i < linhas2; i++) {
+        matrix2[i] = malloc(colunas2 * sizeof(ComplexNumber));
+    }
+
+    // Definir a matriz usando um loop
+    for (size_t i = 0; i < linhas2; i++) {
+        for (size_t j = 0; j < colunas2; j++) {
+            matrix2[i][j].real = i + j + 1;
+            matrix2[i][j].img = 0;
+        }
+    }
+
+    printf("SVD da matriz 4x4:\n");
+    calc_svd(matrix2, linhas2, colunas2);
+
+    // Liberar memória
+    for (size_t i = 0; i < linhas2; i++) {
+        free(matrix2[i]);
+    }
+    free(matrix2);
+
+    // Matriz 6x5
+    size_t linhas3 = 6;
+    size_t colunas3 = 5;
+
+    ComplexNumber **matrix3 = malloc(linhas3 * sizeof(ComplexNumber *));
+    for (size_t i = 0; i < linhas3; i++) {
+        matrix3[i] = malloc(colunas3 * sizeof(ComplexNumber));
+    }
+
+    // Definir a matriz usando um loop
+    for (size_t i = 0; i < linhas3; i++) {
+        for (size_t j = 0; j < colunas3; j++) {
+            matrix3[i][j].real = i + j + 1;
+            matrix3[i][j].img = 0;
+        }
+    }
+
+    printf("SVD da matriz 6x5:\n");
+    calc_svd(matrix3, linhas3, colunas3);
+
+    // Liberar memória
+    for (size_t i = 0; i < linhas3; i++) {
+        free(matrix3[i]);
+    }
+    free(matrix3);
+
+    // Matriz 5x6
+    size_t linhas4 = 5;
+    size_t colunas4 = 6;
+
+    ComplexNumber **matrix4 = malloc(linhas4 * sizeof(ComplexNumber *));
+    for (size_t i = 0; i < linhas4; i++) {
+        matrix4[i] = malloc(colunas4 * sizeof(ComplexNumber));
+    }
+
+    // Definir a matriz usando um loop
+    for (size_t i = 0; i < linhas4; i++) {
+        for (size_t j = 0; j < colunas4; j++) {
+            matrix4[i][j].real = i + j + 1;
+            matrix4[i][j].img = 0;
+        }
+    }
+
+    printf("SVD da matriz 5x6:\n");
+    calc_svd(matrix4, linhas4, colunas4);
+
+    // Liberar memória
+    for (size_t i = 0; i < linhas4; i++) {
+        free(matrix4[i]);
+    }
+    free(matrix4);
 
     return 0;
 }
+
