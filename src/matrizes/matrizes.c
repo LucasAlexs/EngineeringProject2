@@ -880,7 +880,7 @@ void calc_svd(ComplexNumber **matrix, size_t linhas, size_t colunas) {
 
     if (is_complex == 1) {
         printf("Aviso: Será calculada apenas a SVD da parte real da matriz complexa.\n");
-        return 0 ;
+        return 0;
     }
 
     double *matrix_real = malloc(linhas * colunas * sizeof(double));
@@ -904,17 +904,6 @@ void calc_svd(ComplexNumber **matrix, size_t linhas, size_t colunas) {
 
     gsl_linalg_SV_decomp(matrix_gsl, V, singular_values, U);
 
-    printf("Valores singulares:\n");
-    for (size_t i = 0; i < colunas; i++) {
-        printf("%f\n", gsl_vector_get(singular_values, i));
-    }
-
-    // Liberar memória
-    free(matrix_real);
-    gsl_matrix_free(matrix_gsl);
-    gsl_matrix_free(U);
-    gsl_matrix_free(V);
-    gsl_vector_free(singular_values);
 }
 
 int teste_calc_svd() {
@@ -936,6 +925,11 @@ int teste_calc_svd() {
     }
 
     svd_real_part(matrix, linhas, colunas);
+
+    printf("Valores singulares:\n");
+    for (size_t i = 0; i < colunas; i++) {
+        printf("%f\n", gsl_vector_get(singular_values, i));
+    }
 
     // Liberar memória
     for (size_t i = 0; i < linhas; i++) {
