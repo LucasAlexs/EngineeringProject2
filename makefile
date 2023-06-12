@@ -22,8 +22,8 @@ flags = -W         \
 all: $(obj) $(acao) doc
 
 
-$(acao): $(obj)/main.o $(obj)/matrizes.o
-	gcc $^ -I $(obj) -o $(obj)/$@.exe $(flags)
+$(acao): $(obj)/main.o
+	gcc $^ -I $(obj) -o $(obj)/$@ $(flags)
 	@echo -e "\n Arquivo $@ gerado"
 
 
@@ -31,10 +31,6 @@ $(obj)/main.o: $(src)/main.c
 	gcc -c $< -J $(obj) -o $@ $(flags)
 	@echo -e "\n Arquivo $@ gerado"
 
-
-$(obj)/matrizes.o: $(matrizes)/matrizes.c
-	gcc -c $< -J $(obj) -o $@ $(flags)
-	@echo -e "\n Arquivo $@ gerado"
 
 $(obj):
 	mkdir $(obj)
