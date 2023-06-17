@@ -871,7 +871,7 @@ calc_svd(struct Complex **matrix, int linhas, int colunas)
     gsl_matrix *V = gsl_matrix_alloc(colunas, colunas);
     gsl_vector *S = gsl_vector_alloc(colunas);
     gsl_vector *work = gsl_vector_alloc(colunas);
-void
+    
     printf("\n Matriz operanda:\n");
     for (i = 0; i < linhas; i++)
     {
