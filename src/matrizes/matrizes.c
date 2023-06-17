@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "matrizes.h"
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_vector.h>
 #include <gsl/gsl_linalg.h>
 
 // FUNCÕES
@@ -851,6 +849,146 @@ int teste_produto_matricial()
     return 0;
 }
 
+calc_svd(struct Complex **matrix, int linhas, int colunas)
+{
+    int i, j;
+
+    // Verifica se há parte imaginária nos elementos da matriz
+    for (i = 0; i < linhas; i++)
+    {
+        for (j = 0; j < colunas; j++)
+        {
+            if (mtx[i][j].img != 0)
+            {
+                printf("Aviso: A função usará apenas a parte real da matriz\n");
+                break;
+            }
+        }
+    }
+
+    // Alocação das matrizes e vetores necessários para o cálculo SVD
+    gsl_matrix *A = gsl_matrix_alloc(linhas, colunas);
+    gsl_matrix *V = gsl_matrix_alloc(colunas, colunas);
+    gsl_vector *S = gsl_vector_alloc(colunas);
+    gsl_vector *work = gsl_vector_alloc(colunas);
+void
+    printf("\n Matriz operanda:\n");
+    for (i = 0; i < linhas; i++)
+    {
+        for (j = 0; j < colunas; j++)
+        {
+            printf("%.2f ", matrix[i][j].real);
+            gsl_matrix_set(A, i, j, matrix[i][j].real);
+        }
+        printf("\n");
+    }
+
+    // Cálculo do SVD
+    gsl_linalg_SV_decomp(A, V, S, work);
+
+    printf("\n Matriz U:\n");
+    for (i = 0; i < linhas; i++)
+    {
+        for (j = 0; j < colunas; j++)
+        {
+            printf("%f ", gsl_matrix_get(A, i, j));
+        }
+        printf("\n");
+    }
+
+    printf("\n Vetor S\n");
+    for (i = 0; i < colunas; i++)
+    {
+        printf("%f\n", gsl_vector_get(S, i));
+    }
+
+    printf("\n\nMatriz V\n");
+    for (i = 0; i < colunas; i++)
+    {
+        for (j = 0; j < colunas; j++)
+        {
+            printf("%f ", gsl_matrix_get(V, i, j));
+        }
+        printf("\n");
+    }
+}
+
+void teste_calc_svd()
+{
+    int i, j;
+    struct complexo **matrix1, **matrix2, **matrix3, **matrix4;
+
+    int l1 = 3, c1 = 2;
+    int l2 = 4, c2 = 4;
+    int l3 = 6, c3 = 5;
+    int l4 = 5, c4 = 6;
+
+    // Alocação de memória para as matrizes
+    matrix1 = (struct Complex **)malloc(l1 * sizeof(struct Complex *));
+    matrix2 = (struct Complex **)malloc(l2 * sizeof(struct Complex *));
+    matrix3 = (struct Complex **)malloc(l3 * sizeof(struct Complex *));
+    matrix4 = (struct Complex **)malloc(l4 * sizeof(struct Complex *));
+    for (int i = 0; i < l1; i++)
+    {
+        matrix1[i] = (struct Complex *)malloc(c1 * sizeof(struct Complex));
+    }
+    for (int i = 0; i < l2; i++)
+    {
+        matrix2[i] = (struct Complex *)malloc(c2 * sizeof(struct Complex));
+    }
+    for (int i = 0; i < l3; i++)
+    {
+        matrix3[i] = (struct Complex *)malloc(c3 * sizeof(struct Complex));
+    }
+    for (int i = 0; i < l4; i++)
+    {
+        matrix4[i] = (struct Complex *)malloc(c4 * sizeof(struct Complex));
+    }
+
+    // Inicialização das matrizes
+    for (i = 0; i < l1; i++)
+    {
+        for (j = 0; j < c1; j++)
+        {
+            mtx_a[i][j].real = i * j;
+            mtx_a[i][j].img = 0;
+        }
+    }
+
+    for (i = 0; i < l2; i++)
+    {
+        for (j = 0; j < c2; j++)
+        {
+            mtx_b[i][j].real = j - i;
+            mtx_b[i][j].img = 0;
+        }
+    }
+
+    for (i = 0; i < l3; i++)
+    {
+        for (j = 0; j < c3; j++)
+        {
+            mtx_c[i][j].real = 1 - 4 * j;
+            mtx_c[i][j].img = 4;
+        }
+    }
+
+    for (i = 0; i < l4; i++)
+    {
+        for (j = 0; j < c4; j++)
+        {
+            mtx_d[i][j].real = 1 + i;
+            mtx_d[i][j].img = i - 3 + 2 * j;
+        }
+    }
+
+    // Chamadas da função calc_svd para cada matriz
+    calc_svd(matrix1, l1, c1);
+    calc_svd(matrix2, l2, c2);
+    calc_svd(matrix3, l3, c3);
+    calc_svd(matrix4, l4, c4);
+}
+
 teste_todos()
 {
     printf("======Teste Geral========\n\n");
@@ -864,154 +1002,6 @@ teste_todos()
     teste_hermitiano();
     teste_produto_escalar();
     teste_produto_matricial();
-}
-
-void calc_svd(ComplexNumber **matrix, size_t linhas, size_t colunas) {
-    int is_complex = 0;
-
-    // Verificar se a matriz é complexa
-    for (size_t i = 0; i < linhas; i++) {
-        for (size_t j = 0; j < colunas; j++) {
-            if (matrix[i][j].img != 0) {
-                is_complex = 1;
-                break;
-            }
-        }
-    }
-
-    if (is_complex == 1) {
-        printf("Aviso: Será calculada apenas a SVD da parte real da matriz complexa.\n");
-        return 0;
-    }
-
-    double *matrix_real = malloc(linhas * colunas * sizeof(double));
-    for (size_t i = 0; i < linhas; i++) {
-        for (size_t j = 0; j < colunas; j++) {
-            double element = matrix[i][j].real;
-            matrix_real[i * colunas + j] = element;
-        }
-    }
-
-    gsl_matrix *matrix_gsl = gsl_matrix_alloc(linhas, colunas);
-    for (size_t i = 0; i < linhas; i++) {
-        for (size_t j = 0; j < colunas; j++) {
-            gsl_matrix_set(matrix_gsl, i, j, matrix_real[i * colunas + j]);
-        }
-    }
-
-    gsl_matrix *U = gsl_matrix_alloc(linhas, linhas);
-    gsl_matrix *V = gsl_matrix_alloc(colunas, colunas);
-    gsl_vector *singular_values = gsl_vector_alloc(colunas);
-
-    gsl_linalg_SV_decomp(matrix_gsl, V, singular_values, U);
-
-}
-
-int teste_calc_svd() {
-    // Matriz 3x2
-    size_t linhas1 = 3;
-    size_t colunas1 = 2;
-
-    ComplexNumber **matrix1 = malloc(linhas1 * sizeof(ComplexNumber *));
-    for (size_t i = 0; i < linhas1; i++) {
-        matrix1[i] = malloc(colunas1 * sizeof(ComplexNumber));
-    }
-
-    // Definir a matriz usando um loop
-    for (size_t i = 0; i < linhas1; i++) {
-        for (size_t j = 0; j < colunas1; j++) {
-            matrix1[i][j].real = i + j + 1;
-            matrix1[i][j].img = 0;
-        }
-    }
-
-    printf("SVD da matriz 3x2:\n");
-    calc_svd(matrix1, linhas1, colunas1);
-
-    // Liberar memória
-    for (size_t i = 0; i < linhas1; i++) {
-        free(matrix1[i]);
-    }
-    free(matrix1);
-
-    // Matriz 4x4
-    size_t linhas2 = 4;
-    size_t colunas2 = 4;
-
-    ComplexNumber **matrix2 = malloc(linhas2 * sizeof(ComplexNumber *));
-    for (size_t i = 0; i < linhas2; i++) {
-        matrix2[i] = malloc(colunas2 * sizeof(ComplexNumber));
-    }
-
-    // Definir a matriz usando um loop
-    for (size_t i = 0; i < linhas2; i++) {
-        for (size_t j = 0; j < colunas2; j++) {
-            matrix2[i][j].real = i + j + 1;
-            matrix2[i][j].img = 0;
-        }
-    }
-
-    printf("SVD da matriz 4x4:\n");
-    calc_svd(matrix2, linhas2, colunas2);
-
-    // Liberar memória
-    for (size_t i = 0; i < linhas2; i++) {
-        free(matrix2[i]);
-    }
-    free(matrix2);
-
-    // Matriz 6x5
-    size_t linhas3 = 6;
-    size_t colunas3 = 5;
-
-    ComplexNumber **matrix3 = malloc(linhas3 * sizeof(ComplexNumber *));
-    for (size_t i = 0; i < linhas3; i++) {
-        matrix3[i] = malloc(colunas3 * sizeof(ComplexNumber));
-    }
-
-    // Definir a matriz usando um loop
-    for (size_t i = 0; i < linhas3; i++) {
-        for (size_t j = 0; j < colunas3; j++) {
-            matrix3[i][j].real = i + j + 1;
-            matrix3[i][j].img = 0;
-        }
-    }
-
-    printf("SVD da matriz 6x5:\n");
-    calc_svd(matrix3, linhas3, colunas3);
-
-    // Liberar memória
-    for (size_t i = 0; i < linhas3; i++) {
-        free(matrix3[i]);
-    }
-    free(matrix3);
-
-    // Matriz 5x6
-    size_t linhas4 = 5;
-    size_t colunas4 = 6;
-
-    ComplexNumber **matrix4 = malloc(linhas4 * sizeof(ComplexNumber *));
-    for (size_t i = 0; i < linhas4; i++) {
-        matrix4[i] = malloc(colunas4 * sizeof(ComplexNumber));
-    }
-
-    // Definir a matriz usando um loop
-    for (size_t i = 0; i < linhas4; i++) {
-        for (size_t j = 0; j < colunas4; j++) {
-            matrix4[i][j].real = i + j + 1;
-            matrix4[i][j].img = 0;
-        }
-    }
-
-    printf("SVD da matriz 5x6:\n");
-    calc_svd(matrix4, linhas4, colunas4);
-
-    // Liberar memória
-    for (size_t i = 0; i < linhas4; i++) {
-        free(matrix4[i]);
-    }
-    free(matrix4);
-
-    return 0;
+    teste_calc_svd();
 }
 
