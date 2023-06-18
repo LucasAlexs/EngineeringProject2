@@ -858,7 +858,7 @@ calc_svd(struct Complex **matrix, int linhas, int colunas)
     {
         for (j = 0; j < colunas; j++)
         {
-            if (mtx[i][j].img != 0)
+            if (matrix[i][j].img != 0)
             {
                 printf("Aviso: A função usará apenas a parte real da matriz\n");
                 break;
@@ -916,7 +916,7 @@ calc_svd(struct Complex **matrix, int linhas, int colunas)
 void teste_calc_svd()
 {
     int i, j;
-    struct complexo **matrix1, **matrix2, **matrix3, **matrix4;
+    struct Complex **matrix1, **matrix2, **matrix3, **matrix4;
 
     int l1 = 3, c1 = 2;
     int l2 = 4, c2 = 4;
@@ -950,8 +950,8 @@ void teste_calc_svd()
     {
         for (j = 0; j < c1; j++)
         {
-            mtx_a[i][j].real = i * j;
-            mtx_a[i][j].img = 0;
+            matrix1[i][j].real = i * j;
+            matrix1[i][j].img = 0;
         }
     }
 
@@ -959,8 +959,8 @@ void teste_calc_svd()
     {
         for (j = 0; j < c2; j++)
         {
-            mtx_b[i][j].real = j - i;
-            mtx_b[i][j].img = 0;
+            matrix2[i][j].real = j - i;
+            matrix2[i][j].img = 0;
         }
     }
 
@@ -968,8 +968,8 @@ void teste_calc_svd()
     {
         for (j = 0; j < c3; j++)
         {
-            mtx_c[i][j].real = 1 - 4 * j;
-            mtx_c[i][j].img = 4;
+            matrix3[i][j].real = 1 - 4 * j;
+            matrix3[i][j].img = 4;
         }
     }
 
@@ -977,8 +977,8 @@ void teste_calc_svd()
     {
         for (j = 0; j < c4; j++)
         {
-            mtx_d[i][j].real = 1 + i;
-            mtx_d[i][j].img = i - 3 + 2 * j;
+            matrix4[i][j].real = 1 + i;
+            matrix4[i][j].img = i - 3 + 2 * j;
         }
     }
 
