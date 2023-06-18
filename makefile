@@ -20,5 +20,5 @@ clean:
 	rm -rf doc/html/*.dot
 .PHONY:	doc
 doc:
-	doxygen doxyfile
+	doxygen
 	
