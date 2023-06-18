@@ -1,16 +1,16 @@
 all:	matrizes
 matrizes:
-	mkdir build
-	gcc src/main.c -lgsl -o build/matrizes
-	./build/matrizes.out
+	gcc src/main.c -lgsl -o build/matrizes.out
+	gcc src/main.c -lgsl -o build/matrizes.exe
 aplicacao:
 	gcc -c src/matrizes/matrizes.c -o build/matrizes.o
 	gcc -c src/main.c -o build/main.o
 	gcc build/matrizes.o build/main.o -o build/matrizes
 teste:
-	./build/matrizes
+	./build/matrizes.out
+	./build/matrizes.exe
 clean:
-	rm build
+	rm -rf build/*.o
 	rm -rf build/*matrizes
 	rm -rf doc/html/*.css
 	rm -rf doc/html/*.html
