@@ -7,6 +7,12 @@
 
 int teste_produto_matricial();
 
+/**### função print_name
+-A função print_name imprime na tela os nomes dos membros de uma equipe. 
+-Ela não possui parâmetros de entrada ou saída. 
+-Essa função não retorna nenhum valor.
+
+ * */
 
 void print_name()
 {
