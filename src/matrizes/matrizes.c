@@ -430,6 +430,13 @@ int teste_transposta()
     return 0;
 }
 
+/** função conjugado
+-A função realiza a conjulgação da matriz de entrada matrix1 e armazena o resultado em uma nova matriz rmtx.
+ * @param[in] Complex **matrix1, linhas, colunas
+ * @param[out] rmtx
+*/
+
+
 struct Complex **conjugado(struct Complex **matrix1, int linhas, int colunas)
 {
    struct Complex **rmtx;
@@ -451,6 +458,12 @@ struct Complex **conjugado(struct Complex **matrix1, int linhas, int colunas)
    }
    return rmtx;
 }
+
+/** função teste_conjugada
+- A função teste_conjugada realiza um teste da operação conjugada de matrizes complexas. 
+- Ela não possui parâmetros de entrada e não retorna nenhum valor. 
+*/
+
 
 int teste_conjugada()
 {
@@ -529,6 +542,12 @@ int teste_conjugada()
     return 0;
 }
 
+/** função hermitiano
+-A função calcuka o hermitiano da matriz de entrada matrix1 e armazena o resultado em uma nova matriz rmtx.
+ * @param[in] Complex **matrix1, linhas, colunas
+ * @param[out] rmtx
+*/
+
 struct Complex **hermitiano(struct Complex **matrix1, int linhas, int colunas)
 {
    struct Complex **rmtx, **aux;
@@ -553,6 +572,12 @@ struct Complex **hermitiano(struct Complex **matrix1, int linhas, int colunas)
    }
    return rmtx;
 }
+
+/** função teste_hermitiano
+- A função teste_hermitiano realiza um teste da operação hermitiano de matrizes complexas. 
+- Ela não possui parâmetros de entrada e não retorna nenhum valor. 
+*/
+
 
 int teste_hermitiano()
 {
@@ -631,6 +656,12 @@ int teste_hermitiano()
     return 0;
 }
 
+/** função produto escalar
+-A função calcula o produto escalar de dois vetores e armazena o resultado em uma matriz rmtx.
+ * @param[in] Complex *vet1,Complex *vet2, int neu, int nev
+ * @param[out] rmtx
+*/
+
 struct Complex produto_escalar(struct Complex *vet1,struct Complex *vet2, int neu, int nev){
 struct Complex rmtx, aux;
 
@@ -653,6 +684,12 @@ struct Complex rmtx, aux;
 
     return rmtx;
 }
+
+/** função teste_produto_escalar
+- A função teste_produto_escalar realiza um teste da operação produto escalar de matrizes complexas. 
+- Ela não possui parâmetros de entrada e não retorna nenhum valor. 
+*/
+
 
 int teste_produto_escalar(){
     int linhas = 3;
@@ -732,6 +769,13 @@ int teste_produto_escalar(){
     return 0;
 }
 
+/** função somanc
+-A função calcula a soma de dois numeros complexos.
+ * @param[in] struct Complex a,struct Complex b
+ * @param[out] struct Complex result
+*/
+
+
 struct Complex somanc(struct Complex a,struct Complex b) {
 
     struct Complex result;
@@ -741,6 +785,12 @@ struct Complex somanc(struct Complex a,struct Complex b) {
 
     return result;
 }
+
+/** função multiplicacao
+-A função calcula o produto de dois numeros complexos.
+ * @param[in] Complex x, Complex y
+ * @param[out] rmtx
+*/
 
 struct Complex multiplicacao(struct Complex x,struct Complex y)
 {
@@ -754,6 +804,12 @@ struct Complex multiplicacao(struct Complex x,struct Complex y)
 
     return rmtx;
 }
+
+/** função soma
+A função soma realiza o produto matricial de duas matrizes complexas, representadas por ponteiros para ponteiros de struct Complex.
+ * @param[in] Complex **matrix1, Complex **matrix2, linhas, colunas
+ * @param[out] rmtx
+*/
 
 struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **matrix2, int linhas, int colunas)
 {
@@ -790,6 +846,11 @@ struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **mat
         }
     return rmtx;
 }
+
+/** função teste_produto_matricial
+- A função teste_produto_matricial realiza um teste da operação produto matricial de matrizes complexas. 
+- Ela não possui parâmetros de entrada e não retorna nenhum valor. 
+*/
 
 int teste_produto_matricial()
 {
