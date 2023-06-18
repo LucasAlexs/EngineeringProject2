@@ -1,61 +1,24 @@
-# Pasta source
-src = ./src
-
-# Pasta onde estão os códigos-fonte das matrizes
-matrizes = ./src/matrizes
-
-# Pasta de arquivos de saída do doc
-obj = ./build
-
-# Regra aplicacao
-acao = aplicacao
-
-# Pasta html
-html = ./doc/html
-
-# Bandeiras para o compilador
-flags = -W         \
-        -Wall      \
-        -pedantic
-
-
-all: $(obj) $(acao) doc
-
-
-$(acao): $(obj)/main.o
-	gcc $^ -I $(obj) -o $(obj)/$@ $(flags)
-	@echo -e "\n Arquivo $@ gerado"
-
-
-$(obj)/main.o: $(src)/main.c
-	gcc -c $< -J $(obj) -o $@ $(flags)
-	@echo -e "\n Arquivo $@ gerado"
-
-
-$(obj):
-	mkdir $(obj)
-
-
-teste: $(obj)/$(acao).exe
-	$(obj)/$(acao).exe
-	@echo -e "\n $@ gerado "
-
-
-doc: Doxyfile
-	doxygen Doxyfile
-	@echo -e "\n Documentacao de arquivos gerada "
-	@echo -e "\n Voce pode utilizar 'make teste' para testar o arquivo aplicacao"
-	@echo -e "\n Voce pode utilizar 'make webpage' para abrir a documentacao online"
-	@echo -e "\n Voce pode utilizar 'make clean' para deitar as pastas 'doc' e 'build'"
-
-
-.PHONY: webpage
-webpage: $(html)/index.html
-	@echo -e "\n Abrindo o documento de pagina web: index"
-	start "$(html)/index.html"
-
-
+all:	matrizes
+matrizes:
+	mkdir build
+	gcc src/main.c -lgsl -o build/matrizes
+	./build/matrizes.out
+aplicacao:
+	gcc -c src/matrizes/matrizes.c -o build/matrizes.o
+	gcc -c src/main.c -o build/main.o
+	gcc build/matrizes.o build/main.o -o build/matrizes
+teste:
+	./build/matrizes
 clean:
-	rm -rf doc
-	rm -rf $(obj)
-	@echo -e "\n pastas 'build' e 'doc' deletadas"
+	rm build
+	rm -rf build/*matrizes
+	rm -rf doc/html/*.css
+	rm -rf doc/html/*.html
+	rm -rf doc/html/*.png
+	rm -rf doc/html/*.svg
+	rm -rf doc/html/*.js
+	rm -rf doc/html/*.dot
+.PHONY:	doc
+doc:
+	doxygen doxyfile
+	
