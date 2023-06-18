@@ -996,7 +996,17 @@ void teste_calc_svd()
     calc_svd(matrix2, l2, c2); // Chamada da função calc_svd para matriz 4 X 4
     calc_svd(matrix3, l3, c3); // Chamada da função calc_svd para matriz 6 X 5
     calc_svd(matrix4, l4, c4); // Chamada da função calc_svd para matriz 5 X 6
-
+ // desalocar a memória alocada
+    for(int i=0; i<linhas; i++){
+        free(matrix1[i]);
+        free(matrix2[i]);
+        free(matrix3[i]);
+        free(matrix4[i]);
+    }
+    free(matrix1);
+    free(matrix2);
+    free(matrix3);
+    free(matrix4);
 }
 
 void teste_todos()
