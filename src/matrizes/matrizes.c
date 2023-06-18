@@ -1014,4 +1014,3 @@ void teste_todos()
     teste_produto_matricial();
     teste_calc_svd();
 }
-
