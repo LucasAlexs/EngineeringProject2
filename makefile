@@ -4,9 +4,9 @@ matrizes:
 	gcc src/main.c -lgsl -o build/matrizes.out
 	gcc src/main.c -lgsl -o build/matrizes.exe
 aplicacao:
-	gcc -c src/matrizes/matrizes.c -o build/matrizes.o
+	gcc -c src/matrizes/matrizes.c -lgsl -o build/matrizes.o
 	gcc -c src/main.c -o build/main.o
-	gcc build/matrizes.o build/main.o -o build/matrizes
+	gcc build/matrizes.o build/main.o -lgsl -o build/matrizes
 teste:
 	./build/matrizes.out
 	./build/matrizes.exe
