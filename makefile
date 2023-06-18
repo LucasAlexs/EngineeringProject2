@@ -1,5 +1,6 @@
 all:	matrizes
 matrizes:
+	mkdir build
 	gcc src/main.c -lgsl -o build/matrizes.out
 	gcc src/main.c -lgsl -o build/matrizes.exe
 aplicacao:
