@@ -7,9 +7,9 @@ typedef struct Complex
     double real;
     double img;
 
-};
+} Complex;
 
-int print_name();
+void print_name();
 
 struct Complex somanc(struct Complex a,struct Complex b);
 struct Complex multiplicacao(struct Complex x,struct Complex y);
