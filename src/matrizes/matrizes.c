@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "matrizes.h"
+#include <time.h>
 #include <gsl/gsl_linalg.h>
-
 // FUNCÕES
 
 void teste_produto_matricial();
@@ -1047,6 +1047,7 @@ void calc_svd(struct Complex **matrix, int linhas, int colunas)
 void teste_calc_svd()
 {
     int i, j;
+    srand(time(NULL)); 
     struct Complex **matrix1, **matrix2, **matrix3, **matrix4;
 
     printf("==========Teste da Operacao de SVD==========\n\n");
