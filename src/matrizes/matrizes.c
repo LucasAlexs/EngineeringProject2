@@ -5,12 +5,12 @@
 
 // FUNCÕES
 
-int teste_produto_matricial();
+void teste_produto_matricial();
 
-/**### função print_name
--A função print_name imprime na tela os nomes dos membros de uma equipe. 
--Ela não possui parâmetros de entrada ou saída. 
--Essa função não retorna nenhum valor.
+/**### Função print_name()
+* Imprime os nomes dos membros de uma equipe na tela. 
+* Não há parâmetros de entrada e saída. 
+* Essa função não retorna nenhum valor.
 
  * */
 
@@ -27,12 +27,11 @@ void print_name()
 }
 
 
-/** função soma
-A função soma realiza a soma de duas matrizes complexas, representadas por ponteiros para ponteiros de struct Complex.
-As matrizes de entrada devem ser alocadas previamente e conter valores válidos.
-A matriz resultante da soma é alocada dentro da função e precisa ser liberada pelo chamador após seu uso.
-A função verifica se as matrizes têm o mesmo número de linhas e colunas antes de realizar a soma. Caso contrário, retorna NULL.
-A função realiza a soma dos elementos real e imaginário de cada posição correspondente nas matrizes de entrada e atribui o resultado à matriz resultante.
+/** Função soma()
+* - Realiza a soma de duas matrizes complexas, representadas por ponteiros para ponteiros de struct Complex.
+* - As matrizes de entrada devem ser alocadas previamente e conter valores válidos.
+* - A matriz resultante da soma é alocada dentro da função e precisa ser liberada pelo chamador após o uso.
+* - A função verifica se as matrizes têm o mesmo número de linhas e colunas antes de realizar a soma. Caso contrário, retorna NULL. Também realiza a soma dos elementos real e imaginário de cada posição correspondente nas matrizes de entrada e atribui o resultado à matriz resultante.
  * @param[in] Complex **matrix1, Complex **matrix2, linhas, colunas
  * @param[out] rmtx
 */
@@ -61,13 +60,13 @@ struct Complex **soma(struct Complex **matrix1,struct Complex **matrix2, int lin
 
 }
 
-/** função teste_soma
-- A função teste_soma realiza um teste da operação de soma de matrizes complexas. 
-- Ela não possui parâmetros de entrada e não retorna nenhum valor. 
-- Caso as dimensões das matrizes não coincidam, é exibida uma mensagem de erro indicando que a operação de soma não pode ser iniciada.
+/** função teste_soma()
+* - Verifica a operação de soma de matrizes complexas. 
+* - Não possui parâmetros de entrada e não retorna nenhum valor. 
+* - Caso as dimensões das matrizes não coincidam, é exibida uma mensagem de erro indicando que a operação de soma não pode ser iniciada.
 */
 
-int teste_soma()
+void teste_soma()
 {
     int linhas = 3;
     int colunas = 3;
@@ -173,15 +172,14 @@ int teste_soma()
         printf("A operacao de soma nao pode ser iniciada pois os elementos nao coincidem\n\n");
 
     }
-    return 0;
 }
 
-/** função subtração
-A função soma realiza a subtração de duas matrizes complexas, representadas por ponteiros para ponteiros de struct Complex.
-As matrizes de entrada devem ser alocadas previamente e conter valores válidos.
-A matriz resultante da soma é alocada dentro da função e precisa ser liberada pelo chamador após seu uso.
-A função verifica se as matrizes têm o mesmo número de linhas e colunas antes de realizar a soma. Caso contrário, retorna NULL.
-A função realiza a soma dos elementos real e imaginário de cada posição correspondente nas matrizes de entrada e atribui o resultado à matriz resultante.
+/** função subtracao()
+* - Opera a subtração de duas matrizes complexas, representadas por ponteiros para ponteiros de struct Complex.
+* - As matrizes de entrada devem ser alocadas previamente e conter valores válidos.
+* - A matriz resultante da soma é alocada dentro da função e precisa ser liberada pelo chamador após seu uso.
+* - A função verifica se as matrizes têm o mesmo número de linhas e colunas antes de realizar a soma. Caso contrário, retorna NULL.
+* - A função realiza a soma dos elementos real e imaginário de cada posição correspondente nas matrizes de entrada e atribui o resultado à matriz resultante.
  * @param[in] Complex **matrix1, Complex **matrix2, linhas, colunas
  * @param[out] rmtx
 */
@@ -208,14 +206,14 @@ struct Complex **subtracao(struct Complex **matrix1,struct Complex **matrix2, in
     return rmtx;
 }
 
-/** função teste_subtração
-- A função teste_subtração realiza um teste da operação de subtração de matrizes complexas. 
-- Ela não possui parâmetros de entrada e não retorna nenhum valor. 
-- Caso as dimensões das matrizes não coincidam, é exibida uma mensagem de erro indicando que a operação de soma não pode ser iniciada.
+/** Função teste_subtracao()
+* - Inicia um teste da operação de subtração de matrizes complexas. 
+* - Não possui parâmetros de entrada e não retorna nenhum valor. 
+* - Caso as dimensões das matrizes não coincidam, é exibida uma mensagem de erro indicando que a operação de subtração não pode ser iniciada.
 */
 
 
-int teste_subtracao()
+void teste_subtracao()
 {
     int linhas = 3;
     int colunas = 3;
@@ -317,11 +315,10 @@ int teste_subtracao()
         printf("A operacao de soma nao pode ser iniciada pois os elementos nao coincidem\n\n");
 
     }
-    return 0;
 }
 
-/** função transposta 
--A função realiza a transposição da matriz de entrada matrix1 e armazena o resultado em uma nova matriz rmtx.
+/** Função transposta 
+* - Executa transposição da matriz de entrada matrix1 e armazena o resultado em uma nova matriz rmtx.
  * @param[in] Complex **matrix1, linhas, colunas
  * @param[out] rmtx
 */
@@ -348,12 +345,12 @@ struct Complex **transposta(struct Complex **matrix1, int linhas, int colunas)
    return rmtx;
 }
 
-/** função teste_transposta
-- A função teste_transposta realiza um teste da operação transposta de matrizes complexas. 
-- Ela não possui parâmetros de entrada e não retorna nenhum valor. 
+/** Função teste_transposta()
+* - Realiza um teste da operação transposta de matrizes complexas. 
+* - Não possui parâmetros de entrada e não retorna nenhum valor. 
 */
 
-int teste_transposta()
+void teste_transposta()
 {
     int linhas = 3;
     int colunas = 3;
@@ -426,12 +423,10 @@ int teste_transposta()
     }
     free(matrix1);
     free(rmtx);
-
-    return 0;
 }
 
-/** função conjugado
--A função realiza a conjulgação da matriz de entrada matrix1 e armazena o resultado em uma nova matriz rmtx.
+/** Função conjugado()
+* - Realiza a conjulgação da matriz de entrada matrix1 e armazena o resultado em uma nova matriz rmtx.
  * @param[in] Complex **matrix1, linhas, colunas
  * @param[out] rmtx
 */
@@ -459,13 +454,13 @@ struct Complex **conjugado(struct Complex **matrix1, int linhas, int colunas)
    return rmtx;
 }
 
-/** função teste_conjugada
-- A função teste_conjugada realiza um teste da operação conjugada de matrizes complexas. 
-- Ela não possui parâmetros de entrada e não retorna nenhum valor. 
+/** Função teste_conjugada()
+* - Realiza um teste da operação conjugada de matrizes complexas. 
+* - Não possui parâmetros de entrada e não retorna nenhum valor. 
 */
 
 
-int teste_conjugada()
+void teste_conjugada()
 {
     int linhas = 3;
     int colunas = 3;
@@ -539,11 +534,10 @@ int teste_conjugada()
     free(matrix1);
     free(rmtx);
 
-    return 0;
 }
 
-/** função hermitiano
--A função calcuka o hermitiano da matriz de entrada matrix1 e armazena o resultado em uma nova matriz rmtx.
+/** Função hermitiano()
+* - Calcula o hermitiano da matriz de entrada matrix1 e armazena o resultado em uma nova matriz rmtx.
  * @param[in] Complex **matrix1, linhas, colunas
  * @param[out] rmtx
 */
@@ -573,13 +567,13 @@ struct Complex **hermitiano(struct Complex **matrix1, int linhas, int colunas)
    return rmtx;
 }
 
-/** função teste_hermitiano
-- A função teste_hermitiano realiza um teste da operação hermitiano de matrizes complexas. 
-- Ela não possui parâmetros de entrada e não retorna nenhum valor. 
+/** Função teste_hermitiano()
+* - Realiza um teste da operação hermitiano de matrizes complexas. 
+* - Não possui parâmetros de entrada e não retorna nenhum valor. 
 */
 
 
-int teste_hermitiano()
+void teste_hermitiano()
 {
     int linhas = 3;
     int colunas = 3;
@@ -653,11 +647,10 @@ int teste_hermitiano()
     free(matrix1);
     free(rmtx);
 
-    return 0;
 }
 
-/** função produto escalar
--A função calcula o produto escalar de dois vetores e armazena o resultado em uma matriz rmtx.
+/** Função produto_escalar()
+* - Calcula o produto escalar de dois vetores e armazena o resultado em uma matriz rmtx.
  * @param[in] Complex *vet1,Complex *vet2, int neu, int nev
  * @param[out] rmtx
 */
@@ -685,13 +678,13 @@ struct Complex rmtx, aux;
     return rmtx;
 }
 
-/** função teste_produto_escalar
-- A função teste_produto_escalar realiza um teste da operação produto escalar de matrizes complexas. 
-- Ela não possui parâmetros de entrada e não retorna nenhum valor. 
+/** Função teste_produto_escalar()
+* - Realiza um teste da operação produto escalar de matrizes complexas. 
+* - Não possui parâmetros de entrada e não retorna nenhum valor. 
 */
 
 
-int teste_produto_escalar(){
+void teste_produto_escalar(){
     int linhas = 3;
     struct Complex *vet1;
     struct Complex *vet2;
@@ -765,12 +758,10 @@ int teste_produto_escalar(){
 
     free(vet1);
     free(vet2);
-
-    return 0;
 }
 
-/** função somanc
--A função calcula a soma de dois numeros complexos.
+/** Função somanc()
+* - Calcula a soma de dois numeros complexos.
  * @param[in] struct Complex a,struct Complex b
  * @param[out] struct Complex result
 */
@@ -786,8 +777,8 @@ struct Complex somanc(struct Complex a,struct Complex b) {
     return result;
 }
 
-/** função multiplicacao
--A função calcula o produto de dois numeros complexos.
+/** Função multiplicacao()
+* - Calcula o produto de dois numeros complexos.
  * @param[in] Complex x, Complex y
  * @param[out] rmtx
 */
@@ -805,8 +796,8 @@ struct Complex multiplicacao(struct Complex x,struct Complex y)
     return rmtx;
 }
 
-/** função soma
-A função soma realiza o produto matricial de duas matrizes complexas, representadas por ponteiros para ponteiros de struct Complex.
+/** Função produto_matricial()
+* - Calcula produto matricial de duas matrizes complexas, representadas por ponteiros para ponteiros de struct Complex.
  * @param[in] Complex **matrix1, Complex **matrix2, linhas, colunas
  * @param[out] rmtx
 */
@@ -847,12 +838,12 @@ struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **mat
     return rmtx;
 }
 
-/** função teste_produto_matricial
-- A função teste_produto_matricial realiza um teste da operação produto matricial de matrizes complexas. 
-- Ela não possui parâmetros de entrada e não retorna nenhum valor. 
+/** Função teste_produto_matricial()
+* - Verifica a validade da operação produto matricial de matrizes complexas. 
+* - Não possui parâmetros de entrada e não retorna nenhum valor. 
 */
 
-int teste_produto_matricial()
+void teste_produto_matricial()
 {
     int linhas = 3;
     int colunas = 3;
@@ -956,23 +947,22 @@ int teste_produto_matricial()
     }
 
     else{rmtx = produto_matricial(matrix1, matrix2, linhas, colunas);}
-
-
-    return 0;
 }
 
-/**### função calc_svd
--A função calc_svd realiza o cálculo da decomposição SVD (Singular Value Decomposition) de uma matriz complexa.
--A função recebe como parâmetros uma matriz complexa matrix de tamanho linhas x colunas.
--A função não retorna nenhum valor.
--A função verifica se o número de colunas é menor ou igual ao número de linhas.
--Se a condição for verdadeira, significa que é possível realizar o cálculo da decomposição SVD.
--A função exibe a matriz U na tela, formatando-a como uma matriz.
--Em seguida, exibe o vetor S, que contém os valores singulares, um por linha.
--Por fim, exibe a matriz V na tela, formatando-a como uma matriz.
--Todos os valores são obtidos utilizando as funções da biblioteca GSL.
--Caso o número de colunas não for menor ou igual ao número de linhas, a função exibe uma mensagem informando que a operação não pode ser concluída porque o número de linhas é menor que o número de colunas.
--Os elementos das matrizes e vetores são acessados e exibidos utilizando as funções gsl_matrix_get e gsl_vector_get da biblioteca GSL.
+/**### Função calc_svd()
+* Executa o cálculo da decomposição SVD (Singular Value Decomposition) da parte real de uma matriz complexa.
+* Onde: 
+* - A função recebe como parâmetros uma matriz complexa de tamanho linhas X colunas.
+* - Exibe um aviso caso a matriz em questão possua uma parte imaginária diferente de 0.
+* - Verifica se o número de colunas é menor ou igual ao número de linhas.
+* - Se a condição for verdadeira, significa que é possível realizar o cálculo da decomposição SVD.
+* - Exibe a matriz U na tela, formatando-a como uma matriz.
+* - Em seguida, exibe o vetor S, que contém os valores singulares, um por linha.
+* - Por fim, exibe a matriz V na tela, formatando-a como uma matriz.
+* - Todos os valores são obtidos utilizando as funções da biblioteca GSL.
+* - Caso o número de colunas não for menor ou igual ao número de linhas, a função exibe uma mensagem informando que a operação não pode ser concluída porque o número de linhas é menor que o número de colunas.
+* - Os elementos das matrizes e vetores são acessados e exibidos utilizando as funções gsl_matrix_get e gsl_vector_get da biblioteca GSL.
+* - A função não retorna nenhum valor.
  * @param[in] Complex **matrix1, linhas, colunas
 
 */
@@ -1049,9 +1039,9 @@ void calc_svd(struct Complex **matrix, int linhas, int colunas)
     }
 }
 
-/** função teste_calc_svd
-- A função teste_calc_svd realiza um teste da operação svd de matrizes complexas. 
-- Ela não possui parâmetros de entrada e não retorna nenhum valor. 
+/** função teste_calc_svd()
+* - Testa a função calc_svd() para a parte real de matrizes complexas. 
+* - Não possui parâmetros de entrada e não retorna nenhum valor. 
 */
 
 void teste_calc_svd()
