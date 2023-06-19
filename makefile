@@ -11,6 +11,7 @@ teste:
 	./build/matrizes.exe
 clean:
 	rm -rf build/*
+	rm -rf doc/*
 	rmdir build
 	rmdir doc
 	rm -rf doc/html/*.css
