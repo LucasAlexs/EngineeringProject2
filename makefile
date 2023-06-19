@@ -1,4 +1,4 @@
-all:	matrizes aplicacao teste
+all:	doc matrizes aplicacao teste
 matrizes:
 	mkdir build
 	gcc src/main.c -lgsl -o build/matrizes.o
@@ -12,6 +12,7 @@ teste:
 clean:
 	rm -rf build/*
 	rmdir build
+	rmdir doc
 	rm -rf doc/html/*.css
 	rm -rf doc/html/*.html
 	rm -rf doc/html/*.png
