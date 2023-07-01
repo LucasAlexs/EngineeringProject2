@@ -3,12 +3,12 @@ matrizes:
 	mkdir build
 	gcc src/main.c -lgsl -o build/matrizes.o
 aplicacao:
+	mkdir -p build
 	gcc -c src/main.c -o build/main.o
-	gcc build/matrizes.o build/main.o -lgsl -o build/matrizes.out
-	gcc build/matrizes.o build/main.o -lgsl -o build/matrizes.exe
+	gcc build/main.o -lgsl -lgslcblas -lm -o build/matrizes.out
+
 teste:
 	./build/matrizes.out
-	./build/matrizes.exe
 clean:
 	rm -rf build/*
 	rm -rf doc/*
