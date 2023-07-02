@@ -6,12 +6,11 @@ aplicacao:
 	mkdir -m 777 -p build
 	gcc -c src/main.c -o build/main.o
 	gcc build/main.o -lgsl -lgslcblas -lm -o build/matrizes.out
-	gcc -c src/matrizes/mimo.c -o build/mimo.o
-	gcc build/mimo.o -lm -o build/mimo.out
+	gcc -c src/matrizes/pds_telecom.c -o build/pds_telecom.o
+	gcc build/pds_telecom.o -lm -o build/pds_telecom.out
 
 teste:
-	./build/matrizes.out
-	./build/mimo.out
+	./build/pds_telecom.out
 clean:
 	rm -rf build/*
 	rm -rf doc/*
