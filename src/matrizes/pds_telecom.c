@@ -79,7 +79,7 @@ struct Complex * tx_qam_mapper(int* indice, int size) {
     return symbol;
 }
 
-int * tx_layer_mapper(struct Complex * symbol,int size){
+int * rx_qam_demapper(struct Complex * symbol,int size){
 
     int * indice;
 
