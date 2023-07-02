@@ -5,9 +5,9 @@ matrizes:
 aplicacao:
 	mkdir -m 777 -p build
 	gcc -c src/main.c -o build/main.o
-	gcc build/main.o -lgsl -lgslcblas -lm -o build/matrizes.out
-	gcc -c src/matrizes/pds_telecom.c -o build/pds_telecom.o
-	gcc build/pds_telecom.o -lm -o build/pds_telecom.out
+	gcc -c src/pds_telecom.c -o build/pds_telecom.o
+	gcc -c src/matrizes.c -o build/matrizes.o
+	gcc build/main.o build/pds_telecom.o build/matrizes.o -lgsl -lgslcblas -lm -o build/pds_telecom.out
 
 teste:
 	./build/pds_telecom.out
