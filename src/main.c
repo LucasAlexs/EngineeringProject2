@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "matrizes/matrizes.c"
+#include "matrizes/pds_telecom.h"
 
 int main()
 {
