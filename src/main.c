@@ -4,26 +4,24 @@
 
 int main()
 {
-    const char *filename = "arquivo.txt";
+    int vet[20];
+    struct Complex * symbol;
 
-    // Leitura do arquivo e conversão para sequência de inteiros
-    int size;
-    int *data = tx_data_read(filename, &size);
-    if (data == NULL) {
-        return 1;
+    for(int i=0; i < 20; i = i + 4){
+        vet[i]= 0;
+        vet[i+1]= 1;
+        vet[i+2]= 2;
+        vet[i+3]= 3;
     }
 
-    // Impressão dos dados lidos
-    printf("Sequência de inteiros: ");
-    for (int i = 0; i < size; i++) {
-        printf("%d ", data[i]);
+    symbol = QAMmapper(vet, 20);
+
+    for(int i=0; i < 20; i++){
+        printf("%.2f + %.2fj\t", symbol[i].real, symbol[i].img);
+        
+        printf("\n\n");
     }
-    printf("\n");
 
-    // Escrita dos dados convertidos de volta para o arquivo
-    rx_data_write("arquivo_output.txt", data, size);
-
-    // Liberação de memória
-    free(data);
     return 0;
+}
 }
