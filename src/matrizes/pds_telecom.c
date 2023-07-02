@@ -1,34 +1,55 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include "matrizes.c"
 
-void tx_data_read()
+int main()
 {
-    char texto_str[128];
-    FILE *pont_arq, *ptarq;
-    printf("Digite o Nome do Arquivo: ");
-    gets(texto_str);
-    pont_arq = fopen(texto_str, "a");
-    ptarq = fopen ("src/matrizes/binario.bin", "wb");
-    fclose(pont_arq);
+    tx_data_read("arquivo2.txt");
+}
 
-    if (pont_arq == NULL)
+void tx_data_read(const char texto_str[32])
+{
+    void print_binario(unsigned char byte)
     {
-        printf("ERRO! O arquivo não foi aberto!\n");
-    }
-    else
-    {
-        printf("O arquivo foi aberto com sucesso!\n");
+        for (int i = 6; i >= 0; i -= 2)
+        {
+            int num = ((byte >> i) & 1) + ((byte >> (i + 1)) & 1) * 2;
+            printf("%d\n", num);
+        }
     }
 
-    pont_arq = fopen(texto_str, "r");
-
-    printf("---------- Conteudo do Arquivo: ----------\n\n");
-    while(fgets(texto_str, 128, pont_arq) != NULL)
-    {
-        printf("%s", texto_str);
-        fclose(pont_arq);
+    FILE *file = fopen(texto_str, "rb");
+    if (file == NULL) {
+        printf("Erro! O arquivo nao pode ser aberto.\n");
+        return 1;
     }
-    printf("\n------------------------------------------\n\n");
 
+    fseek(file, 0, SEEK_END);
+    long tamanho = ftell(file);
+    rewind(file);
+
+    unsigned char *buffer = (unsigned char *)malloc(tamanho);
+    if (buffer == NULL) {
+        printf("Erro! Memoria nao pode ser alocada.\n");
+        return 1;
+    }
+
+    size_t leitura_bytes = fread(buffer, 1, tamanho, file);
+    if (leitura_bytes != tamanho) {
+        printf("Erro ao ler o arquivo.\n");
+        return 1;
+    }
+
+    printf("\n");
+
+    for (long i = 0; i < tamanho - 1; i++) {
+        print_binario(buffer[i]);
+        printf("");
+    }
+
+    printf("\n");
+
+    free(buffer);
+    fclose(file);
+
+    return 0;
 }
