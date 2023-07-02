@@ -1,14 +1,17 @@
 all:	doc matrizes aplicacao teste
 matrizes:
-	mkdir build
+	mkdir -m 777 build
 	gcc src/main.c -lgsl -o build/matrizes.o
 aplicacao:
-	mkdir -p build
+	mkdir -m 777 -p build
 	gcc -c src/main.c -o build/main.o
 	gcc build/main.o -lgsl -lgslcblas -lm -o build/matrizes.out
+	gcc -c src/matrizes/mimo.c -o build/mimo.o
+	gcc build/mimo.o -lm -o build/mimo.out
 
 teste:
 	./build/matrizes.out
+	./build/mimo.out
 clean:
 	rm -rf build/*
 	rm -rf doc/*
@@ -23,4 +26,3 @@ clean:
 .PHONY:	doc
 doc:
 	doxygen
-	
