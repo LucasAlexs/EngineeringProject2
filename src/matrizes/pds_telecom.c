@@ -2,11 +2,6 @@
 #include <stdlib.h>
 //#include "matrizes.c"
 
-void main()
-{
-    tx_data_read();
-}
-
 void tx_data_read()
 {
     char texto_str[128];
