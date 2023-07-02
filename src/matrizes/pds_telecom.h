@@ -5,9 +5,8 @@ int hexToDecimal(char hex);
 
 int *tx_data_read(const char *filename, int *size);
 
-int * tx_layer_mapper(struct Complex * symbol,int size);
+struct Complex * tx_qam_mapper(int* indice, int size) ;
 
-void rx_qam_demapper(const char *filename, const int *data, int size);
-
+int * rx_qam_demapper(struct Complex * symbol,int size);
 
 #endif
