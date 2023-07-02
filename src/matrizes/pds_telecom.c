@@ -6,14 +6,14 @@ int main()
     tx_data_read("arquivo2.txt");
 }
 
-void tx_data_read(const char texto_str[32])
+int tx_data_read(const char texto_str[32])
 {
     void print_binario(unsigned char byte)
     {
         for (int i = 6; i >= 0; i -= 2)
         {
             int num = ((byte >> i) & 1) + ((byte >> (i + 1)) & 1) * 2;
-            printf("%d\n", num);
+            printf("%d", num);
         }
     }
 
@@ -50,6 +50,4 @@ void tx_data_read(const char texto_str[32])
 
     free(buffer);
     fclose(file);
-
-    return 0;
 }
