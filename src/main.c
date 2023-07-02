@@ -14,7 +14,7 @@ int main()
         vet[i+3]= 3;
     }
 
-    symbol = QAMmapper(vet, 20);
+    symbol = tx_qam_mapper(vet, 20);
 
     for(int i=0; i < 20; i++){
         printf("%.2f + %.2fj\t", symbol[i].real, symbol[i].img);
