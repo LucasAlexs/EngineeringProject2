@@ -4,7 +4,12 @@
 
 void main()
 {
-    char texto_str[1024];
+    tx_data_read();
+}
+
+void tx_data_read()
+{
+char texto_str[1024];
     FILE *pont_arq, *ptarq;
     pont_arq = fopen("src/matrizes/arquivo.txt", "a");
     ptarq = fopen ("src/matrizes/binario.bin", "wb");
