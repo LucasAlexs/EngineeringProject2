@@ -78,3 +78,27 @@ struct Complex * tx_qam_mapper(int* indice, int size) {
     
     return symbol;
 }
+
+int * tx_layer_mapper(struct Complex * symbol,int size){
+
+    int * indice;
+
+    indice = (int*)malloc(size * sizeof( int ));
+
+    for (int i = 0; i < size; i++) {
+        if (symbol[i].real == -1 && symbol[i].img == 1){
+            indice[i] = 0;
+        }
+        else if (symbol[i].real == -1 && symbol[i].img == -1){
+            indice[i] = 1;
+        }
+        else if (symbol[i].real == 1 && symbol[i].img == 1){
+            indice[i] = 2;
+        }
+        else if (symbol[i].real == 1 && symbol[i].img == -1){
+            indice[i] = 3;
+        }
+    }
+    
+    return indice;
+}
