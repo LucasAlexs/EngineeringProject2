@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "pds_telecom.h"
 //#include "matrizes.c"
 
 void tx_data_read()
@@ -7,7 +8,7 @@ void tx_data_read()
     char texto_str[128];
     FILE *pont_arq, *ptarq;
     printf("Digite o Nome do Arquivo: ");
-    gets(texto_str);
+    fgets(texto_str, 128, stdin);
     pont_arq = fopen(texto_str, "a");
     ptarq = fopen ("src/matrizes/binario.bin", "wb");
     fclose(pont_arq);
