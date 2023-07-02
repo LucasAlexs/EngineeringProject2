@@ -35,4 +35,5 @@ void tx_data_read()
         fclose(pont_arq);
     }
     printf("\n------------------------------------------\n\n");
+
 }
