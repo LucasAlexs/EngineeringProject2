@@ -52,7 +52,7 @@ int tx_data_read(const char texto_str[32])
     fclose(file);
 }
 
-struct Complex * QAMmapper(int* indice, int size) {
+struct Complex * tx_qam_mapper(int* indice, int size) {
     struct Complex * symbol;
     
     symbol = (struct Complex*)malloc(size * sizeof( struct Complex ));
