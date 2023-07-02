@@ -51,3 +51,30 @@ int tx_data_read(const char texto_str[32])
     free(buffer);
     fclose(file);
 }
+
+struct Complex * QAMmapper(int* indice, int size) {
+    struct Complex * symbol;
+    
+    symbol = (struct Complex*)malloc(size * sizeof( struct Complex ));
+    
+    for (int i = 0; i < size; i++) {
+        if (indice[i] == 0){
+            symbol[i].real = -1;
+            symbol[i].img = 1;
+        }
+        else if (indice[i] == 1){
+            symbol[i].real = -1;
+            symbol[i].img = -1;
+        }
+        else if (indice[i] == 2){
+            symbol[i].real = 1;
+            symbol[i].img = 1;
+        }
+        else if (indice[i] == 2){
+            symbol[i].real = 1;
+            symbol[i].img = -1;
+        }
+    }
+    
+    return symbol;
+}
