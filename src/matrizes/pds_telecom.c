@@ -76,3 +76,53 @@ int main()
 
     return 0;
 }
+struct Complex * tx_qam_mapper(int* indice, int size) {
+    struct Complex * symbol;
+    
+    symbol = (struct Complex*)malloc(size * sizeof( struct Complex ));
+    
+    for (int i = 0; i < size; i++) {
+        if (indice[i] == 0){
+            symbol[i].real = -1;
+            symbol[i].img = 1;
+        }
+        else if (indice[i] == 1){
+            symbol[i].real = -1;
+            symbol[i].img = -1;
+        }
+        else if (indice[i] == 2){
+            symbol[i].real = 1;
+            symbol[i].img = 1;
+        }
+        else if (indice[i] == 2){
+            symbol[i].real = 1;
+            symbol[i].img = -1;
+        }
+    }
+    
+    return symbol;
+}
+
+int * rx_qam_demapper(struct Complex * symbol,int size){
+
+    int * indice;
+
+    indice = (int*)malloc(size * sizeof( int ));
+
+    for (int i = 0; i < size; i++) {
+        if (symbol[i].real == -1 && symbol[i].img == 1){
+            indice[i] = 0;
+        }
+        else if (symbol[i].real == -1 && symbol[i].img == -1){
+            indice[i] = 1;
+        }
+        else if (symbol[i].real == 1 && symbol[i].img == 1){
+            indice[i] = 2;
+        }
+        else if (symbol[i].real == 1 && symbol[i].img == -1){
+            indice[i] = 3;
+        }
+    }
+    
+    return indice;
+}
