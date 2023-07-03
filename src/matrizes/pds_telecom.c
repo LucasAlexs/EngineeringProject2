@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "pds_telecom.h"
+#include "matrizes.h"
 
 int* tx_data_read(const char texto_str[32], long* tamanho_retornado)
 {
