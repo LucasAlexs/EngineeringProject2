@@ -78,8 +78,8 @@ int main()
 
     return 0;
 }
-struct Complex * tx_qam_mapper(int* indice, int size) {
-    struct Complex * symbol;
+struct Complex *tx_qam_mapper(int* indice, int size) {
+    struct Complex *symbol;
     
     symbol = (struct Complex*)malloc(size * sizeof( struct Complex ));
     
@@ -105,9 +105,9 @@ struct Complex * tx_qam_mapper(int* indice, int size) {
     return symbol;
 }
 
-int * rx_qam_demapper(struct Complex * symbol,int size){
+int *rx_qam_demapper(struct Complex * symbol,int size){
 
-    int * indice;
+    int *indice;
 
     indice = (int*)malloc(size * sizeof( int ));
 
