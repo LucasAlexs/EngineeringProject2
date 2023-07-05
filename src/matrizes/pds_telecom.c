@@ -78,6 +78,7 @@ int main()
 
     return 0;
 }
+
 struct Complex *tx_qam_mapper(int* indice, int size) {
     struct Complex *symbol;
     
