@@ -3,17 +3,17 @@
 #include "pds_telecom.h"
 #include "matrizes.h"
 
-int* tx_data_read(const char texto_str[32], long* tamanho_retornado)
+void print_binario(unsigned char byte, int* vetor, long* index)
 {
-    void print_binario(unsigned char byte, int* vetor, long* index)
+    for (int i = 6; i >= 0; i -= 2)
     {
-        for (int i = 6; i >= 0; i -= 2)
-        {
-            int num = ((byte >> i) & 1) + ((byte >> (i + 1)) & 1) * 2;
-            vetor[(*index)++] = num;
-        }
+        int num = ((byte >> i) & 0b11);
+        vetor[(*index)++] = num;
     }
+}
 
+int *tx_data_read(const char *texto_str, long *tamanho_retornado)
+{
     FILE* file = fopen(texto_str, "rb");
     if (file == NULL) {
         printf("Erro! O arquivo nao pode ser aberto.\n");
@@ -56,27 +56,6 @@ int* tx_data_read(const char texto_str[32], long* tamanho_retornado)
 
     *tamanho_retornado = tamanho * 4;
     return vetor;
-}
-
-int main()
-{
-    const char* arquivo = "arquivo.txt";
-    long tamanho;
-    int* vetor = tx_data_read(arquivo, &tamanho);
-    if (vetor == NULL) {
-        printf("Erro ao ler o arquivo.\n");
-        return 1;
-    }
-
-    printf("Valores retornados:\n");
-    for (long i = 0; i < tamanho; i++) {
-        printf("%d ", vetor[i]);
-    }
-    printf("\n");
-
-    free(vetor);
-
-    return 0;
 }
 
 struct Complex *tx_qam_mapper(int* indice, int size) {
