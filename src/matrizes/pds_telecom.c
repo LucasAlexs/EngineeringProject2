@@ -3,18 +3,19 @@
 #include "pds_telecom.h"
 #include "matrizes.h"
 
-void print_binario(unsigned char byte, int* vetor, long* index)
+void print_binario(unsigned char byte, int* vetor, long int *index)
 {
     for (int i = 6; i >= 0; i -= 2)
     {
-        int num = ((byte >> i) & 0b11);
+        int num = ((byte >> i) & 1) + ((byte >> (i + 1)) & 1) * 2;
         vetor[(*index)++] = num;
     }
 }
 
-int *tx_data_read(const char *texto_str, long *tamanho_retornado)
+int* tx_data_read(const char *texto_str, long* tamanho_retornado)
 {
-    FILE* file = fopen(texto_str, "rb");
+
+    FILE* file = fopen(texto_str, "wr");
     if (file == NULL) {
         printf("Erro! O arquivo nao pode ser aberto.\n");
         return NULL;
@@ -46,9 +47,10 @@ int *tx_data_read(const char *texto_str, long *tamanho_retornado)
         return NULL;
     }
 
-    long index = 0;
+    long int *index = 0;
     for (long i = 0; i < tamanho; i++) {
-        print_binario(buffer[i - 1], vetor, &index);
+        print_binario(buffer[i - 1], vetor, index);
+        index += 4;
     }
 
     free(buffer);
