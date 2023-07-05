@@ -5,23 +5,22 @@
 
 int main()
 {
-    int vet[20];
-    struct Complex * symbol;
-
-    for(int i=0; i < 20; i = i + 4){
-        vet[i]= 0;
-        vet[i+1]= 1;
-        vet[i+2]= 2;
-        vet[i+3]= 3;
+    const char* arquivo = "arquivo.txt";
+    long tamanho;
+    int* vetor = tx_data_read(arquivo, &tamanho);
+    if (vetor == NULL) {
+        printf("Erro ao ler o arquivo.\n");
+        return 1;
     }
 
-    symbol = tx_qam_mapper(vet, 20);
-
-    for(int i=0; i < 20; i++){
-        printf("%.2f + %.2fj\t", symbol[i].real, symbol[i].img);
-        
-        printf("\n\n");
+    printf("Valores retornados:\n");
+    for (long i = 0; i < tamanho; i++) {
+        printf("%d ", vetor[i]);
     }
+
+    printf("\n");
+
+    free(vetor);
 
     return 0;
 }
