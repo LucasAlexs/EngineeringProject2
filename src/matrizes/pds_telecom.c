@@ -8,14 +8,24 @@ int main()
     const char* arquivo = "src/matrizes/arquivo.txt";
     long tamanho;
     int* vetor = tx_data_read(arquivo, &tamanho);
+    struct Complex *vetor_c;
     if (vetor == NULL) {
         printf("Erro ao ler o arquivo.\n");
         return 1;
     }
 
+
     printf("Valores retornados:\n");
     for (long i = 0; i < tamanho; i++) {
         printf("%d ", vetor[i]);
+    }
+
+
+    vetor_c = tx_qam_mapper(vetor, tamanho);
+
+    printf("Valores retornados:\n");
+    for (long i = 0; i < tamanho; i++) {
+        printf("%.2f\t %.2f\n ", vetor_c[i].real, vetor_c[i].img);
     }
 
     printf("\n");
