@@ -4,7 +4,6 @@
 
 int main()
 {
-    tx_data_read();
-    
+    teste_todos();
     return 0;
 }
