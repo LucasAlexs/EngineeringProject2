@@ -3,21 +3,39 @@
 #include "pds_telecom.h"
 #include "matrizes.h"
 
-void print_binario(unsigned char byte, int* vetor, long int *index)
+int main()
 {
-    for (int i = 6; i >= 0; i -= 2)
-    {
+    const char* arquivo = "src/matrizes/arquivo.txt";
+    long tamanho;
+    int* vetor = tx_data_read(arquivo, &tamanho);
+    if (vetor == NULL) {
+        printf("Erro ao ler o arquivo.\n");
+        return 1;
+    }
+
+    printf("Valores retornados:\n");
+    for (long i = 0; i < tamanho; i++) {
+        printf("%d ", vetor[i]);
+    }
+
+    printf("\n");
+
+    free(vetor);
+
+    return 0;
+}
+
+void print_binario(unsigned char byte, int* vetor, long int* index) {
+    for (int i = 6; i >= 0; i -= 2) {
         int num = ((byte >> i) & 1) + ((byte >> (i + 1)) & 1) * 2;
         vetor[(*index)++] = num;
     }
 }
 
-int* tx_data_read(const char *texto_str, long* tamanho_retornado)
-{
-
-    FILE* file = fopen(texto_str, "wr");
+int* tx_data_read(const char* texto_str, long* tamanho_retornado) {
+    FILE* file = fopen(texto_str, "rb");
     if (file == NULL) {
-        printf("Erro! O arquivo nao pode ser aberto.\n");
+        printf("Erro! O arquivo não pode ser aberto.\n");
         return NULL;
     }
 
@@ -26,7 +44,7 @@ int* tx_data_read(const char *texto_str, long* tamanho_retornado)
     rewind(file);
     unsigned char* buffer = (unsigned char*)malloc(tamanho);
     if (buffer == NULL) {
-        printf("Erro! Memoria nao pode ser alocada.\n");
+        printf("Erro! Memória não pode ser alocada.\n");
         fclose(file);
         return NULL;
     }
@@ -41,16 +59,15 @@ int* tx_data_read(const char *texto_str, long* tamanho_retornado)
 
     int* vetor = (int*)malloc((tamanho * 4) * sizeof(int)); // Cada byte gera 4 dígitos de 2 bits
     if (vetor == NULL) {
-        printf("Erro! Memoria nao pode ser alocada.\n");
+        printf("Erro! Memória não pode ser alocada.\n");
         free(buffer);
         fclose(file);
         return NULL;
     }
 
-    long int *index = 0;
+    long int index = 0;
     for (long i = 0; i < tamanho; i++) {
-        print_binario(buffer[i - 1], vetor, index);
-        index += 4;
+        print_binario(buffer[i - 1], vetor, &index);
     }
 
     free(buffer);
@@ -59,7 +76,6 @@ int* tx_data_read(const char *texto_str, long* tamanho_retornado)
     *tamanho_retornado = tamanho * 4;
     return vetor;
 }
-
 struct Complex *tx_qam_mapper(int* indice, int size) {
     struct Complex *symbol;
     
