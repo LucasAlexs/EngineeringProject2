@@ -5,40 +5,40 @@
 
 int main()
 {
-    const char* arquivo = "src/matrizes/arquivo.txt";
+    const char* arquivo = "arquivo.txt";
     long tamanho;
-    int* vetor = tx_data_read(arquivo, &tamanho);
+    int* vet_int = tx_data_read(arquivo, &tamanho);
     struct Complex *vetor_c;
-    if (vetor == NULL) {
+    if (vet_int == NULL) {
         printf("Erro ao ler o arquivo.\n");
         return 1;
     }
 
 
-    printf("Valores retornados:\n");
+    printf("\nValores retornados:\n");
     for (long i = 0; i < tamanho; i++) {
-        printf("%d ", vetor[i]);
+        printf("%d", vet_int[i]);
     }
 
 
-    vetor_c = tx_qam_mapper(vetor, tamanho);
+    vetor_c = tx_qam_mapper(vet_int, tamanho);
 
-    printf("Valores retornados:\n");
+    printf("\nComplexos retornados:\n");
     for (long i = 0; i < tamanho; i++) {
         printf("%.2f\t %.2f\n ", vetor_c[i].real, vetor_c[i].img);
     }
 
     printf("\n");
 
-    free(vetor);
+    free(vet_int);
 
     return 0;
 }
 
-void print_binario(unsigned char byte, int* vetor, long int* index) {
+void print_binario(unsigned char byte, int* vet_int, long int* index) {
     for (int i = 6; i >= 0; i -= 2) {
         int num = ((byte >> i) & 1) + ((byte >> (i + 1)) & 1) * 2;
-        vetor[(*index)++] = num;
+        vet_int[(*index)++] = num;
     }
 }
 
@@ -67,8 +67,8 @@ int* tx_data_read(const char* texto_str, long* tamanho_retornado) {
         return NULL;
     }
 
-    int* vetor = (int*)malloc((tamanho * 4) * sizeof(int)); // Cada byte gera 4 dígitos de 2 bits
-    if (vetor == NULL) {
+    int* vet_int = (int*)malloc((tamanho * 4) * sizeof(int)); // Cada byte gera 4 dígitos de 2 bits
+    if (vet_int == NULL) {
         printf("Erro! Memória não pode ser alocada.\n");
         free(buffer);
         fclose(file);
@@ -77,20 +77,20 @@ int* tx_data_read(const char* texto_str, long* tamanho_retornado) {
 
     long int index = 0;
     for (long i = 0; i < tamanho; i++) {
-        print_binario(buffer[i - 1], vetor, &index);
+        print_binario(buffer[i - 1], vet_int, &index);
     }
 
     free(buffer);
     fclose(file);
 
     *tamanho_retornado = tamanho * 4;
-    return vetor;
+    return vet_int;
 }
 struct Complex *tx_qam_mapper(int* indice, int size) {
     struct Complex *symbol;
-    
+
     symbol = (struct Complex*)malloc(size * sizeof( struct Complex ));
-    
+
     for (int i = 0; i < size; i++) {
         if (indice[i] == 0){
             symbol[i].real = -1;
@@ -109,7 +109,7 @@ struct Complex *tx_qam_mapper(int* indice, int size) {
             symbol[i].img = -1;
         }
     }
-    
+
     return symbol;
 }
 
@@ -133,6 +133,9 @@ int *rx_qam_demapper(struct Complex * symbol,int size){
             indice[i] = 3;
         }
     }
-    
+
     return indice;
+}
+
+rx_data_write(int* entrada_vet_int){
 }
