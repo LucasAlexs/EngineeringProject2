@@ -3,6 +3,8 @@
 #include "pds_telecom.h"
 #include "matrizes.h"
 
+
+
 int main()
 {
     const char* arquivo = "arquivo.txt";
@@ -62,7 +64,38 @@ int* tx_data_read(const char* texto_str, long* tamanho_retornado) {
     size_t leitura_bytes = fread(buffer, 1, tamanho, file);
     if (leitura_bytes != tamanho) {
         printf("Erro ao ler o arquivo.\n");
-        free(buffer);
+        free(buffer);struct Complex *tx_layer_mapper(int a, struct Complex *s, struct Complex **s_mapped, int Nstreams) {
+    // Aloca memória para s_mapped
+    *s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
+    if (*s_mapped == NULL) {
+        printf("Erro ao alocar memória para s_mapped\n");
+    }
+
+    // Loop para percorrer os símbolos de entrada
+    for (int i = 0; i < Nstreams; i++) {
+        // Mapeia o símbolo QAM para a stream correspondente
+        (*s_mapped)[i].real = s[a * Nstreams + i].real;
+        (*s_mapped)[i].img = s[a * Nstreams + i].img;
+    }
+    return *s_mapped;
+}
+
+struct Complex *rx_layer_demapper(int a, struct Complex **_smapped, int Nstreams) {
+    // Aloca memória para s_mapped
+    struct Complex *s;
+    s = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
+    if (*s_mapped == NULL) {
+        printf("Erro ao alocar memória para s_mapped\n");
+    }
+
+    // Loop para percorrer os símbolos de entrada
+    for (int i = 0; i < Nstreams; i++) {
+        // Mapeia o símbolo QAM para a stream correspondente
+        s[a * Nstreams + i].real = (*s_mapped)[i].real;
+        s[a * Nstreams + i].img = (*s_mapped)[i].img ;
+    }
+    return *s;
+}
         fclose(file);
         return NULL;
     }
@@ -138,4 +171,37 @@ int *rx_qam_demapper(struct Complex * symbol,int size){
 }
 
 rx_data_write(int* entrada_vet_int){
+}
+
+struct Complex *tx_layer_mapper(int a, struct Complex *s, struct Complex **s_mapped, int Nstreams) {
+    // Aloca memória para s_mapped
+    *s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
+    if (*s_mapped == NULL) {
+        printf("Erro ao alocar memória para s_mapped\n");
+    }
+
+    // Loop para percorrer os símbolos de entrada
+    for (int i = 0; i < Nstreams; i++) {
+        // Mapeia o símbolo QAM para a stream correspondente
+        (*s_mapped)[i].real = s[a * Nstreams + i].real;
+        (*s_mapped)[i].img = s[a * Nstreams + i].img;
+    }
+    return *s_mapped;
+}
+
+struct Complex *rx_layer_demapper(int a, struct Complex **_smapped, int Nstreams) {
+    // Aloca memória para s_mapped
+    struct Complex *s;
+    s = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
+    if (*s_mapped == NULL) {
+        printf("Erro ao alocar memória para s_mapped\n");
+    }
+
+    // Loop para percorrer os símbolos de entrada
+    for (int i = 0; i < Nstreams; i++) {
+        // Mapeia o símbolo QAM para a stream correspondente
+        s[a * Nstreams + i].real = (*s_mapped)[i].real;
+        s[a * Nstreams + i].img = (*s_mapped)[i].img ;
+    }
+    return *s;
 }
