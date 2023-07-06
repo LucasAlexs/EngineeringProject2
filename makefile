@@ -6,7 +6,7 @@ aplicacao:
 	gcc -c src/main.c -o build/main.o
 	gcc -c src/matrizes/pds_telecom.c -o build/pds_telecom.o
 	gcc -c src/matrizes/matrizes.c -o build/matrizes.o
-	gcc build/main.o build/pds_telecom.o build/matrizes.o -lgsl -lgslcblas -lm -o build/pds_telecom.out
+	gcc build/pds_telecom.o -lgsl -lgslcblas -lm -o build/pds_telecom.out
 
 teste:
 	./build/pds_telecom.out
@@ -23,5 +23,4 @@ clean:
 	rm -rf doc/html/*.dot
 .PHONY:	doc
 doc:
-	doxygen
 	doxygen
