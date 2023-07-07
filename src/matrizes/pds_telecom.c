@@ -7,7 +7,7 @@
 
 int main()
 {
-    const char* arquivo = "arquivo.txt";
+    const char* arquivo = "src/matrizes/arquivo.txt";
     long tamanho;
     int* vet_int = tx_data_read(arquivo, &tamanho);
     struct Complex *vetor_c;
