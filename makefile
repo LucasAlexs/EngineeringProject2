@@ -6,7 +6,8 @@ aplicacao:
 	gcc -c src/main.c -o build/main.o
 	gcc -c src/matrizes/pds_telecom.c -o build/pds_telecom.o
 	gcc -c src/matrizes/matrizes.c -o build/matrizes.o
-	gcc build/pds_telecom.o -lgsl -lgslcblas -lm -o build/pds_telecom.out
+	gcc build/matrizes.o build/pds_telecom.o -lgsl -lgslcblas -lm -o build/pds_telecom.out
+
 
 teste:
 	./build/pds_telecom.out
