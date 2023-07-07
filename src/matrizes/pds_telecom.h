@@ -10,4 +10,3 @@ struct Complex * tx_qam_mapper(int* indice, int size);
 int * rx_qam_demapper(struct Complex * symbol,int size);
 
 #endif
-
