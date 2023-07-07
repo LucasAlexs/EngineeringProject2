@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "pds_telecom.h"
 #include "matrizes.h"
-
+#include <time.h>
 
 
 int main()
@@ -204,4 +204,26 @@ struct Complex *rx_layer_demapper(int a, struct Complex **s_mapped, int Nstreams
         s[a * Nstreams + i].img = (*s_mapped)[i].img ;
     }
     return s;
+}
+struct Complex **channel_gen(int Nr, int Nt) {
+    //Lembrete: não esquecer de desalocar mémoria, um dos três falou pra tomar cuidado.
+    // Aloca memória para a matriz de ponteiros
+    struct Complex **H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+
+    // Aloca memória para as linhas da matriz
+    for (int i = 0; i < Nr; i++) {
+        H[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+    }
+
+    // Gera os valores aleatórios para a matriz H
+    srand(time(NULL));  // Inicializa a semente do gerador de números aleatórios
+
+    for (int i = 0; i < Nr; i++) {
+        for (int j = 0; j < Nt; j++) {
+            H[i][j].real = ((double)rand() / RAND_MAX) * 2 - 1;  // Números aleatórios entre -1 e 1
+            H[i][j].img = ((double)rand() / RAND_MAX) * 2 - 1;
+        }
+    }
+     
+    return H;
 }
