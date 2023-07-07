@@ -51,6 +51,15 @@ int main()
         }
         printf("\n");
     }
+
+    for (int i = 0; i < Nr; i++){
+            free(H[i]);
+            free(J[i]);
+        }
+        free(H);
+        free(J);
+
+    
         return 0;
     }
 
