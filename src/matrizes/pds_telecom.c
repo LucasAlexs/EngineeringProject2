@@ -1,41 +1,58 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "pds_telecom.h"
 #include "matrizes.h"
+#include "pds_telecom.h"
 #include <time.h>
-
 
 int main()
 {
-    const char* arquivo = "src/matrizes/arquivo.txt";
-    long tamanho;
-    int* vet_int = tx_data_read(arquivo, &tamanho);
-    struct Complex *vetor_c;
-    if (vet_int == NULL) {
-        printf("Erro ao ler o arquivo.\n");
-        return 1;
+    int Nr = 4,Nt = 4;
+    struct Complex **H,**J,**K;
+    double rmax=0,rmin=0;
+
+    H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+    J = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+
+    for (int i = 0; i < Nr; i++)
+    {
+        H[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+        J[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
     }
 
+    H = channel_gen(Nr,H, Nt);
 
-    printf("\nValores retornados:\n");
-    for (long i = 0; i < tamanho; i++) {
-        printf("%d", vet_int[i]);
+    printf("matriz H:\n");
+
+    for(int i=0; i<Nr; i++){
+        for(int j=0; j<Nt; j++){
+            printf("%.2f + %.2fj\t", H[i][j].real, H[i][j].img);
+        }
+        printf("\n");
     }
 
+    J = channel_gen(Nr,J, Nt);
 
-    vetor_c = tx_qam_mapper(vet_int, tamanho);
+    printf("matriz H:\n");
 
-    printf("\nComplexos retornados:\n");
-    for (long i = 0; i < tamanho; i++) {
-        printf("%.2f\t %.2f\n ", vetor_c[i].real, vetor_c[i].img);
+    for(int i=0; i<Nr; i++){
+        for(int j=0; j<Nt; j++){
+            printf("%.2f + %.2fj\t", H[i][j].real, H[i][j].img);
+        }
+        printf("\n");
     }
 
-    printf("\n");
+    K = channel_transmission(rmax,rmin,J,H,Nr,Nt);
 
-    free(vet_int);
+    printf("matriz K:\n");
 
-    return 0;
-}
+    for(int i=0; i<Nr; i++){
+        for(int j=0; j<Nt; j++){
+            printf("%.2f + %.2fj\t", K[i][j].real, K[i][j].img);
+        }
+        printf("\n");
+    }
+        return 0;
+    }
 
 void print_binario(unsigned char byte, int* vet_int, long int* index) {
     for (int i = 6; i >= 0; i -= 2) {
@@ -64,43 +81,12 @@ int* tx_data_read(const char* texto_str, long* tamanho_retornado) {
     size_t leitura_bytes = fread(buffer, 1, tamanho, file);
     if (leitura_bytes != tamanho) {
         printf("Erro ao ler o arquivo.\n");
-        free(buffer);struct Complex *tx_layer_mapper(int a, struct Complex *s, struct Complex **s_mapped, int Nstreams) {
-    // Aloca memória para s_mapped
-    *s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
-    if (*s_mapped == NULL) {
-        printf("Erro ao alocar memória para s_mapped\n");
-    }
-
-    // Loop para percorrer os símbolos de entrada
-    for (int i = 0; i < Nstreams; i++) {
-        // Mapeia o símbolo QAM para a stream correspondente
-        (*s_mapped)[i].real = s[a * Nstreams + i].real;
-        (*s_mapped)[i].img = s[a * Nstreams + i].img;
-    }
-    return *s_mapped;
-}
-
-struct Complex *rx_layer_demapper(int a, struct Complex **s_mapped, int Nstreams) {
-    // Aloca memória para s_mapped
-    struct Complex *s;
-    s = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
-    if (*s_mapped == NULL) {
-        printf("Erro ao alocar memória para s_mapped\n");
-    }
-
-    // Loop para percorrer os símbolos de entrada
-    for (int i = 0; i < Nstreams; i++) {
-        // Mapeia o símbolo QAM para a stream correspondente
-        s[a * Nstreams + i].real = (*s_mapped)[i].real;
-        s[a * Nstreams + i].img = (*s_mapped)[i].img ;
-    }
-    return s;
-}
+        free(buffer);
         fclose(file);
         return NULL;
     }
 
-    int* vet_int = (int*)malloc((tamanho * 4) * sizeof(int)); // Cada byte gera 4 dígitos de 2 bits
+    int* vet_int = (int*)malloc((tamanho * 4) * sizeof(int));
     if (vet_int == NULL) {
         printf("Erro! Memória não pode ser alocada.\n");
         free(buffer);
@@ -170,50 +156,29 @@ int *rx_qam_demapper(struct Complex * symbol,int size){
     return indice;
 }
 
-//rx_data_write(int* entrada_vet_int){
-//}
-
-struct Complex *tx_layer_mapper(int a, struct Complex *s, struct Complex **s_mapped, int Nstreams) {
-    // Aloca memória para s_mapped
-    *s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
-    if (*s_mapped == NULL) {
-        printf("Erro ao alocar memória para s_mapped\n");
-    }
+struct Complex *rx_layer_demapper(int a, struct Complex *s_mapped,struct Complex *s, int Nstreams){
 
     // Loop para percorrer os símbolos de entrada
     for (int i = 0; i < Nstreams; i++) {
         // Mapeia o símbolo QAM para a stream correspondente
-        (*s_mapped)[i].real = s[a * Nstreams + i].real;
-        (*s_mapped)[i].img = s[a * Nstreams + i].img;
-    }
-    return *s_mapped;
-}
-
-struct Complex *rx_layer_demapper(int a, struct Complex **s_mapped, int Nstreams) {
-    // Aloca memória para s_mapped
-    struct Complex *s;
-    s = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
-    if (*s_mapped == NULL) {
-        printf("Erro ao alocar memória para s_mapped\n");
-    }
-
-    // Loop para percorrer os símbolos de entrada
-    for (int i = 0; i < Nstreams; i++) {
-        // Mapeia o símbolo QAM para a stream correspondente
-        s[a * Nstreams + i].real = (*s_mapped)[i].real;
-        s[a * Nstreams + i].img = (*s_mapped)[i].img ;
+        s[(a * Nstreams) + i].real = s_mapped[i].real;
+        s[(a * Nstreams) + i].img = s_mapped[i].img ;
     }
     return s;
 }
-struct Complex **channel_gen(int Nr, int Nt) {
-    //Lembrete: não esquecer de desalocar mémoria, um dos três falou pra tomar cuidado.
-    // Aloca memória para a matriz de ponteiros
-    struct Complex **H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
 
-    // Aloca memória para as linhas da matriz
-    for (int i = 0; i < Nr; i++) {
-        H[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+struct Complex *tx_layer_mapper(int a, struct Complex *s,struct Complex *s_mapped, int Nstreams) {
+
+    // Loop para percorrer os símbolos de entrada
+    for (int i = 0; i < Nstreams; i++) {
+        // Mapeia o símbolo QAM para a stream correspondente
+        s_mapped[i].real = s[a * Nstreams + i].real;
+        s_mapped[i].img = s[a * Nstreams + i].img;
     }
+    return s_mapped;
+}
+
+struct Complex **channel_gen(int Nr,struct Complex **H, int Nt) {
 
     // Gera os valores aleatórios para a matriz H
     srand(time(NULL));  // Inicializa a semente do gerador de números aleatórios
@@ -224,7 +189,7 @@ struct Complex **channel_gen(int Nr, int Nt) {
             H[i][j].img = ((double)rand() / RAND_MAX) * 2 - 1;
         }
     }
-     
+
     return H;
 }
 
