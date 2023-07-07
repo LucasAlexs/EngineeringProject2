@@ -227,3 +227,19 @@ struct Complex **channel_gen(int Nr, int Nt) {
      
     return H;
 }
+
+struct Complex **channel_transmission(double rmax, double rmin, struct Complex **mtx_cod, struct Complex **H, int Nr, int Nt){
+    struct Complex **rmtx;
+
+    rmtx = produto_matricial( mtx_cod, H, Nr, Nt);
+
+    for (int i = 0; i < Nr; i++) {
+        for (int j = 0; j < Nt; j++) {
+            rmtx[i][j].real = rmtx[i][j].real + ((double)rand() / RAND_MAX) * (rmax - rmin) + rmin;
+            rmtx[i][j].img = rmtx[i][j].img + ((double)rand() / RAND_MAX) * (rmax - rmin) + rmin;
+        }
+    }
+
+    return rmtx;
+
+}
