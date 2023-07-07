@@ -80,7 +80,7 @@ int* tx_data_read(const char* texto_str, long* tamanho_retornado) {
     return *s_mapped;
 }
 
-struct Complex *rx_layer_demapper(int a, struct Complex **_smapped, int Nstreams) {
+struct Complex *rx_layer_demapper(int a, struct Complex **s_mapped, int Nstreams) {
     // Aloca memória para s_mapped
     struct Complex *s;
     s = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
@@ -94,7 +94,7 @@ struct Complex *rx_layer_demapper(int a, struct Complex **_smapped, int Nstreams
         s[a * Nstreams + i].real = (*s_mapped)[i].real;
         s[a * Nstreams + i].img = (*s_mapped)[i].img ;
     }
-    return *s;
+    return s;
 }
         fclose(file);
         return NULL;
@@ -170,8 +170,8 @@ int *rx_qam_demapper(struct Complex * symbol,int size){
     return indice;
 }
 
-rx_data_write(int* entrada_vet_int){
-}
+//rx_data_write(int* entrada_vet_int){
+//}
 
 struct Complex *tx_layer_mapper(int a, struct Complex *s, struct Complex **s_mapped, int Nstreams) {
     // Aloca memória para s_mapped
@@ -189,7 +189,7 @@ struct Complex *tx_layer_mapper(int a, struct Complex *s, struct Complex **s_map
     return *s_mapped;
 }
 
-struct Complex *rx_layer_demapper(int a, struct Complex **_smapped, int Nstreams) {
+struct Complex *rx_layer_demapper(int a, struct Complex **s_mapped, int Nstreams) {
     // Aloca memória para s_mapped
     struct Complex *s;
     s = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
@@ -203,5 +203,5 @@ struct Complex *rx_layer_demapper(int a, struct Complex **_smapped, int Nstreams
         s[a * Nstreams + i].real = (*s_mapped)[i].real;
         s[a * Nstreams + i].img = (*s_mapped)[i].img ;
     }
-    return *s;
+    return s;
 }
