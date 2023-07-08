@@ -4,13 +4,12 @@
 #include "matrizes.h"
 #include "pds_telecom.h"
 
-
 int main()
 {
    //tx_data_read();
 
-   int Nr = 4, Nt = 4 ,size = 8, Nstreams;
-   struct Complex *s,*s_mapped, *o;
+   int Nr = 4, Nt = 4 ,size = 32, Nstreams,Nqam = 4;
+    struct Complex *s,*s_mapped, *o;
 
    if (Nr < Nt) {
         Nstreams = Nr;
@@ -27,19 +26,23 @@ int main()
         return 1;
     }
 
-    for (int i = 0; i < size; i= i +3) {
-        vector[i] = 0;
-        vector[i + 1] = 1;
-        vector[i + 2] = 2;
-        vector[i + 3] = 3;
+    for (int i = 0; i < size; i++) {
+        vector[i] = i % Nqam;
     }
 
+    printf("Elementos do vetor Etapa1:\n");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", vector[i]);
+    }
+    printf("\n");
+
+
     s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
-    o = (struct Complex *)malloc(size * sizeof(struct Complex ));
+    o = (struct Complex *)malloc(Nt * sizeof(struct Complex ));
 
     s = tx_qam_mapper(vector,size);
 
-    for (int a = 0; a < size; a = (a + Nstreams))
+    for (int a = 0; a < size; a+= Nstreams)
     {
         s_mapped = tx_layer_mapper(a,s,s_mapped,Nstreams);
 
@@ -48,11 +51,14 @@ int main()
 
     vector = rx_qam_demapper(o,size);
 
-    printf("Elementos do vetor:\n");
+    printf("Elementos do vetor Etapa2:\n");
     for (int i = 0; i < size; i++) {
         printf("%d ", vector[i]);
     }
     printf("\n");
+
+    free(vector);
+    free(s_mapped);
 
     return 0;
 }
@@ -126,7 +132,7 @@ struct Complex *tx_qam_mapper(int* indice, int size) {
             symbol[i].real = 1;
             symbol[i].img = 1;
         }
-        else if (indice[i] == 2){
+        else if (indice[i] == 3){
             symbol[i].real = 1;
             symbol[i].img = -1;
         }
@@ -164,8 +170,8 @@ struct Complex *rx_layer_demapper(int a, struct Complex *s_mapped,struct Complex
     // Loop para percorrer os símbolos de entrada
     for (int i = 0; i < Nstreams; i++) {
         // Mapeia o símbolo QAM para a stream correspondente
-        s[(a * Nstreams) + i].real = s_mapped[i].real;
-        s[(a * Nstreams) + i].img = s_mapped[i].img ;
+        s[(a) + i ].real = s_mapped[i].real;
+        s[(a) + i ].img = s_mapped[i].img ;
     }
     return s;
 }
@@ -175,8 +181,8 @@ struct Complex *tx_layer_mapper(int a, struct Complex *s,struct Complex *s_mappe
     // Loop para percorrer os símbolos de entrada
     for (int i = 0; i < Nstreams; i++) {
         // Mapeia o símbolo QAM para a stream correspondente
-        s_mapped[i].real = s[a * Nstreams + i].real;
-        s_mapped[i].img = s[a * Nstreams + i].img;
+        s_mapped[i].real = s[(a ) + i ].real;
+        s_mapped[i].img = s[(a) + i ].img;
     }
     return s_mapped;
 }
