@@ -8,8 +8,8 @@
 void teste_produto_matricial();
 
 /**### Função print_name()
-* Imprime os nomes dos membros de uma equipe na tela. 
-* Não há parâmetros de entrada e saída. 
+* Imprime os nomes dos membros de uma equipe na tela.
+* Não há parâmetros de entrada e saída.
 * Essa função não retorna nenhum valor.
 
  * */
@@ -61,8 +61,8 @@ struct Complex **soma(struct Complex **matrix1,struct Complex **matrix2, int lin
 }
 
 /** função teste_soma()
-* - Verifica a operação de soma de matrizes complexas. 
-* - Não possui parâmetros de entrada e não retorna nenhum valor. 
+* - Verifica a operação de soma de matrizes complexas.
+* - Não possui parâmetros de entrada e não retorna nenhum valor.
 * - Caso as dimensões das matrizes não coincidam, é exibida uma mensagem de erro indicando que a operação de soma não pode ser iniciada.
 */
 
@@ -207,8 +207,8 @@ struct Complex **subtracao(struct Complex **matrix1,struct Complex **matrix2, in
 }
 
 /** Função teste_subtracao()
-* - Inicia um teste da operação de subtração de matrizes complexas. 
-* - Não possui parâmetros de entrada e não retorna nenhum valor. 
+* - Inicia um teste da operação de subtração de matrizes complexas.
+* - Não possui parâmetros de entrada e não retorna nenhum valor.
 * - Caso as dimensões das matrizes não coincidam, é exibida uma mensagem de erro indicando que a operação de subtração não pode ser iniciada.
 */
 
@@ -317,7 +317,7 @@ void teste_subtracao()
     }
 }
 
-/** Função transposta 
+/** Função transposta
 * - Executa transposição da matriz de entrada matrix1 e armazena o resultado em uma nova matriz rmtx.
  * @param[in] Complex **matrix1, linhas, colunas
  * @param[out] rmtx
@@ -346,8 +346,8 @@ struct Complex **transposta(struct Complex **matrix1, int linhas, int colunas)
 }
 
 /** Função teste_transposta()
-* - Realiza um teste da operação transposta de matrizes complexas. 
-* - Não possui parâmetros de entrada e não retorna nenhum valor. 
+* - Realiza um teste da operação transposta de matrizes complexas.
+* - Não possui parâmetros de entrada e não retorna nenhum valor.
 */
 
 void teste_transposta()
@@ -455,8 +455,8 @@ struct Complex **conjugado(struct Complex **matrix1, int linhas, int colunas)
 }
 
 /** Função teste_conjugada()
-* - Realiza um teste da operação conjugada de matrizes complexas. 
-* - Não possui parâmetros de entrada e não retorna nenhum valor. 
+* - Realiza um teste da operação conjugada de matrizes complexas.
+* - Não possui parâmetros de entrada e não retorna nenhum valor.
 */
 
 
@@ -568,8 +568,8 @@ struct Complex **hermitiano(struct Complex **matrix1, int linhas, int colunas)
 }
 
 /** Função teste_hermitiano()
-* - Realiza um teste da operação hermitiano de matrizes complexas. 
-* - Não possui parâmetros de entrada e não retorna nenhum valor. 
+* - Realiza um teste da operação hermitiano de matrizes complexas.
+* - Não possui parâmetros de entrada e não retorna nenhum valor.
 */
 
 
@@ -656,7 +656,7 @@ void teste_hermitiano()
 */
 
 struct Complex produto_escalar(struct Complex *vet1,struct Complex *vet2, int neu, int nev){
-struct Complex rmtx, aux;
+    struct Complex rmtx, aux;
 
     rmtx.real= 0;
     rmtx.img= 0;
@@ -679,8 +679,8 @@ struct Complex rmtx, aux;
 }
 
 /** Função teste_produto_escalar()
-* - Realiza um teste da operação produto escalar de matrizes complexas. 
-* - Não possui parâmetros de entrada e não retorna nenhum valor. 
+* - Realiza um teste da operação produto escalar de matrizes complexas.
+* - Não possui parâmetros de entrada e não retorna nenhum valor.
 */
 
 
@@ -816,31 +816,31 @@ struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **mat
 
     if(linhas==colunas){
 
-    // somar as matrizes
-    for (int i = 0; i < linhas; i++) {
-    for (int j = 0; j < colunas; j++) {
-        sum.real = 0;
-        sum.img = 0;
-        for (int k = 0; k < colunas; k++) {
-            aux = multiplicacao(matrix1[i][k], matrix2[k][j]);
-            sum = somanc(sum, aux);
+        // somar as matrizes
+        for (int i = 0; i < linhas; i++) {
+            for (int j = 0; j < colunas; j++) {
+                sum.real = 0;
+                sum.img = 0;
+                for (int k = 0; k < colunas; k++) {
+                    aux = multiplicacao(matrix1[i][k], matrix2[k][j]);
+                    sum = somanc(sum, aux);
+                }
+            rmtx[i][j] = sum;
+            }
         }
-        rmtx[i][j] = sum;
-    }
-    }
     }
     else{
 
             printf("ERRO!\n\n");
             printf("A operacao de Produto Matricial nao pode ser iniciada porque o numero de linhas e colunas nao coincidem.\n\n");
 
-        }
+    }
     return rmtx;
 }
 
 /** Função teste_produto_matricial()
-* - Verifica a validade da operação produto matricial de matrizes complexas. 
-* - Não possui parâmetros de entrada e não retorna nenhum valor. 
+* - Verifica a validade da operação produto matricial de matrizes complexas.
+* - Não possui parâmetros de entrada e não retorna nenhum valor.
 */
 
 void teste_produto_matricial()
@@ -951,7 +951,7 @@ void teste_produto_matricial()
 
 /**### Função calc_svd()
 * Executa o cálculo da decomposição SVD (Singular Value Decomposition) da parte real de uma matriz complexa.
-* Onde: 
+* Onde:
 * - A função recebe como parâmetros uma matriz complexa de tamanho linhas X colunas.
 * - Exibe um aviso caso a matriz em questão possua uma parte imaginária diferente de 0.
 * - Verifica se o número de colunas é menor ou igual ao número de linhas.
@@ -967,7 +967,7 @@ void teste_produto_matricial()
 
 */
 
-void calc_svd(struct Complex **matrix, int linhas, int colunas)
+void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex **S, struct Complex **V, int linhas, int colunas)
 {
 
     int i, j;
@@ -987,8 +987,8 @@ void calc_svd(struct Complex **matrix, int linhas, int colunas)
 
     // Alocação das matrizes e vetores necessários para o cálculo SVD
     gsl_matrix * A = gsl_matrix_alloc(linhas, colunas);
-    gsl_matrix * V = gsl_matrix_alloc(colunas, colunas);
-    gsl_vector * S = gsl_vector_alloc(colunas);
+    gsl_matrix * W = gsl_matrix_alloc(colunas, colunas);
+    gsl_vector * Q = gsl_vector_alloc(colunas);
     gsl_vector * work = gsl_vector_alloc(colunas);
 
     printf("Matriz de entrada %d X %d:\n\n",linhas, colunas);
@@ -1005,33 +1005,36 @@ void calc_svd(struct Complex **matrix, int linhas, int colunas)
     // Cálculo do SVD
     if(colunas<=linhas)
     {
-        gsl_linalg_SV_decomp(A, V, S, work);
+        gsl_linalg_SV_decomp(A, W, Q, work);
+
         printf("Matriz U:\n\n");
-    for (i = 0; i < linhas; i++)
-    {
-        for (j = 0; j < colunas; j++)
+        for (i = 0; i < linhas; i++)
         {
-            printf("%.2f\t", gsl_matrix_get(A, i, j));
+            for (j = 0; j < colunas; j++)
+            {
+                printf("%.2f\t", gsl_matrix_get(A, i, j));
+                U[i][j].real = gsl_matrix_get(A, i, j);
+            }
+            printf("\n\n");
+        }
+
+        printf("Vetor S:\n\n");
+        for (i = 0; i < colunas; i++)
+        {
+            printf("%.2f\n", gsl_vector_get(Q, i));
         }
         printf("\n\n");
-    }
 
-    printf("Vetor S:\n\n");
-    for (i = 0; i < colunas; i++)
-    {
-        printf("%.2f\n", gsl_vector_get(S, i));
-    }
-    printf("\n\n");
-
-    printf("Matriz V:\n\n");
-    for (i = 0; i < colunas; i++)
-    {
-        for (j = 0; j < colunas; j++)
+        printf("Matriz V:\n\n");
+        for (i = 0; i < colunas; i++)
         {
-            printf("%.2f\t", gsl_matrix_get(V, i, j));
+            for (j = 0; j < colunas; j++)
+            {
+                printf("%.2f\t", gsl_matrix_get(W, i, j));
+                V[i][j].real = gsl_matrix_get(W, i, j);
+            }
+            printf("\n\n");
         }
-        printf("\n\n");
-    }
     }
     else
     {
@@ -1040,15 +1043,18 @@ void calc_svd(struct Complex **matrix, int linhas, int colunas)
 }
 
 /** função teste_calc_svd()
-* - Testa a função calc_svd() para a parte real de matrizes complexas. 
-* - Não possui parâmetros de entrada e não retorna nenhum valor. 
+* - Testa a função calc_svd() para a parte real de matrizes complexas.
+* - Não possui parâmetros de entrada e não retorna nenhum valor.
 */
 
 void teste_calc_svd()
 {
     int i, j;
-    srand(time(NULL)); 
+    srand(time(NULL));
     struct Complex **matrix1, **matrix2, **matrix3, **matrix4;
+    struct Complex **U1, **U2, **U3, **U4;
+    struct Complex **S1, **S2, **S3, **S4;
+    struct Complex **V1, **V2, **V3, **V4;
 
     printf("==========Teste da Operacao de SVD==========\n\n");
 
@@ -1057,7 +1063,7 @@ void teste_calc_svd()
     int l3 = 6, c3 = 5;
     int l4 = 5, c4 = 6;
 
-    // Alocação de memória para as matrizes
+    // Alocação de memória para as matrizes de entrada
     matrix1 = (struct Complex **)malloc(l1 * sizeof(struct Complex *));
     matrix2 = (struct Complex **)malloc(l2 * sizeof(struct Complex *));
     matrix3 = (struct Complex **)malloc(l3 * sizeof(struct Complex *));
@@ -1078,6 +1084,76 @@ void teste_calc_svd()
     {
         matrix4[i] = (struct Complex *)malloc(c4 * sizeof(struct Complex));
     }
+
+     // Alocação de memória para as matrizes de saida U
+
+    U1 = (struct Complex **)malloc(l1 * sizeof(struct Complex *));
+    U2 = (struct Complex **)malloc(l2 * sizeof(struct Complex *));
+    U3 = (struct Complex **)malloc(l3 * sizeof(struct Complex *));
+    U4 = (struct Complex **)malloc(l4 * sizeof(struct Complex *));
+    for (int i = 0; i < l1; i++)
+    {
+        U1[i] = (struct Complex *)malloc(c1 * sizeof(struct Complex));
+    }
+    for (int i = 0; i < l2; i++)
+    {
+        U2[i] = (struct Complex *)malloc(c2 * sizeof(struct Complex));
+    }
+    for (int i = 0; i < l3; i++)
+    {
+        U3[i] = (struct Complex *)malloc(c3 * sizeof(struct Complex));
+    }
+    for (int i = 0; i < l4; i++)
+    {
+        U4[i] = (struct Complex *)malloc(c4 * sizeof(struct Complex));
+    }
+
+     // Alocação de memória para os vetores de saida S
+
+    S1 = (struct Complex **)malloc(1 * sizeof(struct Complex *));
+    S2 = (struct Complex **)malloc(1 * sizeof(struct Complex *));
+    S3 = (struct Complex **)malloc(1 * sizeof(struct Complex *));
+    S4 = (struct Complex **)malloc(1 * sizeof(struct Complex *));
+    for (int i = 0; i < 1; i++)
+    {
+        S1[i] = (struct Complex *)malloc(c1 * sizeof(struct Complex));
+    }
+    for (int i = 0; i < 1; i++)
+    {
+        S2[i] = (struct Complex *)malloc(c2 * sizeof(struct Complex));
+    }
+    for (int i = 0; i < 1; i++)
+    {
+        S3[i] = (struct Complex *)malloc(c3 * sizeof(struct Complex));
+    }
+    for (int i = 0; i < 1; i++)
+    {
+        S4[i] = (struct Complex *)malloc(c4 * sizeof(struct Complex));
+    }
+
+    // Alocação de memória para os vetores de saida S
+
+    V1 = (struct Complex **)malloc(c1 * sizeof(struct Complex *));
+    V2 = (struct Complex **)malloc(c2 * sizeof(struct Complex *));
+    V3 = (struct Complex **)malloc(c3 * sizeof(struct Complex *));
+    V4 = (struct Complex **)malloc(c4 * sizeof(struct Complex *));
+    for (int i = 0; i < c1; i++)
+    {
+        V1[i] = (struct Complex *)malloc(c1 * sizeof(struct Complex));
+    }
+    for (int i = 0; i < c2; i++)
+    {
+        V2[i] = (struct Complex *)malloc(c2 * sizeof(struct Complex));
+    }
+    for (int i = 0; i < c3; i++)
+    {
+        V3[i] = (struct Complex *)malloc(c3 * sizeof(struct Complex));
+    }
+    for (int i = 0; i < c4; i++)
+    {
+        V4[i] = (struct Complex *)malloc(c4 * sizeof(struct Complex));
+    }
+
 
     // Inicialização das matrizes
     for (i = 0; i < l1; i++)
@@ -1116,11 +1192,64 @@ void teste_calc_svd()
         }
     }
 
-    calc_svd(matrix1, l1, c1); // Chamada da função calc_svd para matriz 3 X 2
-    calc_svd(matrix2, l2, c2); // Chamada da função calc_svd para matriz 4 X 4
-    calc_svd(matrix3, l3, c3); // Chamada da função calc_svd para matriz 6 X 5
-    calc_svd(matrix4, l4, c4); // Chamada da função calc_svd para matriz 5 X 6
- // desalocar a memória alocada
+    calc_svd(matrix1, U1, S1, V1, l1, c1); // Chamada da função calc_svd para matriz 3 X 2
+    calc_svd(matrix2, U2, S2, V2,  l2, c2); // Chamada da função calc_svd para matriz 4 X 4
+    calc_svd(matrix3, U3, S3, V3,  l3, c3); // Chamada da função calc_svd para matriz 6 X 5
+    calc_svd(matrix4, U4, S4, V4,  l4, c4); // Chamada da função calc_svd para matriz 5 X 6
+
+     // desalocar a memória alocada
+     // desalocar a memória alocada
+    for (int i = 0; i < l1; i++) {
+        free(U1[i]);
+
+    }
+    free(U1);
+    free(S1[0]);
+    free(S1);
+
+    for (int i = 0; i < l2; i++) {
+        free(U2[i]);
+    }
+    free(U2);
+    free(S2[0]);
+    free(S2);
+
+    for (int i = 0; i < l3; i++) {
+        free(U3[i]);
+
+    }
+    free(U3);
+    free(S3[0]);
+    free(S3);
+
+    for (int i = 0; i < l4; i++) {
+        free(U4[i]);
+
+    }
+    free(U4);
+    free(S4[0]);
+    free(S4);
+
+    for (int i = 0; i < c1; i++) {
+        free(V1[i]);
+    }
+    free(V1);
+
+    for (int i = 0; i < c2; i++) {
+        free(V2[i]);
+    }
+    free(V2);
+
+    for (int i = 0; i < c3; i++) {
+        free(V3[i]);
+    }
+    free(V3);
+
+    for (int i = 0; i < c4; i++) {
+        free(V4[i]);
+    }
+    free(V4);
+
     for(int i=0; i<l1; i++){
         free(matrix1[i]);
     }
