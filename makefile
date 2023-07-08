@@ -1,5 +1,5 @@
-all:	doc matrizes aplicacao teste
-matrizes:
+all:	doc aplicacao teste
+build:
 	mkdir -m 777 build
 aplicacao:
 	mkdir -m 777 -p build
@@ -7,7 +7,6 @@ aplicacao:
 	gcc -c src/matrizes/pds_telecom.c -o build/pds_telecom.o
 	gcc -c src/matrizes/matrizes.c -o build/matrizes.o
 	gcc build/matrizes.o build/pds_telecom.o -lgsl -lgslcblas -lm -o build/pds_telecom.out
-
 
 teste:
 	./build/pds_telecom.out

@@ -63,10 +63,10 @@ int main()
     return 0;
 }
 
-void print_binario(unsigned char byte, int* vet_int, long int* index) {
+void print_binario(unsigned char byte, int* vetor, long int* index) {
     for (int i = 6; i >= 0; i -= 2) {
         int num = ((byte >> i) & 1) + ((byte >> (i + 1)) & 1) * 2;
-        vet_int[(*index)++] = num;
+        vetor[(*index)++] = num;
     }
 }
 
@@ -86,8 +86,8 @@ int* tx_data_read(const char* texto_str, long* tamanho_retornado) {
         fclose(file);
         return NULL;
     }
-
-    size_t leitura_bytes = fread(buffer, 1, tamanho, file);
+  
+      size_t leitura_bytes = fread(buffer, 1, tamanho, file);
     if (leitura_bytes != tamanho) {
         printf("Erro ao ler o arquivo.\n");
         free(buffer);
@@ -95,8 +95,8 @@ int* tx_data_read(const char* texto_str, long* tamanho_retornado) {
         return NULL;
     }
 
-    int* vet_int = (int*)malloc((tamanho * 4) * sizeof(int));
-    if (vet_int == NULL) {
+    int* vetor = (int*)malloc((tamanho * 4) * sizeof(int)); // Cada byte gera 4 dígitos de 2 bits
+    if (vetor == NULL) {
         printf("Erro! Memória não pode ser alocada.\n");
         free(buffer);
         fclose(file);
@@ -105,15 +105,18 @@ int* tx_data_read(const char* texto_str, long* tamanho_retornado) {
 
     long int index = 0;
     for (long i = 0; i < tamanho; i++) {
-        print_binario(buffer[i - 1], vet_int, &index);
+        print_binario(buffer[i - 1], vetor, &index);
     }
 
     free(buffer);
     fclose(file);
 
     *tamanho_retornado = tamanho * 4;
-    return vet_int;
+    return vetor;
 }
+
+
+
 struct Complex *tx_qam_mapper(int* indice, int size) {
     struct Complex *symbol;
 
@@ -216,4 +219,4 @@ struct Complex **channel_transmission(double rmax, double rmin, struct Complex *
 
     return rmtx;
 
-}
+
