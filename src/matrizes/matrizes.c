@@ -1022,6 +1022,7 @@ void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex **S, st
         for (i = 0; i < colunas; i++)
         {
             printf("%.2f\n", gsl_vector_get(Q, i));
+            V[1][i].real = gsl_vector_get(Q, i);
         }
         printf("\n\n");
 

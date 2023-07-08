@@ -8,8 +8,11 @@ int main()
 {
    //tx_data_read();
 
-   int Nr = 4, Nt = 4 ,size = 32, Nstreams,Nqam = 4;
+   int Nr = 4, Nt = 4 ,size = 4, Nstreams,Nqam = 4;
+    double rmax, rmin;
     struct Complex *s,*s_mapped, *o;
+    struct Complex **H,**U,**S,**V;
+    struct Complex **F, **Y, **W,*Z;
 
    if (Nr < Nt) {
         Nstreams = Nr;
@@ -42,12 +45,46 @@ int main()
 
     s = tx_qam_mapper(vector,size);
 
+    H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+    for (int i = 0; i < Nt; i++){
+        H[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+    }
+
+    H = channel_gen(Nr,H,Nt);
+
+    U = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+    for (int i = 0; i < Nr; i++){
+        U[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+    }
+
+    S = (struct Complex **)malloc(1 * sizeof(struct Complex *));
+    for (int i = 0; i < 1; i++){
+        S[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+    }
+
+    V = (struct Complex **)malloc(Nt * sizeof(struct Complex *));
+    for (int i = 0; i < Nt; i++)
+    {
+        V[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+    }
+
+    calc_svd(H,U,S,V,Nr,Nt);
+
     for (int a = 0; a < size; a+= Nstreams)
     {
         s_mapped = tx_layer_mapper(a,s,s_mapped,Nstreams);
 
-        o = rx_layer_demapper(a,s_mapped,o,Nstreams);
+        F = tx_precoder(s_mapped,V,Nr, Nt, Nstreams);
+
+        Y = channel_transmission(rmax,rmin,F,H,Nr, Nstreams);
+
+        W = rx_combiner(Y,U,Nr,Nt,Nstreams);
+
+        Z = rx_feq(S,W,Nr,Nt,Nstreams);
+
+        o = rx_layer_demapper(a,s_mapped,Z,Nstreams);
     }
+
 
     vector = rx_qam_demapper(o,size);
 
@@ -86,7 +123,7 @@ int* tx_data_read(const char* texto_str, long* tamanho_retornado) {
         fclose(file);
         return NULL;
     }
-  
+
       size_t leitura_bytes = fread(buffer, 1, tamanho, file);
     if (leitura_bytes != tamanho) {
         printf("Erro ao ler o arquivo.\n");
@@ -205,13 +242,13 @@ struct Complex **channel_gen(int Nr,struct Complex **H, int Nt) {
     return H;
 }
 
-struct Complex **channel_transmission(double rmax, double rmin, struct Complex **mtx_cod, struct Complex **H, int Nr, int Nt){
+struct Complex **channel_transmission(double rmax, double rmin, struct Complex **mtx_cod, struct Complex **H, int Nt, int Nstreams){
     struct Complex **rmtx;
 
-    rmtx = produto_matricial( mtx_cod, H, Nr, Nt);
+    rmtx = produto_matricial( mtx_cod, H, Nt, Nstreams);
 
-    for (int i = 0; i < Nr; i++) {
-        for (int j = 0; j < Nt; j++) {
+    for (int i = 0; i < Nt; i++) {
+        for (int j = 0; j < Nstreams; j++) {
             rmtx[i][j].real = rmtx[i][j].real + ((double)rand() / RAND_MAX) * (rmax - rmin) + rmin;
             rmtx[i][j].img = rmtx[i][j].img + ((double)rand() / RAND_MAX) * (rmax - rmin) + rmin;
         }
@@ -219,4 +256,45 @@ struct Complex **channel_transmission(double rmax, double rmin, struct Complex *
 
     return rmtx;
 
+}
 
+struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int Nt, int Nstreams){
+    struct Complex **x_aux,**rmtx;
+
+    x_aux = (struct Complex **)malloc(1 * sizeof(struct Complex *));
+    for(int i=0; i<Nstreams; i++){
+        x_aux[i] = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
+    }
+
+     for(int i=0; i<Nstreams; i++){
+        x_aux[0][i].real = x[i].real;
+        x_aux[0][i].img = x[i].img;
+    }
+
+    rmtx = produto_matricial(x_aux,V,Nstreams,Nt);
+
+    return rmtx;
+}
+
+struct Complex **rx_combiner(struct Complex **Y,struct Complex **U, int Nr, int Nt, int Nstreams){
+    struct Complex **rmtx;
+
+    rmtx = produto_matricial(Y,U,Nstreams,Nr);
+    return rmtx;
+}
+
+struct Complex *rx_feq(struct Complex **S,struct Complex **W,int Nr, int Nt, int Nstreams){
+    struct Complex *rmtx;
+    struct Complex **aux;
+
+    rmtx = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
+
+    aux = produto_matricial(S,W,1,Nstreams);
+
+    for(int i=0; i<Nstreams; i++){
+        rmtx[i].real = aux[0][i].real;
+        rmtx[i].img = aux[0][i].img;
+    }
+
+    return rmtx;
+}

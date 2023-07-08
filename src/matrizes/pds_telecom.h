@@ -15,6 +15,12 @@ struct Complex *tx_layer_mapper(int a, struct Complex *s,struct Complex *s_mappe
 
 struct Complex **channel_gen(int Nr,struct Complex **H, int Nt);
 
-struct Complex **channel_transmission(double rmax, double rmin, struct Complex **mtx_cod, struct Complex **H, int Nr, int Nt);
+struct Complex **channel_transmission(double rmax, double rmin, struct Complex **mtx_cod, struct Complex **H, int Nr, int Nstreams);
+
+struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int Nt, int Nstreams);
+
+struct Complex **rx_combiner(struct Complex **Y,struct Complex **U, int Nr, int Nt, int Nstreams);
+
+struct Complex *rx_feq(struct Complex **S,struct Complex **W,int Nr, int Nt, int Nstreams);
 
 #endif
