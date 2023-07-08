@@ -219,4 +219,4 @@ struct Complex **channel_transmission(double rmax, double rmin, struct Complex *
 
     return rmtx;
 
-
+}
