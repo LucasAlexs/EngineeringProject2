@@ -4,28 +4,13 @@
 #include "pds_telecom.h"
 #include <time.h>
 
-int main(){
-
-    FILE *arquivo_txt;
-    arquivo_txt = fopen("src/matrizes/arquivo.txt", "rb");
-
-    fseek(arquivo_txt, 0, SEEK_END);
-    long int q_bits = ftell(arquivo_txt);
-    fseek(arquivo_txt, 0, SEEK_SET);
-
-    int *vetor = tx_data_read(arquivo_txt, q_bits);
-    fclose(arquivo_txt);
-    return 0;
-    //Quantidade de bits
-
-    //rx_data_write(vetor, q_bits, "arquivo.bin");
-
-
-
+int main()
+{
 //    int Nr = 4,Nt = 4;
 //    struct Complex **H,**J,**K;
 //    double rmax=0,rmin=0;
-//    srand(time(NULL));
+//    srand(time(NULL));  // Inicializa a semente do gerador de números aleatórios
+//
 //
 //    H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
 //    J = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
@@ -76,41 +61,86 @@ int main(){
 //        free(H);
 //        free(J);
 //
-//
-//        return 0;
+        long tamanho, q_bits;
+        char* arquivo_txt = "src/matrizes/arquivo.txt";
+        char* arquivo_bin = "src/matrizes/arquivo.bin";
+
+        int* vetor_txt = tx_data_read(arquivo_txt, &tamanho);
+        rx_data_write(vetor_txt, &q_bits);
+        int* vetor_bin = tx_data_read(arquivo_bin, &q_bits);
+        printf("\n______Vetor gerado pelo arquivo.txt______\n\n");
+        for(int i = 0; i < tamanho; i++)
+        {
+            printf("%d",vetor_txt[i]);
+        }
+        printf("\n_________________________________________\n");
+
+        printf("\n______Vetor gerado pelo arquivo.bin______\n\n");
+        for(int i = 0; i < q_bits; i++)
+        {
+            printf("%d",vetor_bin[i]);
+        }
+        printf("\n_________________________________________\n");
+
+        return 0;
+    }
+
+void print_binario(unsigned char byte, int* vet_int, long int* index) {
+    for (int i = 6; i >= 0; i -= 2) {
+        int num = ((byte >> i) & 1) + ((byte >> (i + 1)) & 1) * 2;
+        vet_int[(*index)++] = num;
+    }
 }
 
-int * tx_data_read(FILE *texto_str, long int tamanho_retornado) { //long*
+int* tx_data_read(const char* texto_str, long int* tamanho_retornado) {
+    FILE* file = fopen(texto_str, "rb");
+    if (file == NULL) {
+        printf("Erro! O arquivo não pode ser aberto.\n");
+        return NULL;
+    }
 
-    // Alocacão de memoria
-    int *vet_int = (int *)malloc(tamanho_retornado * 4 * sizeof(int));
+    fseek(file, 0, SEEK_END);
+    long int tamanho = ftell(file);
+    rewind(file);
+    unsigned char* buffer = (unsigned char*)malloc(tamanho);
+    if (buffer == NULL) {
+        printf("Erro! Memória não pode ser alocada.\n");
+        fclose(file);
+        return NULL;
+    }
+
+    size_t leitura_bytes = fread(buffer, 1, tamanho, file);
+    if (leitura_bytes != tamanho) {
+        printf("Erro ao ler o arquivo.\n");
+        free(buffer);
+        fclose(file);
+        return NULL;
+    }
+
+    int* vet_int = (int*)malloc((tamanho * 4) * sizeof(int));
     if (vet_int == NULL) {
-        printf("Erro na alocação de memória\n");
-        fclose(texto_str);
-        return (int *)1;
+        printf("Erro! Memória não pode ser alocada.\n");
+        free(buffer);
+        fclose(file);
+        return NULL;
     }
 
-    // Converte os bytes em inteiros de 2 bits
-    for (int i = 0; i < tamanho_retornado; i++)
-        {
-            char byte;
-            fread(&byte, sizeof(byte), 1, texto_str);
-
-            for (int j = 0; j <= 7; j=j+2)
-            {
-                int bit = (byte >> j) & 3;
-                vet_int[(i*4) + (j/2)]= bit;
-            }
-
+    long int index = 0;
+    for (long i = 0; i < tamanho; i++) {
+        print_binario(buffer[i-1], vet_int, &index);
     }
 
+    free(buffer);
+    fclose(file);
+
+    *tamanho_retornado = (tamanho) * 4;
     return vet_int;
 }
 
-void rx_data_write(int* entrada_vet_int, long int q_bits) {
+void rx_data_write(int* entrada_vet_int, long int *q_bits_retornado) {
 
     FILE* binario = fopen("src/matrizes/arquivo.bin", "wb");
-
+    long int q_bits = sizeof(entrada_vet_int);
     if (binario == NULL) {
         printf("Erro! Arquivo.bin nao pode ser aberto!\n");
         return;
@@ -131,6 +161,7 @@ void rx_data_write(int* entrada_vet_int, long int q_bits) {
     }
 
     fclose(binario);
+    *q_bits_retornado = (q_bits) * 4;
 }
 
 struct Complex *tx_qam_mapper(int* indice, int size) {
@@ -208,8 +239,6 @@ struct Complex *tx_layer_mapper(int a, struct Complex *s,struct Complex *s_mappe
 
 struct Complex **channel_gen(int Nr,struct Complex **H, int Nt) {
 
-    // Gera os valores aleatórios para a matriz H
-      // Inicializa a semente do gerador de números aleatórios
 
     for (int i = 0; i < Nr; i++) {
         for (int j = 0; j < Nt; j++) {
