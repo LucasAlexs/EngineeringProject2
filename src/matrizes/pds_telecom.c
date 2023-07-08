@@ -1,67 +1,61 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "matrizes.h"
 #include "pds_telecom.h"
-#include <time.h>
+
 
 int main()
 {
-    int Nr = 4,Nt = 4;
-    struct Complex **H,**J,**K;
-    double rmax=0,rmin=0;
+   //tx_data_read();
 
-    H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
-    J = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+   int Nr = 4, Nt = 4 ,size = 8, Nstreams;
+   struct Complex *s,*s_mapped, *o;
 
-    for (int i = 0; i < Nr; i++)
+   if (Nr < Nt) {
+        Nstreams = Nr;
+    } else {
+        Nstreams = Nt;
+    }
+
+    int *vector;
+
+    vector = (int *)malloc(size * sizeof(int));
+
+    if (vector == NULL) {
+        printf("Erro ao alocar memória para o vetor.\n");
+        return 1;
+    }
+
+    for (int i = 0; i < size; i= i +3) {
+        vector[i] = 0;
+        vector[i + 1] = 1;
+        vector[i + 2] = 2;
+        vector[i + 3] = 3;
+    }
+
+    s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
+    o = (struct Complex *)malloc(size * sizeof(struct Complex ));
+
+    s = tx_qam_mapper(vector,size);
+
+    for (int a = 0; a < size; a = (a + Nstreams))
     {
-        H[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
-        J[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+        s_mapped = tx_layer_mapper(a,s,s_mapped,Nstreams);
+
+        o = rx_layer_demapper(a,s_mapped,o,Nstreams);
     }
 
-    H = channel_gen(Nr,H, Nt);
+    vector = rx_qam_demapper(o,size);
 
-    printf("matriz H:\n");
-
-    for(int i=0; i<Nr; i++){
-        for(int j=0; j<Nt; j++){
-            printf("%.2f + %.2fj\t", H[i][j].real, H[i][j].img);
-        }
-        printf("\n");
+    printf("Elementos do vetor:\n");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", vector[i]);
     }
+    printf("\n");
 
-    J = channel_gen(Nr,J, Nt);
-
-    printf("matriz H:\n");
-
-    for(int i=0; i<Nr; i++){
-        for(int j=0; j<Nt; j++){
-            printf("%.2f + %.2fj\t", H[i][j].real, H[i][j].img);
-        }
-        printf("\n");
-    }
-
-    K = channel_transmission(rmax,rmin,J,H,Nr,Nt);
-
-    printf("matriz K:\n");
-
-    for(int i=0; i<Nr; i++){
-        for(int j=0; j<Nt; j++){
-            printf("%.2f + %.2fj\t", K[i][j].real, K[i][j].img);
-        }
-        printf("\n");
-    }
-
-    for (int i = 0; i < Nr; i++){
-            free(H[i]);
-            free(J[i]);
-        }
-        free(H);
-        free(J);
-
-    
-        return 0;
-    }
+    return 0;
+}
 
 void print_binario(unsigned char byte, int* vet_int, long int* index) {
     for (int i = 6; i >= 0; i -= 2) {

@@ -2,7 +2,7 @@
 #define MATRIZES_H
 
 /**### typedef struct Complex
-* - É uma estrutura de dados que permite representar números complexos em linguagem c 
+* - É uma estrutura de dados que permite representar números complexos em linguagem c
 */
 typedef struct Complex
 {
@@ -36,5 +36,9 @@ struct Complex produto_escalar(struct Complex *vet1,struct Complex *vet2, int ne
 void teste_produto_escalar();
 
 struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **matrix2, int linhas, int colunas);
+
+void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex **S, struct Complex **V, int linhas, int colunas);
+
+void teste_calc_svd();
 
 #endif
