@@ -4,63 +4,78 @@
 #include "pds_telecom.h"
 #include <time.h>
 
-int main()
+
+void main()
 {
-//    int Nr = 4,Nt = 4;
-//    struct Complex **H,**J,**K;
-//    double rmax=0,rmin=0;
-//    srand(time(NULL));  // Inicializa a semente do gerador de números aleatórios
-//
-//
-//    H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
-//    J = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
-//
-//    for (int i = 0; i < Nr; i++)
-//    {
-//        H[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
-//        J[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
-//    }
-//
-//    H = channel_gen(Nr,H, Nt);
-//
-//    printf("matriz H:\n");
-//
-//    for(int i=0; i<Nr; i++){
-//        for(int j=0; j<Nt; j++){
-//            printf("%.2f + %.2fj\t", H[i][j].real, H[i][j].img);
-//        }
-//        printf("\n");
-//    }
-//
-//    J = channel_gen(Nr,J, Nt);
-//
-//    printf("matriz J:\n");
-//
-//    for(int i=0; i<Nr; i++){
-//        for(int j=0; j<Nt; j++){
-//            printf("%.2f + %.2fj\t", J[i][j].real, J[i][j].img);
-//        }
-//        printf("\n");
-//    }
-//
-//    K = channel_transmission(rmax,rmin,J,H,Nr,Nt);
-//
-//    printf("matriz K:\n");
-//
-//    for(int i=0; i<Nr; i++){
-//        for(int j=0; j<Nt; j++){
-//            printf("%.2f + %.2fj\t", K[i][j].real, K[i][j].img);
-//        }
-//        printf("\n");
-//    }
-//
-//    for (int i = 0; i < Nr; i++){
-//            free(H[i]);
-//            free(J[i]);
-//        }
-//        free(H);
-//        free(J);
-//
+    teste_svd();
+    teste_rw();
+}
+void teste_svd()
+{
+    int Nr = 4,Nt = 4;
+    struct Complex **H,**J,**K;
+    double rmax=0,rmin=0;
+    srand(time(NULL));  // Inicializa a semente do gerador de números aleatórios
+
+
+    H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+    J = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+
+    for (int i = 0; i < Nr; i++)
+    {
+        H[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+        J[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+    }
+
+    H = channel_gen(Nr,H, Nt);
+
+    printf("-----------------------------SVD------------------------------\n");
+
+    printf("matriz H:\n");
+
+    for(int i=0; i<Nr; i++){
+        for(int j=0; j<Nt; j++){
+            printf("%.2f + %.2fj\t", H[i][j].real, H[i][j].img);
+        }
+        printf("\n");
+    }
+
+    J = channel_gen(Nr,J, Nt);
+
+    printf("matriz J:\n");
+
+    for(int i=0; i<Nr; i++){
+        for(int j=0; j<Nt; j++){
+            printf("%.2f + %.2fj\t", J[i][j].real, J[i][j].img);
+        }
+        printf("\n");
+    }
+
+    K = channel_transmission(rmax,rmin,J,H,Nr,Nt);
+
+    printf("matriz K:\n");
+
+    for(int i=0; i<Nr; i++){
+        for(int j=0; j<Nt; j++){
+            printf("%.2f + %.2fj\t", K[i][j].real, K[i][j].img);
+        }
+        printf("\n");
+    }
+
+    for (int i = 0; i < Nr; i++){
+            free(H[i]);
+            free(J[i]);
+        }
+        free(H);
+        free(J);
+    printf("---------------------------------------------------------------\n");
+
+}
+
+void teste_rw()
+{
+         printf("\n\n-----------------------------LEITURA E ESCRITA----------------------------\n\n");
+
         long int tamanho1, tamanho2;
 
         FILE* arquivo_txt = fopen("src/matrizes/arquivo.txt", "rb");
@@ -75,30 +90,32 @@ int main()
         fseek(arquivo_bin,0,SEEK_SET);
 
         int *vetor_txt = tx_data_read(arquivo_txt, q_bytes_txt);
+
         rx_data_write(vetor_txt, q_bytes_txt);
-        int *vetor_bin = tx_data_read(arquivo_bin, q_bytes_txt);
 
-        tamanho1 = 16;
-        tamanho2 = 16;
+        int *vetor_bin = tx_data_read(arquivo_bin, q_bytes_bin);
 
+        long int n = (sizeof(arquivo_txt)) / 4;
 
-        printf("\n______Vetor gerado pelo arquivo.txt______\n\n");
+        tamanho1 = (q_bytes_txt*2*n) - 4;
+        tamanho2 = (q_bytes_txt*2*n) - 4;
+
+        printf("\n\n[Vetor gerado pela leitura de arquivo.txt]\n\n");
 
         for(int i = 0; i < tamanho1; i++)
         {
             printf("%d",vetor_txt[i]);
         }
-        printf("\n_________________________________________\n");
 
-        printf("\n______Vetor gerado pelo arquivo.bin______\n\n");
+        printf("\n\n[Vetor gerado pela leitura de arquivo.bin]\n\n");
         for(int i = 0; i < tamanho2; i++)
         {
             printf("%d",vetor_bin[i]);
         }
-        printf("\n_________________________________________\n");
-
-        return 0;
-    }
+        fclose(arquivo_txt);
+        fclose(arquivo_bin);
+        printf("\n\n--------------------------------------------------------------------------\n\n");
+}
 
 int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
 
