@@ -991,14 +991,12 @@ void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex **S, st
             for (j = 0; j < colunas; j++)
             {
                 if(i==j){
-                    V[i][i].real = gsl_vector_get(Q, i);
-                    V[i][i].img = 0;
+                    S[i][i].real = gsl_vector_get(Q, i);
+                    S[i][i].img = 0;
                 }
                 else{
-                    V[i][i].real = 0;
-                    V[i][i].img = 0;
-
-
+                    S[i][j].real = 0;
+                    S[i][j].img = 0;
                     }
                 }
         }

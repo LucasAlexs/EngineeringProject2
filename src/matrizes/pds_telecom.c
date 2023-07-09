@@ -8,7 +8,7 @@ int main()
 {
    //tx_data_read();
 
-   int Nr = 4, Nt = 4 ,size = 4, Nstreams,Nqam = 4;
+   int Nr = 4, Nt = 4 ,size = 8, Nstreams,Nqam = 4;
     double rmax, rmin;
     struct Complex *s,*s_mapped, *o;
     struct Complex **H,**U,**S,**V;
@@ -59,7 +59,7 @@ int main()
     }
 
     S = (struct Complex **)malloc(Nt * sizeof(struct Complex *));
-    for (int i = 0; i < 1; i++){
+    for (int i = 0; i < Nt; i++){
         S[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
     }
 
@@ -70,6 +70,7 @@ int main()
     }
 
     calc_svd(H,U,S,V,Nr,Nt);
+    printf("hope\n");
 
     for (int a = 0; a < size; a+= Nstreams)
     {
@@ -78,25 +79,15 @@ int main()
             s_mapped[i].img = 1.0;
         }
         s_mapped = tx_layer_mapper(a,s,s_mapped,Nstreams);
-
         F = tx_precoder(s_mapped,V,Nr, Nt, Nstreams);
-
         Y = channel_transmission(rmax,rmin,F,H,Nr,Nt, Nstreams);
-
         free(F);
-
         W = rx_combiner(Y,U,Nr,Nt,Nstreams);
-
         free(Y);
-
         Z = rx_feq(S,W,Nr,Nt,Nstreams);
-
         free(W);
-
         o = rx_layer_demapper(a,s_mapped,Z,Nstreams);
-
         free(Z);
-
     }
 
     vector = rx_qam_demapper(o,size);
