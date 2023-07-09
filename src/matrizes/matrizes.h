@@ -41,4 +41,6 @@ void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex **S, st
 
 void teste_calc_svd();
 
+void teste_todos();
+
 #endif
