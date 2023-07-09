@@ -1,6 +1,12 @@
-all:	doc aplicacao teste
-build:
-	mkdir -m 777 build
+iall:	doc aplicacao teste
+rot:	
+	if [ -d "build" ]; then \
+    	echo rm -rf build/* ;\
+	fi
+	make aplicacao
+	make teste
+    
+
 aplicacao:
 	mkdir -m 777 -p build
 	gcc -c src/main.c -o build/main.o

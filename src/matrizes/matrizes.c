@@ -329,14 +329,14 @@ struct Complex **transposta(struct Complex **matrix1, int linhas, int colunas)
    int i,j;
 
     // aloca memória para a matriz de saída
-    rmtx = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
+    rmtx = (struct Complex **)malloc(colunas * sizeof(struct Complex *));
     for(int i=0; i<linhas; i++){
-        rmtx[i] = (struct Complex *)malloc(colunas * sizeof(struct Complex));
+        rmtx[i] = (struct Complex *)malloc(linhas * sizeof(struct Complex));
     }
 
-   for(i = 0; i < linhas; i++)
+   for(i = 0; i < colunas; i++)
    {
-       for(j = 0; j < colunas; j++)
+       for(j = 0; j < linhas; j++)
        {
            rmtx[i][j].real = matrix1[j][i].real;
            rmtx[i][j].img = matrix1[j][i].img;
@@ -548,20 +548,20 @@ struct Complex **hermitiano(struct Complex **matrix1, int linhas, int colunas)
    int i,j;
 
     // aloca memória para a matriz de saída
-    rmtx = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
-    aux = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
+    rmtx = (struct Complex **)malloc(colunas * sizeof(struct Complex *));
+    aux = (struct Complex **)malloc(colunas * sizeof(struct Complex *));
 
     for(int i=0; i<linhas; i++){
-         rmtx[i] = (struct Complex *)malloc(colunas * sizeof(struct Complex));
-         aux[i] = (struct Complex *)malloc(colunas * sizeof(struct Complex));
+         rmtx[i] = (struct Complex *)malloc(linhas * sizeof(struct Complex));
+         aux[i] = (struct Complex *)malloc(linhas * sizeof(struct Complex));
     }
 
-   for(i = 0; i < linhas; i++)
+   for(i = 0; i < colunas; i++)
    {
-       for(j = 0; j < colunas; j++)
-       {
-           aux=transposta(matrix1,linhas,colunas);
-           rmtx=conjugado(aux,linhas,colunas);
+       for(j = 0; j < linhas; j++)
+       {    
+           aux=conjugado(matrix1,linhas,colunas);
+           rmtx=transposta(aux,linhas,colunas);
        }
    }
    return rmtx;
@@ -940,7 +940,7 @@ void teste_produto_matricial()
 
 */
 
-void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex **S, struct Complex **V, int linhas, int colunas)
+void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex *S, struct Complex **V, int linhas, int colunas)
 {
 
     int i, j;
@@ -982,7 +982,7 @@ void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex **S, st
             for (j = 0; j < colunas; j++)
             {
                 U[i][j].real = gsl_matrix_get(A, i, j);
-                U[i][j].real = 0;
+                U[i][j].img = 0;
             }
         }
 
@@ -990,15 +990,11 @@ void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex **S, st
         {
             for (j = 0; j < colunas; j++)
             {
-                if(i==j){
-                    S[i][i].real = gsl_vector_get(Q, i);
-                    S[i][i].img = 0;
-                }
-                else{
-                    S[i][j].real = 0;
-                    S[i][j].img = 0;
-                    }
-                }
+              
+                S[i].real = gsl_vector_get(Q, i);
+                S[i].img = 0;
+              
+            }    
         }
 
         for (i = 0; i < colunas; i++)
@@ -1027,7 +1023,7 @@ void teste_calc_svd()
     srand(time(NULL));
     struct Complex **matrix1, **matrix2, **matrix3, **matrix4;
     struct Complex **U1, **U2, **U3, **U4;
-    struct Complex **S1, **S2, **S3, **S4;
+    struct Complex *S1, *S2, *S3, *S4;
     struct Complex **V1, **V2, **V3, **V4;
 
     printf("==========Teste da Operacao de SVD==========\n\n");
@@ -1084,26 +1080,10 @@ void teste_calc_svd()
 
      // Alocação de memória para os vetores de saida S
 
-    S1 = (struct Complex **)malloc(c1 * sizeof(struct Complex *));
-    S2 = (struct Complex **)malloc(c2 * sizeof(struct Complex *));
-    S3 = (struct Complex **)malloc(c3 * sizeof(struct Complex *));
-    S4 = (struct Complex **)malloc(c4 * sizeof(struct Complex *));
-    for (int i = 0; i < 1; i++)
-    {
-        S1[i] = (struct Complex *)malloc(c1 * sizeof(struct Complex));
-    }
-    for (int i = 0; i < 1; i++)
-    {
-        S2[i] = (struct Complex *)malloc(c2 * sizeof(struct Complex));
-    }
-    for (int i = 0; i < 1; i++)
-    {
-        S3[i] = (struct Complex *)malloc(c3 * sizeof(struct Complex));
-    }
-    for (int i = 0; i < 1; i++)
-    {
-        S4[i] = (struct Complex *)malloc(c4 * sizeof(struct Complex));
-    }
+    S1 = (struct Complex *)malloc(c1 * sizeof(struct Complex ));
+    S2 = (struct Complex *)malloc(c2 * sizeof(struct Complex ));
+    S3 = (struct Complex *)malloc(c3 * sizeof(struct Complex ));
+    S4 = (struct Complex *)malloc(c4 * sizeof(struct Complex ));
 
     // Alocação de memória para os vetores de saida S
 
@@ -1178,14 +1158,12 @@ void teste_calc_svd()
 
     }
     free(U1);
-    free(S1[0]);
     free(S1);
 
     for (int i = 0; i < l2; i++) {
         free(U2[i]);
     }
     free(U2);
-    free(S2[0]);
     free(S2);
 
     for (int i = 0; i < l3; i++) {
@@ -1193,7 +1171,6 @@ void teste_calc_svd()
 
     }
     free(U3);
-    free(S3[0]);
     free(S3);
 
     for (int i = 0; i < l4; i++) {
@@ -1201,7 +1178,6 @@ void teste_calc_svd()
 
     }
     free(U4);
-    free(S4[0]);
     free(S4);
 
     for (int i = 0; i < c1; i++) {

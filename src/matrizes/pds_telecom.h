@@ -9,7 +9,7 @@ struct Complex * tx_qam_mapper(int* indice, int size);
 
 int * rx_qam_demapper(struct Complex * symbol,int size);
 
-struct Complex *rx_layer_demapper(int a, struct Complex *s_mapped,struct Complex *s, int Nstreams);
+struct Complex *rx_layer_demapper(int a, struct Complex **s_mapped,struct Complex *s, int Nstreams);
 
 struct Complex *tx_layer_mapper(int a, struct Complex *s,struct Complex *s_mapped, int Nstreams);
 
@@ -21,6 +21,6 @@ struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int N
 
 struct Complex **rx_combiner(struct Complex **Y,struct Complex **U, int Nr, int Nt, int Nstreams);
 
-struct Complex *rx_feq(struct Complex **S,struct Complex **W,int Nr, int Nt, int Nstreams);
+struct Complex *rx_feq(int a,struct Complex *S,struct Complex *W,int Nr, int Nt, int Nstreams);
 
 #endif

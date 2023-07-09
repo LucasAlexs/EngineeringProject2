@@ -8,10 +8,10 @@ int main()
 {
    //tx_data_read();
 
-   int Nr = 4, Nt = 4 ,size = 8, Nstreams,Nqam = 4;
+   int Nr = 4, Nt = 4 ,size = 4, Nstreams,Nqam = 4;
     double rmax, rmin;
     struct Complex *s,*s_mapped, *o;
-    struct Complex **H,**U,**S,**V;
+    struct Complex **H,**U,*S,**V;
     struct Complex **F, **Y, **W,*Z;
 
    if (Nr < Nt) {
@@ -58,10 +58,7 @@ int main()
         U[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
     }
 
-    S = (struct Complex **)malloc(Nt * sizeof(struct Complex *));
-    for (int i = 0; i < Nt; i++){
-        S[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
-    }
+    S = (struct Complex *)malloc(Nt * sizeof(struct Complex));
 
     V = (struct Complex **)malloc(Nt * sizeof(struct Complex *));
     for (int i = 0; i < Nt; i++)
@@ -84,9 +81,9 @@ int main()
         free(F);
         W = rx_combiner(Y,U,Nr,Nt,Nstreams);
         free(Y);
-        Z = rx_feq(S,W,Nr,Nt,Nstreams);
+        Z = rx_layer_demapper(a,W,s_mapped,Nstreams);
         free(W);
-        o = rx_layer_demapper(a,s_mapped,Z,Nstreams);
+        o = rx_feq(a,S,Z,Nr,Nt,Nstreams);
         free(Z);
     }
 
@@ -192,16 +189,16 @@ int *rx_qam_demapper(struct Complex * symbol,int size){
     indice = (int*)malloc(size * sizeof( int ));
 
     for (int i = 0; i < size; i++) {
-        if (symbol[i].real == -1 && symbol[i].img == 1){
+        if (symbol[i].real < 0 && symbol[i].img > 0){
             indice[i] = 0;
         }
-        else if (symbol[i].real == -1 && symbol[i].img == -1){
+        else if (symbol[i].real < 0 && symbol[i].img < 0){
             indice[i] = 1;
         }
-        else if (symbol[i].real == 1 && symbol[i].img == 1){
+        else if (symbol[i].real > 0 && symbol[i].img > 0){
             indice[i] = 2;
         }
-        else if (symbol[i].real == 1 && symbol[i].img == -1){
+        else if (symbol[i].real > 0 && symbol[i].img < 0){
             indice[i] = 3;
         }
     }
@@ -209,13 +206,13 @@ int *rx_qam_demapper(struct Complex * symbol,int size){
     return indice;
 }
 
-struct Complex *rx_layer_demapper(int a, struct Complex *s_mapped,struct Complex *s, int Nstreams){
+struct Complex *rx_layer_demapper(int a, struct Complex **s_mapped,struct Complex *s, int Nstreams){
 
     // Loop para percorrer os símbolos de entrada
     for (int i = 0; i < Nstreams; i++) {
         // Mapeia o símbolo QAM para a stream correspondente
-        s[(a) + i ].real = s_mapped[i].real;
-        s[(a) + i ].img = s_mapped[i].img ;
+        s[a + i ].real = s_mapped[0][i].real;
+        s[a + i ].img = s_mapped[0][i].img ;
     }
     return s;
 }
@@ -273,7 +270,7 @@ struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int N
         x_aux[0][i].real = x[i].real;
         x_aux[0][i].img = x[i].img;
     }
-
+    V = hermitiano(V,Nt,Nt);
     rmtx = produto_matricial(x_aux,V,1,Nt,Nstreams,Nt);
 
     free(x_aux);
@@ -284,21 +281,25 @@ struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int N
 struct Complex **rx_combiner(struct Complex **Y,struct Complex **U, int Nr, int Nt, int Nstreams){
     struct Complex **rmtx;
 
-    rmtx = produto_matricial(Y,U,1,Nr,Nt,Nt);
+    U = hermitiano(U,Nr,Nt);
+
+    rmtx = produto_matricial(Y,U,1,Nt,Nt,Nr);
+
 
     return rmtx;
 }
 
-struct Complex *rx_feq(struct Complex **S,struct Complex **W,int Nr, int Nt, int Nstreams){
+
+struct Complex *rx_feq(int a,struct Complex *S,struct Complex *W,int Nr, int Nt, int Nstreams){
     struct Complex *rmtx;
     struct Complex **aux;
 
     rmtx = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
-    aux = produto_matricial(W,S,1,Nt,Nt,Nt);
+
 
     for(int i=0; i<Nstreams; i++){
-        rmtx[i].real = aux[0][i].real;
-        rmtx[i].img = aux[0][i].img;
+        rmtx[(a) + i ].real = W[(a) + i].real / S[(a) + i].real;
+        rmtx[(a) + i ].img = W[(a) + i].img  / S[(a) + i].real;
     }
 
     return rmtx;
