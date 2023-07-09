@@ -135,7 +135,7 @@ void teste_rw()
 {
          printf("\n\n-----------------------------LEITURA E ESCRITA----------------------------\n\n");
 
-        long int tamanho1, tamanho2;
+        long int tamanho;
 
         FILE* arquivo_txt = fopen("src/matrizes/arquivo.txt", "rb");
         FILE* arquivo_bin = fopen("src/matrizes/arquivo.bin", "rb");
@@ -150,23 +150,21 @@ void teste_rw()
 
         int *vetor_bin = tx_data_read(arquivo_bin, q_bytes_txt);
 
-        long int n = (sizeof(arquivo_txt)) / 4;
-
-        tamanho1 = (q_bytes_txt*2*n) - 4;
-        tamanho2 = (q_bytes_txt*2*n) - 4;
+        tamanho = (q_bytes_txt*2*((sizeof(arquivo_txt)) / 4)) - 4;
 
         printf("\n\n[Vetor gerado pela leitura de arquivo.txt]\n\n");
 
-        for(int i = 0; i < tamanho1; i++)
+        for(int i = 0; i < tamanho; i++)
         {
             printf("%d",vetor_txt[i]);
         }
 
         printf("\n\n[Vetor gerado pela leitura de arquivo.bin]\n\n");
-        for(int i = 0; i < tamanho2; i++)
+        for(int i = 0; i < tamanho; i++)
         {
             printf("%d",vetor_bin[i]);
         }
+        
         fclose(arquivo_txt);
         fclose(arquivo_bin);
         printf("\n\n--------------------------------------------------------------------------\n\n");
