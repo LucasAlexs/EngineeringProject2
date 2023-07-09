@@ -8,6 +8,7 @@
 void main()
 {
     teste_svd();
+    teste_mapper();
     teste_rw();
 }
 int teste_mapper()
@@ -15,6 +16,7 @@ int teste_mapper()
     int Nr = 4, Nt = 4 ,size = 4, Nstreams,Nqam = 4;
     struct Complex *s,*s_mapped, *o;
 
+    printf("\n\n-----------------------------MAPPER E DEMMAPER----------------------------\n\n");
    if (Nr < Nt) {
         Nstreams = Nr;
     } else {
@@ -34,7 +36,7 @@ int teste_mapper()
         vector[i] = i % Nqam;
     }
 
-    printf("Elementos do vetor Etapa1:\n");
+    printf("\n\nElementos do vetor Etapa1:\n\n");
     for (int i = 0; i < size; i++) {
         printf("%d ", vector[i]);
     }
@@ -55,11 +57,13 @@ int teste_mapper()
 
     vector = rx_qam_demapper(o,size);
 
-    printf("Elementos do vetor Etapa2:\n");
+    printf("\n\nElementos do vetor Etapa2:\n\n");
     for (int i = 0; i < size; i++) {
         printf("%d ", vector[i]);
     }
     printf("\n");
+
+    printf("\n\n--------------------------------------------------------------------------\n\n");
 
     free(vector);
     free(s_mapped);
@@ -238,7 +242,7 @@ struct Complex *tx_qam_mapper(int* indice, int size) {
             symbol[i].real = 1;
             symbol[i].img = 1;
         }
-        else if (indice[i] == 2){
+        else if (indice[i] == 3){
             symbol[i].real = 1;
             symbol[i].img = -1;
         }
@@ -276,8 +280,8 @@ struct Complex *rx_layer_demapper(int a, struct Complex *s_mapped,struct Complex
     // Loop para percorrer os símbolos de entrada
     for (int i = 0; i < Nstreams; i++) {
         // Mapeia o símbolo QAM para a stream correspondente
-        s[(a * Nstreams) + i].real = s_mapped[i].real;
-        s[(a * Nstreams) + i].img = s_mapped[i].img ;
+        s[(a) + i ].real = s_mapped[i].real;
+        s[(a) + i ].img = s_mapped[i].img ;
     }
     return s;
 }
@@ -287,14 +291,16 @@ struct Complex *tx_layer_mapper(int a, struct Complex *s,struct Complex *s_mappe
     // Loop para percorrer os símbolos de entrada
     for (int i = 0; i < Nstreams; i++) {
         // Mapeia o símbolo QAM para a stream correspondente
-        s_mapped[i].real = s[a * Nstreams + i].real;
-        s_mapped[i].img = s[a * Nstreams + i].img;
+        s_mapped[i].real = s[(a ) + i ].real;
+        s_mapped[i].img = s[(a) + i ].img;
     }
     return s_mapped;
 }
 
 struct Complex **channel_gen(int Nr,struct Complex **H, int Nt) {
 
+    // Gera os valores aleatórios para a matriz H
+    srand(time(NULL));  // Inicializa a semente do gerador de números aleatórios
 
     for (int i = 0; i < Nr; i++) {
         for (int j = 0; j < Nt; j++) {
