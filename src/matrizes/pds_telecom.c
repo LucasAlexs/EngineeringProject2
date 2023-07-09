@@ -10,6 +10,61 @@ void main()
     teste_svd();
     teste_rw();
 }
+int teste_mapper()
+{
+    int Nr = 4, Nt = 4 ,size = 4, Nstreams,Nqam = 4;
+    struct Complex *s,*s_mapped, *o;
+
+   if (Nr < Nt) {
+        Nstreams = Nr;
+    } else {
+        Nstreams = Nt;
+    }
+
+    int *vector;
+
+    vector = (int *)malloc(size * sizeof(int));
+
+    if (vector == NULL) {
+        printf("Erro ao alocar memória para o vetor.\n");
+        return 1;
+    }
+
+    for (int i = 0; i < size; i++) {
+        vector[i] = i % Nqam;
+    }
+
+    printf("Elementos do vetor Etapa1:\n");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", vector[i]);
+    }
+    printf("\n");
+
+
+    s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
+    o = (struct Complex *)malloc(Nt * sizeof(struct Complex ));
+
+    s = tx_qam_mapper(vector,size);
+
+    for (int a = 0; a < size; a+= Nstreams)
+    {
+        s_mapped = tx_layer_mapper(a,s,s_mapped,Nstreams);
+
+        o = rx_layer_demapper(a,s_mapped,o,Nstreams);
+    }
+
+    vector = rx_qam_demapper(o,size);
+
+    printf("Elementos do vetor Etapa2:\n");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", vector[i]);
+    }
+    printf("\n");
+
+    free(vector);
+    free(s_mapped);
+}
+
 void teste_svd()
 {
     int Nr = 4,Nt = 4;
