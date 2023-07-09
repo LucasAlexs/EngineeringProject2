@@ -7,8 +7,10 @@ aplicacao:
 	gcc -c src/matrizes/pds_telecom.c -o build/pds_telecom.o
 	gcc -c src/matrizes/matrizes.c -o build/matrizes.o
 	gcc build/matrizes.o build/pds_telecom.o -lgsl -lgslcblas -lm -o build/pds_telecom.out
+	gcc build/matrizes.o build/main.o -lgsl -lgslcblas -lm -o build/matrizes.out
 
 teste:
+	./build/matrizes.out
 	./build/pds_telecom.out
 clean:
 	rm -rf build/*
