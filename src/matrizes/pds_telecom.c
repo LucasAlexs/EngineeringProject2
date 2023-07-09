@@ -5,7 +5,7 @@
 #include <time.h>
 
 
-void main()
+int main()
 {
     teste_svd();
     teste_mapper();
