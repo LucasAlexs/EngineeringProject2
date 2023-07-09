@@ -8,7 +8,7 @@ int main()
 {
    //tx_data_read();
 
-   int Nr = 4, Nt = 4 ,size = 32, Nstreams,Nqam = 4;
+   int Nr = 4, Nt = 4 ,size = 4, Nstreams,Nqam = 4;
     struct Complex *s,*s_mapped, *o;
 
    if (Nr < Nt) {
