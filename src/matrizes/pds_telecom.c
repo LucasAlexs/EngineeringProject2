@@ -61,22 +61,28 @@ int main()
 //        free(H);
 //        free(J);
 //
-        long tamanho, q_bits;
-        char* arquivo_txt = "src/matrizes/arquivo.txt";
-        char* arquivo_bin = "src/matrizes/arquivo.bin";
+        long int tamanho;
 
-        int* vetor_txt = tx_data_read(arquivo_txt, &tamanho);
-        rx_data_write(vetor_txt, &q_bits);
-        int* vetor_bin = tx_data_read(arquivo_bin, &q_bits);
+        FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt", "rb");
+        FILE *arquivo_bin = fopen("src/matrizes/arquivo.bin", "rb");
+
+        fseek(arquivo_txt,0,SEEK_END);
+        long int q_bytes = ftell(arquivo_txt);
+        fseek(arquivo_txt,0,SEEK_SET);
+
+        int* vetor_txt = tx_data_read(arquivo_txt, q_bytes);
+        rx_data_write(vetor_txt, q_bytes);
+        int* vetor_bin = tx_data_read(arquivo_bin, q_bytes);
         printf("\n______Vetor gerado pelo arquivo.txt______\n\n");
-        for(int i = 0; i < tamanho; i++)
+
+        for(int i = 0; i < q_bytes; i++)
         {
             printf("%d",vetor_txt[i]);
         }
         printf("\n_________________________________________\n");
 
         printf("\n______Vetor gerado pelo arquivo.bin______\n\n");
-        for(int i = 0; i < q_bits; i++)
+        for(int i = 0; i < q_bytes; i++)
         {
             printf("%d",vetor_bin[i]);
         }
@@ -85,62 +91,32 @@ int main()
         return 0;
     }
 
-void print_binario(unsigned char byte, int* vet_int, long int* index) {
-    for (int i = 6; i >= 0; i -= 2) {
-        int num = ((byte >> i) & 1) + ((byte >> (i + 1)) & 1) * 2;
-        vet_int[(*index)++] = num;
-    }
-}
+int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
 
-int* tx_data_read(const char* texto_str, long int* tamanho_retornado) {
-    FILE* file = fopen(texto_str, "rb");
-    if (file == NULL) {
-        printf("Erro! O arquivo não pode ser aberto.\n");
-        return NULL;
-    }
-
-    fseek(file, 0, SEEK_END);
-    long int tamanho = ftell(file);
-    rewind(file);
-    unsigned char* buffer = (unsigned char*)malloc(tamanho);
-    if (buffer == NULL) {
-        printf("Erro! Memória não pode ser alocada.\n");
-        fclose(file);
-        return NULL;
-    }
-
-    size_t leitura_bytes = fread(buffer, 1, tamanho, file);
-    if (leitura_bytes != tamanho) {
-        printf("Erro ao ler o arquivo.\n");
-        free(buffer);
-        fclose(file);
-        return NULL;
-    }
-
-    int* vet_int = (int*)malloc((tamanho * 4) * sizeof(int));
+    int *vet_int = (int *)malloc(q_bytes * 4 * sizeof(int));
     if (vet_int == NULL) {
-        printf("Erro! Memória não pode ser alocada.\n");
-        free(buffer);
-        fclose(file);
-        return NULL;
+        printf("Erro na alocação de memória\n");
+        fclose(entrada_arquivo);
+        return (int *)1;
     }
 
-    long int index = 0;
-    for (long i = 0; i < tamanho; i++) {
-        print_binario(buffer[i-1], vet_int, &index);
+    for (int i = 0; i < q_bytes; i++) {
+        char byte;
+        fread(&byte, sizeof(byte), 1, entrada_arquivo);
+
+        for (int j = 0; j <= 7; j=j+2) {
+            int bit = (byte >> j) & 3;
+            vet_int[(i*4) + (j/2)]= bit;
+        }
+
     }
-
-    free(buffer);
-    fclose(file);
-
-    *tamanho_retornado = (tamanho) * 4;
     return vet_int;
 }
 
-void rx_data_write(int* entrada_vet_int, long int *q_bits_retornado) {
+void rx_data_write(int* entrada_vet_int, long int tamanho) {
 
     FILE* binario = fopen("src/matrizes/arquivo.bin", "wb");
-    long int q_bits = sizeof(entrada_vet_int);
+
     if (binario == NULL) {
         printf("Erro! Arquivo.bin nao pode ser aberto!\n");
         return;
@@ -149,7 +125,7 @@ void rx_data_write(int* entrada_vet_int, long int *q_bits_retornado) {
         printf("Arquivo.bin gerado com sucesso.\n");
     }
 
-    for (int i = 0; i < q_bits; i++) {
+    for (int i = 0; i < tamanho; i++) {
 
         unsigned char byte = 0;
         for (int j = 0; j < 4; j++)
@@ -158,10 +134,9 @@ void rx_data_write(int* entrada_vet_int, long int *q_bits_retornado) {
             byte |= (bit << (2 * j));
         }
         fwrite(&byte, sizeof(byte), 1, binario);
-    }
+        }
 
     fclose(binario);
-    *q_bits_retornado = (q_bits) * 4;
 }
 
 struct Complex *tx_qam_mapper(int* indice, int size) {
