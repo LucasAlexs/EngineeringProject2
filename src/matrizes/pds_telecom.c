@@ -61,28 +61,37 @@ int main()
 //        free(H);
 //        free(J);
 //
-        long int tamanho;
+        long int tamanho1, tamanho2;
 
-        FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt", "rb");
-        FILE *arquivo_bin = fopen("src/matrizes/arquivo.bin", "rb");
+        FILE* arquivo_txt = fopen("src/matrizes/arquivo.txt", "rb");
+        FILE* arquivo_bin = fopen("src/matrizes/arquivo.bin", "rb");
 
         fseek(arquivo_txt,0,SEEK_END);
-        long int q_bytes = ftell(arquivo_txt);
+        long int q_bytes_txt = ftell(arquivo_txt);
         fseek(arquivo_txt,0,SEEK_SET);
 
-        int* vetor_txt = tx_data_read(arquivo_txt, q_bytes);
-        rx_data_write(vetor_txt, q_bytes);
-        int* vetor_bin = tx_data_read(arquivo_bin, q_bytes);
+        fseek(arquivo_bin,0,SEEK_END);
+        long int q_bytes_bin = ftell(arquivo_bin);
+        fseek(arquivo_bin,0,SEEK_SET);
+
+        int *vetor_txt = tx_data_read(arquivo_txt, q_bytes_txt);
+        rx_data_write(vetor_txt, q_bytes_txt);
+        int *vetor_bin = tx_data_read(arquivo_bin, q_bytes_txt);
+
+        tamanho1 = 16;
+        tamanho2 = 16;
+
+
         printf("\n______Vetor gerado pelo arquivo.txt______\n\n");
 
-        for(int i = 0; i < q_bytes; i++)
+        for(int i = 0; i < tamanho1; i++)
         {
             printf("%d",vetor_txt[i]);
         }
         printf("\n_________________________________________\n");
 
         printf("\n______Vetor gerado pelo arquivo.bin______\n\n");
-        for(int i = 0; i < q_bytes; i++)
+        for(int i = 0; i < tamanho2; i++)
         {
             printf("%d",vetor_bin[i]);
         }
@@ -93,7 +102,7 @@ int main()
 
 int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
 
-    int *vet_int = (int *)malloc(q_bytes * 4 * sizeof(int));
+    int * vet_int = (int *)malloc(q_bytes * 4 * sizeof(int));
     if (vet_int == NULL) {
         printf("Erro na alocação de memória\n");
         fclose(entrada_arquivo);
