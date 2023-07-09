@@ -6,114 +6,148 @@
 
 int main()
 {
-    int Nr = 4,Nt = 4;
-    struct Complex **H,**J,**K;
-    double rmax=0,rmin=0;
+//    int Nr = 4,Nt = 4;
+//    struct Complex **H,**J,**K;
+//    double rmax=0,rmin=0;
+//    srand(time(NULL));  // Inicializa a semente do gerador de números aleatórios
+//
+//
+//    H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+//    J = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+//
+//    for (int i = 0; i < Nr; i++)
+//    {
+//        H[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+//        J[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+//    }
+//
+//    H = channel_gen(Nr,H, Nt);
+//
+//    printf("matriz H:\n");
+//
+//    for(int i=0; i<Nr; i++){
+//        for(int j=0; j<Nt; j++){
+//            printf("%.2f + %.2fj\t", H[i][j].real, H[i][j].img);
+//        }
+//        printf("\n");
+//    }
+//
+//    J = channel_gen(Nr,J, Nt);
+//
+//    printf("matriz J:\n");
+//
+//    for(int i=0; i<Nr; i++){
+//        for(int j=0; j<Nt; j++){
+//            printf("%.2f + %.2fj\t", J[i][j].real, J[i][j].img);
+//        }
+//        printf("\n");
+//    }
+//
+//    K = channel_transmission(rmax,rmin,J,H,Nr,Nt);
+//
+//    printf("matriz K:\n");
+//
+//    for(int i=0; i<Nr; i++){
+//        for(int j=0; j<Nt; j++){
+//            printf("%.2f + %.2fj\t", K[i][j].real, K[i][j].img);
+//        }
+//        printf("\n");
+//    }
+//
+//    for (int i = 0; i < Nr; i++){
+//            free(H[i]);
+//            free(J[i]);
+//        }
+//        free(H);
+//        free(J);
+//
+        long int tamanho1, tamanho2;
 
-    H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
-    J = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+        FILE* arquivo_txt = fopen("src/matrizes/arquivo.txt", "rb");
+        FILE* arquivo_bin = fopen("src/matrizes/arquivo.bin", "rb");
 
-    for (int i = 0; i < Nr; i++)
-    {
-        H[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
-        J[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
-    }
+        fseek(arquivo_txt,0,SEEK_END);
+        long int q_bytes_txt = ftell(arquivo_txt);
+        fseek(arquivo_txt,0,SEEK_SET);
 
-    H = channel_gen(Nr,H, Nt);
+        fseek(arquivo_bin,0,SEEK_END);
+        long int q_bytes_bin = ftell(arquivo_bin);
+        fseek(arquivo_bin,0,SEEK_SET);
 
-    printf("matriz H:\n");
+        int *vetor_txt = tx_data_read(arquivo_txt, q_bytes_txt);
+        rx_data_write(vetor_txt, q_bytes_txt);
+        int *vetor_bin = tx_data_read(arquivo_bin, q_bytes_txt);
 
-    for(int i=0; i<Nr; i++){
-        for(int j=0; j<Nt; j++){
-            printf("%.2f + %.2fj\t", H[i][j].real, H[i][j].img);
+        tamanho1 = 16;
+        tamanho2 = 16;
+
+
+        printf("\n______Vetor gerado pelo arquivo.txt______\n\n");
+
+        for(int i = 0; i < tamanho1; i++)
+        {
+            printf("%d",vetor_txt[i]);
         }
-        printf("\n");
-    }
+        printf("\n_________________________________________\n");
 
-    J = channel_gen(Nr,J, Nt);
-
-    printf("matriz H:\n");
-
-    for(int i=0; i<Nr; i++){
-        for(int j=0; j<Nt; j++){
-            printf("%.2f + %.2fj\t", H[i][j].real, H[i][j].img);
+        printf("\n______Vetor gerado pelo arquivo.bin______\n\n");
+        for(int i = 0; i < tamanho2; i++)
+        {
+            printf("%d",vetor_bin[i]);
         }
-        printf("\n");
-    }
+        printf("\n_________________________________________\n");
 
-    K = channel_transmission(rmax,rmin,J,H,Nr,Nt);
-
-    printf("matriz K:\n");
-
-    for(int i=0; i<Nr; i++){
-        for(int j=0; j<Nt; j++){
-            printf("%.2f + %.2fj\t", K[i][j].real, K[i][j].img);
-        }
-        printf("\n");
-    }
-
-    for (int i = 0; i < Nr; i++){
-            free(H[i]);
-            free(J[i]);
-        }
-        free(H);
-        free(J);
-
-    
         return 0;
     }
 
-void print_binario(unsigned char byte, int* vet_int, long int* index) {
-    for (int i = 6; i >= 0; i -= 2) {
-        int num = ((byte >> i) & 1) + ((byte >> (i + 1)) & 1) * 2;
-        vet_int[(*index)++] = num;
-    }
-}
+int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
 
-int* tx_data_read(const char* texto_str, long* tamanho_retornado) {
-    FILE* file = fopen(texto_str, "rb");
-    if (file == NULL) {
-        printf("Erro! O arquivo não pode ser aberto.\n");
-        return NULL;
-    }
-
-    fseek(file, 0, SEEK_END);
-    long tamanho = ftell(file);
-    rewind(file);
-    unsigned char* buffer = (unsigned char*)malloc(tamanho);
-    if (buffer == NULL) {
-        printf("Erro! Memória não pode ser alocada.\n");
-        fclose(file);
-        return NULL;
-    }
-
-    size_t leitura_bytes = fread(buffer, 1, tamanho, file);
-    if (leitura_bytes != tamanho) {
-        printf("Erro ao ler o arquivo.\n");
-        free(buffer);
-        fclose(file);
-        return NULL;
-    }
-
-    int* vet_int = (int*)malloc((tamanho * 4) * sizeof(int));
+    int * vet_int = (int *)malloc(q_bytes * 4 * sizeof(int));
     if (vet_int == NULL) {
-        printf("Erro! Memória não pode ser alocada.\n");
-        free(buffer);
-        fclose(file);
-        return NULL;
+        printf("Erro na alocação de memória\n");
+        fclose(entrada_arquivo);
+        return (int *)1;
     }
 
-    long int index = 0;
-    for (long i = 0; i < tamanho; i++) {
-        print_binario(buffer[i - 1], vet_int, &index);
+    for (int i = 0; i < q_bytes; i++) {
+        char byte;
+        fread(&byte, sizeof(byte), 1, entrada_arquivo);
+
+        for (int j = 0; j <= 7; j=j+2) {
+            int bit = (byte >> j) & 3;
+            vet_int[(i*4) + (j/2)]= bit;
+        }
+
     }
-
-    free(buffer);
-    fclose(file);
-
-    *tamanho_retornado = tamanho * 4;
     return vet_int;
 }
+
+void rx_data_write(int* entrada_vet_int, long int tamanho) {
+
+    FILE* binario = fopen("src/matrizes/arquivo.bin", "wb");
+
+    if (binario == NULL) {
+        printf("Erro! Arquivo.bin nao pode ser aberto!\n");
+        return;
+
+    } else {
+        printf("Arquivo.bin gerado com sucesso.\n");
+    }
+
+    for (int i = 0; i < tamanho; i++) {
+
+        unsigned char byte = 0;
+        for (int j = 0; j < 4; j++)
+        {
+            unsigned int bit = entrada_vet_int[(i * 4) + j];
+            byte |= (bit << (2 * j));
+        }
+        fwrite(&byte, sizeof(byte), 1, binario);
+        }
+
+    fclose(binario);
+}
+
 struct Complex *tx_qam_mapper(int* indice, int size) {
     struct Complex *symbol;
 
@@ -189,8 +223,6 @@ struct Complex *tx_layer_mapper(int a, struct Complex *s,struct Complex *s_mappe
 
 struct Complex **channel_gen(int Nr,struct Complex **H, int Nt) {
 
-    // Gera os valores aleatórios para a matriz H
-    srand(time(NULL));  // Inicializa a semente do gerador de números aleatórios
 
     for (int i = 0; i < Nr; i++) {
         for (int j = 0; j < Nt; j++) {
