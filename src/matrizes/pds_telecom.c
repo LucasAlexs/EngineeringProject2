@@ -144,15 +144,11 @@ void teste_rw()
         long int q_bytes_txt = ftell(arquivo_txt);
         fseek(arquivo_txt,0,SEEK_SET);
 
-        fseek(arquivo_bin,0,SEEK_END);
-        long int q_bytes_bin = ftell(arquivo_bin);
-        fseek(arquivo_bin,0,SEEK_SET);
-
         int *vetor_txt = tx_data_read(arquivo_txt, q_bytes_txt);
 
         rx_data_write(vetor_txt, q_bytes_txt);
 
-        int *vetor_bin = tx_data_read(arquivo_bin, q_bytes_bin);
+        int *vetor_bin = tx_data_read(arquivo_bin, q_bytes_txt);
 
         long int n = (sizeof(arquivo_txt)) / 4;
 
@@ -195,6 +191,7 @@ int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
         }
 
     }
+
     return vet_int;
 }
 
