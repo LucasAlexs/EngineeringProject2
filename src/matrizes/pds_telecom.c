@@ -8,7 +8,7 @@ int main()
 {
    //tx_data_read();
 
-   int Nr = 4, Nt = 4 ,size = 4, Nstreams,Nqam = 4;
+   int Nr = 4, Nt = 4 ,size = 8188, Nstreams,Nqam = 4,est;
     struct Complex *s,*s_mapped, *o;
 
    if (Nr < Nt) {
@@ -18,7 +18,6 @@ int main()
     }
 
     int *vector;
-
     vector = (int *)malloc(size * sizeof(int));
 
     if (vector == NULL) {
@@ -56,6 +55,12 @@ int main()
         printf("%d ", vector[i]);
     }
     printf("\n");
+
+    est = gera_estatisticas(s,o,size);
+
+    printf(" Número de símbolos QAM transmitidos: %d \n",size);
+    printf(" Número de símbolos QAM recebidos com erro: %d \n",est);
+    printf(" Porcentagem de símbolos QAM recebidos com erro: %d% \n",est/size);
 
     free(vector);
     free(s_mapped);
@@ -219,4 +224,15 @@ struct Complex **channel_transmission(double rmax, double rmin, struct Complex *
 
     return rmtx;
 
+}
+
+int gera_estatisticas(struct Complex *s,struct Complex *o, int size){
+    int result = 0;
+
+    for (int i = 0; i < size ; i++) {
+        if (s[i].real == o[i].real && s[i].img == o[i].img)
+            result ++;
+    }
+    
+    return result;
 }

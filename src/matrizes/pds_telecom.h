@@ -17,4 +17,6 @@ struct Complex **channel_gen(int Nr,struct Complex **H, int Nt);
 
 struct Complex **channel_transmission(double rmax, double rmin, struct Complex **mtx_cod, struct Complex **H, int Nr, int Nt);
 
+int gera_estatisticas(struct Complex *s,struct Complex *o, int size);
+
 #endif
