@@ -35,7 +35,8 @@ void teste_hermitiana();
 struct Complex produto_escalar(struct Complex *vet1,struct Complex *vet2, int neu, int nev);
 void teste_produto_escalar();
 
-struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **matrix2, int linhas, int colunas);
+struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **matrix2, int linhas1, int linhas2, int colunas1, int colunas2);
+void teste_produto_matricial();
 
 void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex **S, struct Complex **V, int linhas, int colunas);
 

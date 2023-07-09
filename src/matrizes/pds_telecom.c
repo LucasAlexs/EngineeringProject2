@@ -41,6 +41,7 @@ int main()
 
 
     s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
+
     o = (struct Complex *)malloc(Nt * sizeof(struct Complex ));
 
     s = tx_qam_mapper(vector,size);
@@ -57,7 +58,7 @@ int main()
         U[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
     }
 
-    S = (struct Complex **)malloc(1 * sizeof(struct Complex *));
+    S = (struct Complex **)malloc(Nt * sizeof(struct Complex *));
     for (int i = 0; i < 1; i++){
         S[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
     }
@@ -72,19 +73,31 @@ int main()
 
     for (int a = 0; a < size; a+= Nstreams)
     {
+        for (int i = 0; i < Nstreams; i++) {
+            s_mapped[i].real = -1.0;
+            s_mapped[i].img = 1.0;
+        }
         s_mapped = tx_layer_mapper(a,s,s_mapped,Nstreams);
 
         F = tx_precoder(s_mapped,V,Nr, Nt, Nstreams);
 
-        Y = channel_transmission(rmax,rmin,F,H,Nr, Nstreams);
+        Y = channel_transmission(rmax,rmin,F,H,Nr,Nt, Nstreams);
+
+        free(F);
 
         W = rx_combiner(Y,U,Nr,Nt,Nstreams);
 
+        free(Y);
+
         Z = rx_feq(S,W,Nr,Nt,Nstreams);
 
-        o = rx_layer_demapper(a,s_mapped,Z,Nstreams);
-    }
+        free(W);
 
+        o = rx_layer_demapper(a,s_mapped,Z,Nstreams);
+
+        free(Z);
+
+    }
 
     vector = rx_qam_demapper(o,size);
 
@@ -242,17 +255,16 @@ struct Complex **channel_gen(int Nr,struct Complex **H, int Nt) {
     return H;
 }
 
-struct Complex **channel_transmission(double rmax, double rmin, struct Complex **mtx_cod, struct Complex **H, int Nt, int Nstreams){
+struct Complex **channel_transmission(double rmax, double rmin, struct Complex **mtx_cod, struct Complex **H,int Nr, int Nt, int Nstreams){
     struct Complex **rmtx;
 
-    rmtx = produto_matricial( mtx_cod, H, Nt, Nstreams);
+    rmtx = produto_matricial( mtx_cod, H,1,Nr,Nt,Nt);
 
-    for (int i = 0; i < Nt; i++) {
-        for (int j = 0; j < Nstreams; j++) {
-            rmtx[i][j].real = rmtx[i][j].real + ((double)rand() / RAND_MAX) * (rmax - rmin) + rmin;
-            rmtx[i][j].img = rmtx[i][j].img + ((double)rand() / RAND_MAX) * (rmax - rmin) + rmin;
-        }
+    for (int j = 0; j < Nstreams; j++) {
+        rmtx[0][j].real = rmtx[0][j].real + ((double)rand() / RAND_MAX) * (rmax - rmin) + rmin;
+        rmtx[0][j].img = rmtx[0][j].img + ((double)rand() / RAND_MAX) * (rmax - rmin) + rmin;
     }
+
 
     return rmtx;
 
@@ -271,7 +283,9 @@ struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int N
         x_aux[0][i].img = x[i].img;
     }
 
-    rmtx = produto_matricial(x_aux,V,Nstreams,Nt);
+    rmtx = produto_matricial(x_aux,V,1,Nt,Nstreams,Nt);
+
+    free(x_aux);
 
     return rmtx;
 }
@@ -279,7 +293,8 @@ struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int N
 struct Complex **rx_combiner(struct Complex **Y,struct Complex **U, int Nr, int Nt, int Nstreams){
     struct Complex **rmtx;
 
-    rmtx = produto_matricial(Y,U,Nstreams,Nr);
+    rmtx = produto_matricial(Y,U,1,Nr,Nt,Nt);
+
     return rmtx;
 }
 
@@ -288,8 +303,7 @@ struct Complex *rx_feq(struct Complex **S,struct Complex **W,int Nr, int Nt, int
     struct Complex **aux;
 
     rmtx = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
-
-    aux = produto_matricial(S,W,1,Nstreams);
+    aux = produto_matricial(W,S,1,Nt,Nt,Nt);
 
     for(int i=0; i<Nstreams; i++){
         rmtx[i].real = aux[0][i].real;

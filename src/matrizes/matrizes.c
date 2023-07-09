@@ -802,7 +802,7 @@ struct Complex multiplicacao(struct Complex x,struct Complex y)
  * @param[out] rmtx
 */
 
-struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **matrix2, int linhas1, int colunas1,int linhas2, int colunas2)
+struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **matrix2, int linhas1, int linhas2, int colunas1, int colunas2)
 {
     struct Complex **rmtx, aux, sum;
 
@@ -810,29 +810,29 @@ struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **mat
     rmtx = (struct Complex **)malloc(linhas1 * sizeof(struct Complex *));
     for(int i=0; i<linhas1; i++){
         rmtx[i] = (struct Complex *)malloc(colunas2 * sizeof(struct Complex));
-
     }
-
     if(linhas2==colunas1){
-
         // somar as matrizes
         for (int i = 0; i < linhas1; i++) {
+            
             for (int j = 0; j < colunas2; j++) {
                 sum.real = 0;
                 sum.img = 0;
-                for (int k = 0; k < linhas2; k++) {
+                for (int k = 0; k < linhas1; k++) {
                     aux = multiplicacao(matrix1[i][k], matrix2[k][j]);
                     sum = somanc(sum, aux);
                 }
             rmtx[i][j] = sum;
             }
         }
+
     }
     else{
 
             printf("Erro\n");
 
     }
+
     return rmtx;
 }
 
@@ -964,15 +964,12 @@ void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex **S, st
     gsl_vector * Q = gsl_vector_alloc(colunas);
     gsl_vector * work = gsl_vector_alloc(colunas);
 
-    printf("Matriz de entrada %d X %d:\n\n",linhas, colunas);
     for (i = 0; i < linhas; i++)
     {
         for (j = 0; j < colunas; j++)
         {
-            printf("%.2f\t", matrix[i][j].real);
             gsl_matrix_set(A, i, j, matrix[i][j].real);
         }
-        printf("\n\n");
     }
 
     // Cálculo do SVD
@@ -980,39 +977,44 @@ void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex **S, st
     {
         gsl_linalg_SV_decomp(A, W, Q, work);
 
-        printf("Matriz U:\n\n");
         for (i = 0; i < linhas; i++)
         {
             for (j = 0; j < colunas; j++)
             {
-                printf("%.2f\t", gsl_matrix_get(A, i, j));
                 U[i][j].real = gsl_matrix_get(A, i, j);
+                U[i][j].real = 0;
             }
-            printf("\n\n");
         }
 
-        printf("Vetor S:\n\n");
-        for (i = 0; i < colunas; i++)
-        {
-            printf("%.2f\n", gsl_vector_get(Q, i));
-            V[1][i].real = gsl_vector_get(Q, i);
-        }
-        printf("\n\n");
-
-        printf("Matriz V:\n\n");
         for (i = 0; i < colunas; i++)
         {
             for (j = 0; j < colunas; j++)
             {
-                printf("%.2f\t", gsl_matrix_get(W, i, j));
+                if(i==j){
+                    V[i][i].real = gsl_vector_get(Q, i);
+                    V[i][i].img = 0;
+                }
+                else{
+                    V[i][i].real = 0;
+                    V[i][i].img = 0;
+
+
+                    }
+                }
+        }
+
+        for (i = 0; i < colunas; i++)
+        {
+            for (j = 0; j < colunas; j++)
+            {
                 V[i][j].real = gsl_matrix_get(W, i, j);
+                V[i][j].real = 0;
             }
-            printf("\n\n");
         }
     }
     else
     {
-        printf("A operacao nao pode ser concluída porque o numero de linhas eh menor que o numero de colunas\n\n");
+        printf("A operacao svd nao pode ser concluída porque o numero de linhas eh menor que o numero de colunas\n\n");
     }
 }
 
@@ -1084,10 +1086,10 @@ void teste_calc_svd()
 
      // Alocação de memória para os vetores de saida S
 
-    S1 = (struct Complex **)malloc(1 * sizeof(struct Complex *));
-    S2 = (struct Complex **)malloc(1 * sizeof(struct Complex *));
-    S3 = (struct Complex **)malloc(1 * sizeof(struct Complex *));
-    S4 = (struct Complex **)malloc(1 * sizeof(struct Complex *));
+    S1 = (struct Complex **)malloc(c1 * sizeof(struct Complex *));
+    S2 = (struct Complex **)malloc(c2 * sizeof(struct Complex *));
+    S3 = (struct Complex **)malloc(c3 * sizeof(struct Complex *));
+    S4 = (struct Complex **)malloc(c4 * sizeof(struct Complex *));
     for (int i = 0; i < 1; i++)
     {
         S1[i] = (struct Complex *)malloc(c1 * sizeof(struct Complex));
