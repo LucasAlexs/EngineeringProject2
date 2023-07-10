@@ -28,7 +28,7 @@ int main()
         printf("%d", vetor_int[i]);
     }
 
-    printf("\n[--------------------------------------------]\n\n");
+    printf("\n\n[--------------------------------------------]\n\n");
 
     int Nr = 4, Nt = 4 ,size = tamanho, Nstreams,Nqam = 4;
     struct Complex *vetor_c,*s_mapped, *o;
