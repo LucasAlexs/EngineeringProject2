@@ -319,6 +319,17 @@ struct Complex **channel_transmission(double rmax, double rmin, struct Complex *
 
 }
 
+int gera_estatisticas(struct Complex *s,struct Complex *o, int size){
+    int result = 0;
+
+    for (int i = 0; i < size ; i++) {
+        if (s[i].real == o[i].real && s[i].img == o[i].img)
+            result ++;
+    }
+
+    return result;
+}
+
 int main()
 {
 //    teste_svd();
@@ -330,6 +341,7 @@ int main()
     fseek(arquivo_txt,0,SEEK_END);
     long int q_bytes = ftell(arquivo_txt);
     fseek(arquivo_txt,0,SEEK_SET);
+
 
     int* vetor_int = (int *)malloc(q_bytes * sizeof(int));
 
@@ -345,8 +357,11 @@ int main()
 
     printf("\n\n[--------------------------------------------]\n\n");
 
+    struct Complex **H,**J,**K;
+    double rmax=0,rmin=0;
     int Nr = 4, Nt = 4 ,size = tamanho, Nstreams,Nqam = 4;
     struct Complex *vetor_c,*s_mapped, *o;
+    srand(time(NULL));
 
     if (Nr < Nt) {
         Nstreams = Nr;
@@ -354,6 +369,8 @@ int main()
         Nstreams = Nt;
     }
 
+
+    vetor_c = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
     vetor_c = tx_qam_mapper(vetor_int,size);
 
     printf("\n\n[Vetor de Complexos Resultante de tx_qam_mapper]\n\n");
@@ -382,6 +399,102 @@ int main()
     printf("\n\n[-----------------------------------------------]\n\n");
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+    J = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+
+    for (int i = 0; i < Nr; i++)
+    {
+        H[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+        J[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+    }
+
+    H = channel_gen(Nr,H, Nt);
+
+    printf("-----------------------------SVD------------------------------\n");
+
+    printf("matriz H:\n\n");
+
+    for(int i=0; i<Nr; i++){
+        for(int j=0; j<Nt; j++){
+            printf("%.2f + %.2fj\t", H[i][j].real, H[i][j].img);
+        }
+        printf("\n\n");
+    }
+
+    J = channel_gen(Nr,J, Nt);
+
+    printf("matriz J:\n\n");
+
+    for(int i=0; i<Nr; i++){
+        for(int j=0; j<Nt; j++){
+            printf("%.2f + %.2fj\t", J[i][j].real, J[i][j].img);
+        }
+        printf("\n\n");
+    }
+
+    K = channel_transmission(rmax,rmin,J,H,Nr,Nt);
+
+    printf("matriz K:\n\n");
+
+    for(int i=0; i<Nr; i++){
+        for(int j=0; j<Nt; j++){
+            printf("%.2f + %.2fj\t", K[i][j].real, K[i][j].img);
+        }
+        printf("\n\n");
+    }
+
+    for (int i = 0; i < Nr; i++){
+            free(H[i]);
+            free(J[i]);
+        }
+        free(H);
+        free(J);
+    printf("---------------------------------------------------------------\n");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     printf("\n\n[Vetor de Inteiros Resultante de rx_layer_demapper]\n\n");
 
     for(int i = 0; i < size; i++){
@@ -391,28 +504,29 @@ int main()
 
     printf("\n\n[-----------------------------------------------]\n\n");
 
-    printf("\n\n[tamanho: %d]\n\n",tamanho);
+    printf("\n\n[tamanho: %d]\n\n",size);
 
-    int* vetor2_int = (int *)malloc(size * sizeof(int));
+    int* vetor_int2 = (int *)malloc(size * sizeof(int));;
+    vetor_int2 = rx_qam_demapper(o,size);
 
-    for(int j = 0; j < 4; j++){
-
-        vetor2_int = rx_qam_demapper(o,size);
-
-    }
     //erro está aqui, o código só reconhece 1 caracter/1 Byte então gravamos 1 byte por vez até o tamanho coincidir
 
     printf("\n\n[Vetor de Inteiros Resultante de rx_qam_demapper]\n\n");
 
-    for(int i = 0; i < size; i++){
-        printf("\t %d", vetor2_int[i]);
+        for(int i = 0; i < size; i++){
+        printf("\t %d", vetor_int2[i]);
     }
 
     printf("\n\n[-----------------------------------------------]\n\n");
 
     printf("\n\n[Escrevendo dados no Arquivo bin com rx_data_write]\n\n");
 
-    rx_data_write(vetor2_int,q_bytes);
+    rx_data_write(vetor_int2,q_bytes);
+
 
     free(vetor_int);
+     free(vetor_int2);
+    free(s_mapped);
+    free(o);
+
 }
