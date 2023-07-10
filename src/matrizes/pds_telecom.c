@@ -4,71 +4,6 @@
 #include "pds_telecom.h"
 #include <time.h>
 
-
-int main()
-{
-//    teste_svd();
-//    teste_mapper();
-//    teste_rw();
-
-    FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
-
-    fseek(arquivo_txt,0,SEEK_END);
-    long int q_bytes = ftell(arquivo_txt);
-    fseek(arquivo_txt,0,SEEK_SET);
-
-    int* vetor_int = (int *)malloc(q_bytes * sizeof(int));
-    vetor_int = tx_data_read(arquivo_txt,q_bytes);
-
-    long int tamanho = (q_bytes*2*((sizeof(arquivo_txt)) / 4)) - 4;
-
-    printf("\n\n[Vetor de Inteiros Resultante de tx_data_read]\n\n");
-
-    for(int i = 0; i < tamanho; i++){
-        printf("%d", vetor_int[i]);
-    }
-
-    printf("\n\n[--------------------------------------------]\n\n");
-
-    int Nr = 4, Nt = 4 ,size = tamanho, Nstreams,Nqam = 4;
-    struct Complex *vetor_c,*s_mapped, *o;
-
-    if (Nr < Nt) {
-        Nstreams = Nr;
-    } else {
-        Nstreams = Nt;
-    }
-
-    vetor_c = tx_qam_mapper(vetor_int,size);
-
-    printf("\n\n[Vetor de Complexos Resultante de tx_qam_mapper]\n\n");
-
-    for(int i = 0; i < size; i++){
-        printf(" %.4f %.4fj\n", vetor_c[i].real,vetor_c[i].img);
-    }
-
-    printf("\n[--------------------------------------------]\n\n");
-
-    s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
-    o = (struct Complex *)malloc(Nt * sizeof(struct Complex ));
-
-     for (int i = 0; i < size; i+= Nstreams)
-    {
-        s_mapped = tx_layer_mapper(i,vetor_c,s_mapped,Nstreams);
-        o = rx_layer_demapper(i,s_mapped,o,Nstreams);
-    }
-
-    vetor_int = rx_qam_demapper(o,size); //erro está aqui
-//
-//    printf("\n\nElementos do vetor Etapa2:\n\n");
-//    for (int i = 0; i < 2; i++) {
-//        printf("%d ", vetor_int[i]);
-//    }
-//    printf("\n");
-
-
-    free(vetor_int);
-}
 int teste_mapper()
 {
     int Nr = 4, Nt = 4 ,size = 4, Nstreams,Nqam = 4;
@@ -223,9 +158,10 @@ void teste_rw()
             printf("%d",vetor_bin[i]);
         }
 
+        printf("\n\n--------------------------------------------------------------------------\n\n");
+
         fclose(arquivo_txt);
         fclose(arquivo_bin);
-        printf("\n\n--------------------------------------------------------------------------\n\n");
 }
 
 int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
@@ -252,6 +188,8 @@ int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
 }
 
 void rx_data_write(int* entrada_vet_int, long int tamanho) {
+
+    tamanho -= 1;
 
     FILE* binario = fopen("src/matrizes/arquivo.bin", "wb");
 
@@ -308,7 +246,8 @@ int *rx_qam_demapper(struct Complex * symbol,int size){
 
     int *indice;
 
-    indice = (int*)malloc(size / 2* sizeof( int ));
+    indice = (int*)malloc(size * sizeof( int ));
+
     for (int i = 0; i < size; i++) {
         if (symbol[i].real == -1 && symbol[i].img == 1){
             indice[i] = 0;
@@ -378,4 +317,102 @@ struct Complex **channel_transmission(double rmax, double rmin, struct Complex *
 
     return rmtx;
 
+}
+
+int main()
+{
+//    teste_svd();
+//    teste_mapper();
+//    teste_rw();
+
+    FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
+
+    fseek(arquivo_txt,0,SEEK_END);
+    long int q_bytes = ftell(arquivo_txt);
+    fseek(arquivo_txt,0,SEEK_SET);
+
+    int* vetor_int = (int *)malloc(q_bytes * sizeof(int));
+
+    vetor_int = tx_data_read(arquivo_txt,q_bytes);
+
+    long int tamanho = (q_bytes*2*((sizeof(arquivo_txt)) / 4)) - 4;
+
+    printf("\n\n[Vetor de Inteiros Resultante de tx_data_read]\n\n");
+
+    for(int i = 0; i < tamanho; i++){
+        printf("\t %d", vetor_int[i]);
+    }
+
+    printf("\n\n[--------------------------------------------]\n\n");
+
+    int Nr = 4, Nt = 4 ,size = tamanho, Nstreams,Nqam = 4;
+    struct Complex *vetor_c,*s_mapped, *o;
+
+    if (Nr < Nt) {
+        Nstreams = Nr;
+    } else {
+        Nstreams = Nt;
+    }
+
+    vetor_c = tx_qam_mapper(vetor_int,size);
+
+    printf("\n\n[Vetor de Complexos Resultante de tx_qam_mapper]\n\n");
+
+    for(int i = 0; i < size; i++){
+        printf("\t\t %.4f %.4fj\n", vetor_c[i].real,vetor_c[i].img);
+    }
+
+    printf("\n[------------------------------------------------]\n\n");
+
+    s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
+    o = (struct Complex *)malloc(Nt * sizeof(struct Complex ));
+
+     for (int i = 0; i < size; i+= Nstreams){
+
+        s_mapped = tx_layer_mapper(i,vetor_c,s_mapped,Nstreams);
+        o = rx_layer_demapper(i,s_mapped,o,Nstreams);
+      }
+
+    printf("\n\n[Vetor de Complexos Resultante de tx_layer_mapper]\n\n");
+
+    for(int i = 0; i < size; i++){
+        printf("\t\t %.4f + %.4fj\n", s_mapped[i].real, s_mapped[i].img);
+    }
+
+    printf("\n\n[-----------------------------------------------]\n\n");
+
+
+    printf("\n\n[Vetor de Inteiros Resultante de rx_layer_demapper]\n\n");
+
+    for(int i = 0; i < size; i++){
+
+        printf("\t\t %.4f + %.4fj\n", o[i].real, o[i].img);
+      }
+
+    printf("\n\n[-----------------------------------------------]\n\n");
+
+    printf("\n\n[tamanho: %d]\n\n",tamanho);
+
+    int* vetor2_int = (int *)malloc(size * sizeof(int));
+
+    for(int j = 0; j < 4; j++){
+
+        vetor2_int = rx_qam_demapper(o,size);
+
+    }
+    //erro está aqui, o código só reconhece 1 caracter/1 Byte então gravamos 1 byte por vez até o tamanho coincidir
+
+    printf("\n\n[Vetor de Inteiros Resultante de rx_qam_demapper]\n\n");
+
+    for(int i = 0; i < size; i++){
+        printf("\t %d", vetor2_int[i]);
+    }
+
+    printf("\n\n[-----------------------------------------------]\n\n");
+
+    printf("\n\n[Escrevendo dados no Arquivo bin com rx_data_write]\n\n");
+
+    rx_data_write(vetor2_int,q_bytes);
+
+    free(vetor_int);
 }
