@@ -13,6 +13,7 @@ int main()
 {
 
    FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
+   
 
     fseek(arquivo_txt,0,SEEK_END);
     long int q_bytes = ftell(arquivo_txt);
@@ -20,7 +21,6 @@ int main()
 
 
     int* vetor_int = (int *)malloc(q_bytes * sizeof(int));
-
     vetor_int = tx_data_read(arquivo_txt,q_bytes);
 
     long int tamanho = (q_bytes*2*((sizeof(arquivo_txt)) / 4)) - 4;
@@ -114,24 +114,14 @@ int main()
     rx_data_write(vetor_int,q_bytes);
 
     FILE *arquivo_bin = fopen("src/matrizes/arquivo.bin","rb");
+	
+    vetor_int = tx_data_read(arquivo_bin,q_bytes);
 
-    int* vetor_int_bin = (int *)malloc(q_bytes * sizeof(int));
-
-    vetor_int_bin = tx_data_read(arquivo_bin,q_bytes);
-
-    printf("\n[Conteudo gerado pela função tx_data_read para arquivo.txt]\n\n");
+    printf("\n[Conteudo gerado pela função tx_data_read para arquivo.bin]\n\n");
 
     for(int i = 0; i < size; i++){
 
         printf("%d", vetor_int[i]);
-    }
-
-
-    printf("\n\n[Conteudo gerado pela função tx_data_read para arquivo.bin]\n\n");
-
-    for(int i = 0; i < size; i++){
-
-        printf("%d", vetor_int_bin[i]);
 
     }
     printf("\n\n");
