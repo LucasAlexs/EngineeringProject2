@@ -7,8 +7,27 @@
 int main()
 {
    //tx_data_read();
+    //tx_data_read();
+   FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
 
-   int Nr = 4, Nt = 4 ,size = 8188, Nstreams,Nqam = 4,est;
+    fseek(arquivo_txt,0,SEEK_END);
+    long int q_bytes = ftell(arquivo_txt);
+    fseek(arquivo_txt,0,SEEK_SET);
+
+
+    int* vetor_int = (int *)malloc(q_bytes * sizeof(int));
+
+    vetor_int = tx_data_read(arquivo_txt,q_bytes);
+
+    long int tamanho = (q_bytes*2*((sizeof(arquivo_txt)) / 4)) - 4;
+
+    printf("\n\n[Vetor de Inteiros Resultante de tx_data_read]\n\n");
+
+    for(int i = 0; i < tamanho; i++){
+        printf(" %d", vetor_int[i]);
+    }
+
+   int Nr = 4, Nt = 4 ,size = tamanho, Nstreams,Nqam = 4,est;
     struct Complex *s,*s_mapped, *o;
 
    if (Nr < Nt) {
@@ -17,29 +36,31 @@ int main()
         Nstreams = Nt;
     }
 
-    int *vector;
-    vector = (int *)malloc(size * sizeof(int));
+//    int *vector;
+//    vector = (int *)malloc(size * sizeof(int));
 
-    if (vector == NULL) {
-        printf("Erro ao alocar memória para o vetor.\n");
+    if (vetor_int == NULL) {
+        printf("\n\nErro ao alocar memória para o vetor.\n\n");
         return 1;
     }
 
-    for (int i = 0; i < size; i++) {
-        vector[i] = i % Nqam;
-    }
+///ALTERAÇÃO: vector = vetor_int
+//    for (int i = 0; i < size; i++) {
+//        vector[i] = i % Nqam;
+//    }
 
-    printf("Elementos do vetor Etapa1:\n");
-    for (int i = 0; i < size; i++) {
-        printf("%d ", vector[i]);
-    }
-    printf("\n");
+//    printf("\n\nElementos do vetor Etapa1:\n\n");
+//    for (int i = 0; i < size; i++) {
+//        printf(" %d", vetor_int[i]);
+//    }
+//    printf("\n");             ----> SUBSTITUIDO POR     printf("\n\n[Vetor de Inteiros Resultante de tx_data_read]\n\n");
+
 
 
     s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
     o = (struct Complex *)malloc(Nt * sizeof(struct Complex ));
 
-    s = tx_qam_mapper(vector,size);
+    s = tx_qam_mapper(vetor_int,size);
 
     for (int a = 0; a < size; a+= Nstreams)
     {
@@ -48,22 +69,29 @@ int main()
         o = rx_layer_demapper(a,s_mapped,o,Nstreams);
     }
 
-    vector = rx_qam_demapper(o,size);
+    vetor_int = rx_qam_demapper(o,size);
 
-    printf("Elementos do vetor Etapa2:\n");
+
+
+    printf("\n\nElementos do vetor Etapa2:\n\n");
     for (int i = 0; i < size; i++) {
-        printf("%d ", vector[i]);
+        printf(" %d", vetor_int[i]);
     }
     printf("\n");
 
     est = gera_estatisticas(s,o,size);
 
-    printf(" Número de símbolos QAM transmitidos: %d \n",size);
-    printf(" Número de símbolos QAM recebidos com erro: %d \n",est);
-    printf(" Porcentagem de símbolos QAM recebidos com erro: %d% \n",est/size);
+    printf("\n\n Número de símbolos QAM transmitidos: %d \n",size);
+    printf("\n Número de símbolos QAM recebidos com erro: %d \n",est);
+    printf("\n Porcentagem de símbolos QAM recebidos com erro: %d% \n\n",est/size);
 
-    free(vector);
+    printf("\n[Escrevendo dados no Arquivo bin com rx_data_write]\n\n");
+
+    rx_data_write(vetor_int,q_bytes);
+
+    free(vetor_int);
     free(s_mapped);
+    free(o);
 
     return 0;
 }
