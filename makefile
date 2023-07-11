@@ -33,3 +33,6 @@ clean:
 .PHONY:	doc
 doc:
 	doxygen
+.PHONY: webpage
+webpage: doc/html/index.html
+	start "doc/html/index.html"

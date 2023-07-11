@@ -1,6 +1,10 @@
 #ifndef PDS_TELECOM_H
 #define PDS_TELECOM_H
 
+/**### \typedef MIMO
+* - O sistema de comunicação MIMO - Multiple Input Multiple Output- está sendo utilizado para representar um sistema de comunicação digital.
+*/
+
 int * tx_data_read(FILE* entrada_arquivo, long int q_bytes);
 
 void rx_data_write(int* entrada_vet_int, long int tamanho);

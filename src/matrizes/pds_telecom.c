@@ -4,6 +4,11 @@
 #include "matrizes.h"
 #include "pds_telecom.h"
 
+//FUNCÕES
+/*
+*   -As funções denotadas por "tx" são as transmissoras, estão no início da comunicação digital, enquanto as denotadas por "rx" são as receptoras.
+*/
+
 int main()
 {
     int Nr = 4, Nt = 4 ,size = 12, Nstreams,Nqam = 4,est;
@@ -46,6 +51,8 @@ int main()
         return 1;
     }
 
+
+    //atribuição de valores para s_mapped, ld, o, H, U, S, V e s.
     s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
     ld = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
     o = (struct Complex *)malloc(Nt * sizeof(struct Complex ));
@@ -80,7 +87,7 @@ int main()
         lm = tx_layer_mapper(a,s,s_mapped,Nstreams);
 
         F = tx_precoder(lm,V,Nr, Nt, Nstreams);
-        
+
         Y = channel_transmission(rmax,rmin,F,H,Nr,Nt, Nstreams);
         free(F);
         W = rx_combiner(Y,U,Nr,Nt,Nstreams);
@@ -91,6 +98,7 @@ int main()
         free(Z);
     }
 
+    //valores recebidos
     vetor_int = rx_qam_demapper(o,size);
 
     printf("\n\n[Vetor de Inteiros Resultante de rx_qam_demapper]\n\n");
@@ -99,6 +107,7 @@ int main()
     }
     printf("\n");
 
+    //dados da transmissão
     est = gera_estatisticas(s,o,size);
 
     printf("\n\n Número de símbolos QAM transmitidos: %d \n",size);
@@ -141,6 +150,15 @@ int main()
     return 0;
 }
 
+/** função tx_data_read
+*   - Esta funçao faz a leitura dos dados que entram no sistema;
+*   - O arquivo selecionado é um arquivo de texto;
+*   - O código de cada caractere segue a tabela ASCII;
+*   - A função separa cada byte do arquivo em 4 números inteiros de 0 a 3 (00-11);
+*   - o valor retornado é um vetor.
+ * @param[in] int entrada_arquivo, q_bytes
+ * @param[out] vet_int
+*/
 int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
 
     int * vet_int = (int *)malloc(q_bytes * 4 * sizeof(int));
@@ -164,6 +182,13 @@ int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
     return vet_int;
 }
 
+/** função tx_qam_mapper
+*   - Os dados de entrada é um vetor dos binários do arquivo-texto selecionado;
+*   - Para cada elemento do vetor indice, verifica o seu valor e atribui valores correspondentes ao campo real e img da estruct complex de seu índice;
+*   - O tráfego do vetor de índices é feito em pacotes de 0 a 3 bits(00-11).
+ * @param[in] Complex indice, size
+ * @param[out] symbol
+*/
 struct Complex *tx_qam_mapper(int* indice, int size) {
     struct Complex *symbol;
 
@@ -219,6 +244,12 @@ void rx_data_write(int* entrada_vet_int, long int tamanho) {
     fclose(binario);
 }
 
+/** função rx_qam_demmaper
+*   - Desfaz o processamento feito pela função tx_qam_mapper;
+*   - Para cada elemento do vetor symbol é verificado os valores do campo real e img e atribui um valor corresponte do vetor de inteiro do mesmo índice.
+ * @param[in] int Complex *symbol, size
+ * @param[out] indice
+*/
 int *rx_qam_demapper(struct Complex * symbol,int size){
 
     int *indice;
@@ -243,6 +274,12 @@ int *rx_qam_demapper(struct Complex * symbol,int size){
     return indice;
 }
 
+/** função rx_layer_demapper
+*   - Desfaz o processamento feito pela função tx_layer_mapper;
+*   - Percorre cada elemento do vetor s_mapped e atribui valores aos campos real e img das estruturas no vetor s.
+ * @param[in] Complex a, Complex *s_mapped, Complex *s, Nstreams
+ * @param[out] s
+*/
 struct Complex *rx_layer_demapper(int a, struct Complex **s_mapped,struct Complex *s, int Nstreams){
 
     // Loop para percorrer os símbolos de entrada
@@ -254,6 +291,13 @@ struct Complex *rx_layer_demapper(int a, struct Complex **s_mapped,struct Comple
     return s;
 }
 
+/** função tx_layer_mapper
+*   - Mapeia os símbolos da função "tx_qam_mapper" para cada stream;
+*   - percorre os elementos do vetor s e atribui seus valores aos campos real e img das estruturas no vetor s_mapped;
+*   - O valor de entrada é um vetor de números complexos.
+ * @param[in] Complex a, Complex*s, Complex s_mapped, Nstreams
+ * @param[out] s_mapped
+*/
 struct Complex *tx_layer_mapper(int a, struct Complex *s,struct Complex *s_mapped, int Nstreams) {
 
     // Loop para percorrer os símbolos de entrada
@@ -265,6 +309,14 @@ struct Complex *tx_layer_mapper(int a, struct Complex *s,struct Complex *s_mappe
     return s_mapped;
 }
 
+/** função channel_gen
+*   - Gera uma matriz de elementos aleatórios que representa o canal H;
+*   - Possui dimensão é Nr x Nt (Número de antenas receptoras x antenas transmissoras);
+*   - Inicializa a semente do gerador de números aleatórios com o tempo atual;
+*   - Os elementos da matriz são gerados como números reais e com ponto flutuante, variando entre -1 e 1.
+ * @param[in] Complex Nr, Complex **H, Nt
+ * @param[out] H
+*/
 struct Complex **channel_gen(int Nr,struct Complex **H, int Nt) {
 
     // Gera os valores aleatórios para a matriz H
@@ -280,6 +332,15 @@ struct Complex **channel_gen(int Nr,struct Complex **H, int Nt) {
     return H;
 }
 
+/** função channel_transmission
+*   - Gera uma matriz que representa com ruído aleatório que ocorre durante a transmissão;
+*   - Os valores dessa matriz são um multiplicadores dos símbolos da matriz H;
+*   - Realiza a Operação produto matricial entre mtx_cod e H e armazena o resultado em rmtx;
+*   - percorre os elementos da matriz rmtx e adiciona um valor aleatório entre rmin e rmax aos campos real e img;
+*   - O valor dos máximos e mínimos do ruído pode ser ajustado através do parâmetro de entrada da função.
+ * @param[in] Complex rmax, rmin, Complex **mtx_cod, Complex **H, Nr, Nt
+ * @param[out] rmtx
+*/
 struct Complex **channel_transmission(double rmax, double rmin, struct Complex **mtx_cod, struct Complex **H,int Nr, int Nt, int Nstreams){
     struct Complex **rmtx;
 
@@ -294,6 +355,13 @@ struct Complex **channel_transmission(double rmax, double rmin, struct Complex *
 
 }
 
+/** função gera_estatísticas
+*   - Gera dados sobre a taxa de erros dos simbolos recebidos;
+*   - Os dados informados são: símbolos QAM transmitidos, símbolos QAM recebidos com erro e porcentagem dos símbolos QAM recebidos com erro;
+*   - A verificação é feita comparando os dados transmitidos na saída da função "tx-qam_mapper" com "rx_qam_demapper".
+ * @param[in] int Complex *s, Complex *o, size
+ * @param[out] result
+*/
 int gera_estatisticas(struct Complex *s,struct Complex *o, int size){
     int result = 0;
 
@@ -302,7 +370,7 @@ int gera_estatisticas(struct Complex *s,struct Complex *o, int size){
             result ++;
         }
     }
-    
+
     return result;
 }
 
