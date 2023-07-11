@@ -6,15 +6,13 @@
 
 int main()
 {
-    int Nr = 4, Nt = 4 ,size = 12, Nstreams,Nqam = 4,est;
+
+    int Nr = 4, Nt = 4 ,size , Nstreams,Nqam = 4,est;
     double rmax = 0, rmin = 0;
     struct Complex *s,*s_mapped, *o, *lm,*ld;
     struct Complex **H,**U,*S,**V;
     struct Complex **F, **Y, **W,*Z;
-   //tx_data_read();
-    //tx_data_read();
-   FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
-
+    FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
 
     fseek(arquivo_txt,0,SEEK_END);
     long int q_bytes = ftell(arquivo_txt);
@@ -27,11 +25,13 @@ int main()
 
     long int tamanho = (q_bytes*2*((sizeof(arquivo_txt)) / 4)) - 4;
 
-    printf("\n\n[Vetor de Inteiros Resultante de tx_data_read]\n\n");
+    printf("\n[Vetor de Inteiros Resultante de tx_data_read]\n\n");
 
     for(int i = 0; i < tamanho; i++){
         printf(" %d", vetor_int[i]);
     }
+    printf("\n");
+
 
    if (Nr < Nt) {
         Nstreams = Nr;
@@ -39,19 +39,16 @@ int main()
         Nstreams = Nt;
     }
 
-    int *vector2;
-
-    if (vector == NULL) {
-        printf("Erro ao alocar memória para o vetor.\n");
-
+    if (vetor_int == NULL) {
+        printf("\n\nErro ao alocar memória para o vetor.\n\n");
         return 1;
     }
-
+    
     s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
     ld = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
     o = (struct Complex *)malloc(Nt * sizeof(struct Complex ));
-
-    H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+    
+     H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
     for (int i = 0; i < Nt; i++){
         H[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
     }
@@ -72,13 +69,26 @@ int main()
     }
 
     calc_svd(H,U,S,V,Nr,Nt);
-
+    size = tamanho;
+    printf("%d\t %d",size, tamanho);
 
     s = tx_qam_mapper(vetor_int,size);
+
+    printf("\n\n[Vetor de Inteiros Resultante de tx_qam_mapper]\n\n");
+    for (int i = 0; i < size; i++) {
+        printf(" %0.2f\t%0.2f\n", s[i].real, s[i].img);
+    }
+    printf("\n");
+
 
     for (int a = 0; a < size; a+= Nstreams)
     {
         lm = tx_layer_mapper(a,s,s_mapped,Nstreams);
+        printf("\n\n[Vetor de Inteiros Resultante de tx_layrt_mapper]\n\n");
+        for (int i = 0; i < Nstreams; i++) {
+            printf(" %0.2f\t%0.2f\n", lm[i].real, lm[i].img);
+        }
+        printf("\n");
 
         F = tx_precoder(lm,V,Nr, Nt, Nstreams);
         
@@ -91,12 +101,10 @@ int main()
         o = rx_feq(a,S,Z,Nr,Nt,Nstreams,size);
         free(Z);
     }
-
+//
     vetor_int = rx_qam_demapper(o,size);
 
-
-
-    printf("\n\nElementos do vetor Etapa2:\n\n");
+    printf("\n\n[Vetor de Inteiros Resultante de rx_qam_demapper]\n\n");
     for (int i = 0; i < size; i++) {
         printf(" %d", vetor_int[i]);
     }
@@ -108,10 +116,35 @@ int main()
     printf("\n Número de símbolos QAM recebidos com erro: %d \n",est);
     printf("\n Porcentagem de símbolos QAM recebidos com erro: %d% \n\n",est/size);
 
-    printf("\n[Escrevendo dados no Arquivo bin com rx_data_write]\n\n");
+    printf("\n[Escrevendo dados no Arquivo.bin com rx_data_write]\n\n");
 
     rx_data_write(vetor_int,q_bytes);
 
+    FILE *arquivo_bin = fopen("src/matrizes/arquivo.bin","rb");
+
+    int* vetor_int_bin = (int *)malloc(q_bytes * sizeof(int));
+
+    vetor_int_bin = tx_data_read(arquivo_bin,q_bytes);
+
+    printf("\n[Conteudo gerado pela função tx_data_read para arquivo.txt]\n\n");
+
+    for(int i = 0; i < size; i++){
+
+        printf("%d", vetor_int[i]);
+    }
+
+
+    printf("\n\n[Conteudo gerado pela função tx_data_read para arquivo.bin]\n\n");
+
+    for(int i = 0; i < size; i++){
+
+        printf("%d", vetor_int_bin[i]);
+
+    }
+    printf("\n\n");
+
+    fclose(arquivo_bin);
+    fclose(arquivo_txt);
     free(vetor_int);
     free(s_mapped);
     free(o);
@@ -331,4 +364,3 @@ struct Complex *rx_feq(int a,struct Complex *S,struct Complex *W,int Nr, int Nt,
 
     return rmtx;
 }
-

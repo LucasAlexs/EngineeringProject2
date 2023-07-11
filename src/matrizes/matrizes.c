@@ -941,7 +941,7 @@ void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex *S, str
         {
             if(matrix[i][j].img != 0)
             {
-                printf("Aviso: A função usará apenas a parte real da matriz\n\n");
+                printf("\nAviso: A função usará apenas a parte real da matriz\n");
             }
             break;
         }
@@ -998,7 +998,7 @@ void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex *S, str
     }
     else
     {
-        printf("A operacao svd nao pode ser concluída porque o numero de linhas eh menor que o numero de colunas\n\n");
+        printf("\nA operacao svd nao pode ser concluída porque o numero de linhas eh menor que o numero de colunas\n\n");
     }
 }
 
