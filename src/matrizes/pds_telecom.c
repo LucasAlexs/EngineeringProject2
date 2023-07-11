@@ -145,39 +145,6 @@ int main()
     return 0;
 }
 
-/** Função tx_data_read
-*   - Esta funçao faz a leitura dos dados que entram no sistema;
-*   - O arquivo selecionado é um arquivo de texto;
-*   - O código de cada caractere segue a tabela ASCII;
-*   - A função separa cada byte do arquivo em 4 números inteiros de 0 a 3 (00-11);
-*   - o valor retornado é um vetor.
- * @param[in] int entrada_arquivo, q_bytes
- * @param[out] vet_int
-*/
-
-int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
-
-    int * vet_int = (int *)malloc(q_bytes * 4 * sizeof(int));
-    if (vet_int == NULL) {
-        printf("Erro na alocação de memória\n");
-        fclose(entrada_arquivo);
-        return (int *)1;
-    }
-
-    for (int i = 0; i < q_bytes; i++) {
-        char byte;
-        fread(&byte, sizeof(byte), 1, entrada_arquivo);
-
-        for (int j = 0; j <= 7; j=j+2) {
-            int bit = (byte >> j) & 3;
-            vet_int[(i*4) + (j/2)]= bit;
-        }
-
-    }
-
-    return vet_int;
-}
-
 /** função tx_data_read
 *   - Esta funçao faz a leitura dos dados que entram no sistema;
 *   - O arquivo selecionado é um arquivo de texto;
