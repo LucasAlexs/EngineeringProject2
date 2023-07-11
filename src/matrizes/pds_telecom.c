@@ -26,7 +26,7 @@ int main(){
     return 0;
 }
 
-/** função chennel_simulator
+/** função channel_simulator
 *
 *   - Esta função simula um sistema de transmissão usando modulação QAM.
 *   Ela lê dados do arquivo “arquivo.txt” e os converte em um vetor de inteiros usando a função tx_data_read.
