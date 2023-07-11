@@ -21,6 +21,6 @@ struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int N
 
 struct Complex **rx_combiner(struct Complex **Y,struct Complex **U, int Nr, int Nt, int Nstreams);
 
-struct Complex *rx_feq(int a,struct Complex *S,struct Complex *W,int Nr, int Nt, int Nstreams);
+struct Complex *rx_feq(int a,struct Complex *S,struct Complex *W,int Nr, int Nt, int Nstreams,int size);
 
 #endif

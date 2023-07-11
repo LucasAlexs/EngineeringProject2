@@ -1218,6 +1218,48 @@ void teste_calc_svd()
     free(matrix4);
 }
 
+struct Complex **inversa(struct Complex** matrix, int size) {
+    struct Complex** inversa = (struct Complex**)malloc(size * sizeof(struct Complex*));
+    for (int i = 0; i < size; i++) {
+        inversa[i] = (struct Complex*)malloc(size * sizeof(struct Complex));
+        for (int j = 0; j < size; j++) {
+            if(i == j){
+                inversa[i][j].real = 1; 
+                inversa[i][j].img = 0;
+            }
+            
+            else{
+                inversa[i][j].real = 0; 
+                inversa[i][j].img = 0;
+            }
+        }
+    }
+
+    for (int k = 0; k < size; k++) {
+        struct Complex pivot = matrix[k][k];
+        for (int j = 0; j < size; j++) {
+            matrix[k][j].real /= pivot.real;
+            matrix[k][j].img /= pivot.real;
+            inversa[k][j].real /= pivot.real;
+            inversa[k][j].img /= pivot.real;
+        }
+        
+        for (int i = 0; i < size; i++) {
+            if (i != k) {
+                struct Complex factor = matrix[i][k];
+                for (int j = 0; j < size; j++) {
+                    matrix[i][j].real -= factor.real * matrix[k][j].real - factor.img * matrix[k][j].img;
+                    matrix[i][j].img -= factor.real * matrix[k][j].img + factor.img * matrix[k][j].real;
+                    inversa[i][j].real -= factor.real * inversa[k][j].real - factor.img * inversa[k][j].img;
+                    inversa[i][j].img -= factor.real * inversa[k][j].img + factor.img * inversa[k][j].real;
+                }
+            }
+        }
+    }
+
+    return inversa;
+}
+
 void teste_todos()
 {
     printf("==========Teste Global==========\n\n");
