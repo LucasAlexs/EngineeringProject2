@@ -11,14 +11,13 @@
 
 int main()
 {
-    int Nr = 4, Nt = 4 ,size = 12, Nstreams,Nqam = 4,est;
+
+    int Nr = 4, Nt = 4 ,size , Nstreams,Nqam = 4,est;
     double rmax = 0, rmin = 0;
     struct Complex *s,*s_mapped, *o, *lm,*ld;
     struct Complex **H,**U,*S,**V;
     struct Complex **F, **Y, **W,*Z;
-   //tx_data_read();
-   FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
-
+    FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
 
     fseek(arquivo_txt,0,SEEK_END);
     long int q_bytes = ftell(arquivo_txt);
@@ -31,11 +30,13 @@ int main()
 
     long int tamanho = (q_bytes*2*((sizeof(arquivo_txt)) / 4)) - 4;
 
-    printf("\n\n[Vetor de Inteiros Resultante de tx_data_read]\n\n");
+    printf("\n[Vetor de Inteiros Resultante de tx_data_read]\n\n");
 
     for(int i = 0; i < tamanho; i++){
         printf(" %d", vetor_int[i]);
     }
+    printf("\n");
+
 
    if (Nr < Nt) {
         Nstreams = Nr;
@@ -43,21 +44,17 @@ int main()
         Nstreams = Nt;
     }
 
-    int *vector2;
-
-    if (vector == NULL) {
-        printf("Erro ao alocar memória para o vetor.\n");
-
+    if (vetor_int == NULL) {
+        printf("\n\nErro ao alocar memória para o vetor.\n\n");
         return 1;
     }
-
 
     //atribuição de valores para s_mapped, ld, o, H, U, S, V e s.
     s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
     ld = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
     o = (struct Complex *)malloc(Nt * sizeof(struct Complex ));
-
-    H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+    
+     H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
     for (int i = 0; i < Nt; i++){
         H[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
     }
@@ -78,9 +75,17 @@ int main()
     }
 
     calc_svd(H,U,S,V,Nr,Nt);
-
+    size = tamanho;
+    printf("%d\t %d",size, tamanho);
 
     s = tx_qam_mapper(vetor_int,size);
+
+    printf("\n\n[Vetor de Inteiros Resultante de tx_qam_mapper]\n\n");
+    for (int i = 0; i < size; i++) {
+        printf(" %0.2f\t%0.2f\n", s[i].real, s[i].img);
+    }
+    printf("\n");
+
 
     for (int a = 0; a < size; a+= Nstreams)
     {
@@ -99,6 +104,7 @@ int main()
     }
 
     //valores recebidos
+
     vetor_int = rx_qam_demapper(o,size);
 
     printf("\n\n[Vetor de Inteiros Resultante de rx_qam_demapper]\n\n");
@@ -216,6 +222,7 @@ struct Complex *tx_qam_mapper(int* indice, int size) {
     return symbol;
 }
 
+
 void rx_data_write(int* entrada_vet_int, long int tamanho) {
 
     tamanho -= 1;
@@ -280,6 +287,7 @@ int *rx_qam_demapper(struct Complex * symbol,int size){
  * @param[in] Complex a, Complex *s_mapped, Complex *s, Nstreams
  * @param[out] s
 */
+
 struct Complex *rx_layer_demapper(int a, struct Complex **s_mapped,struct Complex *s, int Nstreams){
 
     // Loop para percorrer os símbolos de entrada
@@ -387,10 +395,17 @@ struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int N
         x_aux[i][0].img = x[i].img;
     }
     x_aux2 = hermitiano(V,Nt,Nt);
+    
+    printf("\n");
 
 
     rmtx = produto_matricial(V,x_aux2,Nt,Nstreams,Nt,1);
-
+    printf("\n\n[Vetor de Inteiros Resultante de tx_lprecoder]\n\n");
+        for (int i = 0; i < Nt; i++) {
+            for (int j = 0; j < 1; j++) {
+                printf(" %0.2f\t%0.2f\n", rmtx[i][j].real, rmtx[i][j].img);
+            }
+        }
     free(x_aux);
 
     return rmtx;
@@ -421,4 +436,3 @@ struct Complex *rx_feq(int a,struct Complex *S,struct Complex *W,int Nr, int Nt,
 
     return rmtx;
 }
-

@@ -2,7 +2,7 @@
 #define PDS_TELECOM_H
 
 /**### \typedef MIMO
-* - O sistema de comunicaÁ„o MIMO - Multiple Input Multiple Output- est· sendo utilizado para representar um sistema de comunicaÁ„o digital.
+* - O sistema de comunica√ß√£o MIMO - Multiple Input Multiple Output- est√° sendo utilizado para representar um sistema de comunica√ß√£o digital.
 */
 
 int * tx_data_read(FILE* entrada_arquivo, long int q_bytes);
