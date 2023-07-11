@@ -4,39 +4,57 @@
 #include "matrizes.h"
 #include "pds_telecom.h"
 
-//FUNCÕES
-/*
-*   -As funções denotadas por "tx" são as transmissoras, estão no início da comunicação digital, enquanto as denotadas por "rx" são as receptoras.
+/** FUNCÃO MAIN
+*
+*   - Esta função simula um sistema de transmissão usando modulação QAM.
+*   Ela lê dados do arquivo “arquivo.txt” e os converte em um vetor de inteiros usando a função tx_data_read.
+*   Os dados são convertidos para números complexos pela função tx_qam_mapper e então mapeados para símbolos QAM usando a função tx_layer_mapper.
+*   Os os elementos do vetor s_mapped, que é a saída de tx_layer_mapper, são transmitidos através de um canal gerado pela função channel_gen, transmitidos por channel_transmission e recebidos pelo receptor rx_combiner.
+*   Os sinais recebidos são convertidos pela funação rx_layer_demapper, para simbolos symbol.
+*   Esses símbolos são então operados peal função rx_feq, possibilitando assim que a função rx_qam_demapper demapeie os sinais
+*   Então estatísticas sobre a transmissão são geradas usando a função gera_estatisticas.
+*   Finalmente, os dados recebidos são escritos em um arquivo chamado “arquivo.bin” usando a função rx_data_write.
+*
+*   - As funções denotadas por "tx" são as transmissoras, estão no início da comunicação digital, enquanto as denotadas por "rx" são as receptoras.
+*
+*   - A ordem de execução é a seguinte: tx_data_read(), tx_data_padding(),tx_qam_mapper(), tx_layer_mapper(), tx_precoder(), channel_gen(), channel_transmission(), rx_combiner(), rx_layer_demapper(), rx_feq(), rx_qam_demapper(), rx_data_padding(), rx_data_write().
 */
 
 int main()
 {
+    // Declaração de variáveis e ponteiros
     int Nr = 4, Nt = 4 ,size = 12, Nstreams,Nqam = 4,est;
     double rmax = 0, rmin = 0;
     struct Complex *s,*s_mapped, *o, *lm,*ld;
     struct Complex **H,**U,*S,**V;
     struct Complex **F, **Y, **W,*Z;
+
    //tx_data_read();
+   // Abertura do arquivo "arquivo.txt" em modo de leitura binária
    FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
 
-
+    // Determinação do número de bytes no arquivo
     fseek(arquivo_txt,0,SEEK_END);
     long int q_bytes = ftell(arquivo_txt);
     fseek(arquivo_txt,0,SEEK_SET);
 
-
+    // Alocação dinâmica de memória para o vetor de inteiros
     int* vetor_int = (int *)malloc(q_bytes * sizeof(int));
 
+    // Leitura dos dados do arquivo e armazenamento no vetor de inteiros
     vetor_int = tx_data_read(arquivo_txt,q_bytes);
 
+    // Cálculo do tamanho do vetor de inteiros
     long int tamanho = (q_bytes*2*((sizeof(arquivo_txt)) / 4)) - 4;
 
+    // Impressão dos valores do vetor de inteiros na tela
     printf("\n\n[Vetor de Inteiros Resultante de tx_data_read]\n\n");
 
     for(int i = 0; i < tamanho; i++){
         printf(" %d", vetor_int[i]);
     }
 
+    // Verificação se o número de antenas receptoras é menor que o número de antenas transmissoras
    if (Nr < Nt) {
         Nstreams = Nr;
     } else {
@@ -52,7 +70,7 @@ int main()
     }
 
 
-    //atribuição de valores para s_mapped, ld, o, H, U, S, V e s.
+    // Alocação dinâmica de memória para vários ponteiros
     s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
     ld = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
     o = (struct Complex *)malloc(Nt * sizeof(struct Complex ));
@@ -62,6 +80,7 @@ int main()
         H[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
     }
 
+    // Geração da matriz do canal H
     H = channel_gen(Nr,H,Nt);
 
     U = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
@@ -69,45 +88,59 @@ int main()
         U[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
     }
 
+    // Alocação dinâmica de memória para o vetor S
     S = (struct Complex *)malloc(Nt * sizeof(struct Complex));
 
+    // Alocação dinâmica de memória para a matriz V
     V = (struct Complex **)malloc(Nt * sizeof(struct Complex *));
     for (int i = 0; i < Nt; i++)
     {
         V[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
     }
 
+    // Cálculo da decomposição em valores singulares (SVD) da matriz H
     calc_svd(H,U,S,V,Nr,Nt);
 
-
+    // Mapeamento dos dados do vetor de inteiros para símbolos QAM
     s = tx_qam_mapper(vetor_int,size);
 
+    // Processamento de cada grupo de símbolos
     for (int a = 0; a < size; a+= Nstreams)
     {
+        // Mapeamento dos símbolos para camadas
         lm = tx_layer_mapper(a,s,s_mapped,Nstreams);
 
+        // Pré-codificação dos símbolos usando a matriz V da decomposição SVD
         F = tx_precoder(lm,V,Nr, Nt, Nstreams);
 
+         // Transmissão dos símbolos pré-codificados através do canal gerado pela função channel_gen
         Y = channel_transmission(rmax,rmin,F,H,Nr,Nt, Nstreams);
         free(F);
+
+        // Combinação dos sinais recebidos usando a matriz U da decomposição SVD
         W = rx_combiner(Y,U,Nr,Nt,Nstreams);
         free(Y);
+
+        // Demapeamento das camadas para símbolos QAM
         Z = rx_layer_demapper(a,W,ld,Nstreams);
         free(W);
+
+        // Equalização dos símbolos QAM recebidos
         o = rx_feq(a,S,Z,Nr,Nt,Nstreams,size);
         free(Z);
     }
 
-    //valores recebidos
+    // Demapeamento dos símbolos QAM recebidos para dados inteiros
     vetor_int = rx_qam_demapper(o,size);
 
+    // Impressão dos valores do vetor de inteiros na tela
     printf("\n\n[Vetor de Inteiros Resultante de rx_qam_demapper]\n\n");
     for (int i = 0; i < size; i++) {
         printf(" %d", vetor_int[i]);
     }
     printf("\n");
 
-    //dados da transmissão
+    // Geração de estatísticas sobre a transmissão
     est = gera_estatisticas(s,o,size);
 
     printf("\n\n Número de símbolos QAM transmitidos: %d \n",size);
@@ -116,14 +149,19 @@ int main()
 
     printf("\n[Escrevendo dados no Arquivo.bin com rx_data_write]\n\n");
 
+    // Escrita dos dados recebidos no arquivo "arquivo.bin"
     rx_data_write(vetor_int,q_bytes);
 
+    // Abertura do arquivo "arquivo.bin" em modo de leitura binária
     FILE *arquivo_bin = fopen("src/matrizes/arquivo.bin","rb");
 
+    // Alocação dinâmica de memória para o vetor de inteiros
     int* vetor_int_bin = (int *)malloc(q_bytes * sizeof(int));
 
+    // Leitura dos dados do arquivo "arquivo.bin" e armazenamento no vetor de inteiros
     vetor_int_bin = tx_data_read(arquivo_bin,q_bytes);
 
+    // Impressão dos valores do vetor de inteiros lidos do arquivo "arquivo.txt" na tela
     printf("\n[Conteudo gerado pela função tx_data_read para arquivo.txt]\n\n");
 
     for(int i = 0; i < size; i++){
@@ -131,7 +169,7 @@ int main()
         printf("%d", vetor_int[i]);
     }
 
-
+    // Impressão dos valores do vetor de inteiros lidos do arquivo "arquivo.bin" na tela
     printf("\n\n[Conteudo gerado pela função tx_data_read para arquivo.bin]\n\n");
 
     for(int i = 0; i < size; i++){
@@ -141,6 +179,7 @@ int main()
     }
     printf("\n\n");
 
+    // Fechamento dos arquivos e liberação da memória alocada dinamicamente
     fclose(arquivo_bin);
     fclose(arquivo_txt);
     free(vetor_int);
@@ -150,7 +189,7 @@ int main()
     return 0;
 }
 
-/** função tx_data_read
+/** Função tx_data_read
 *   - Esta funçao faz a leitura dos dados que entram no sistema;
 *   - O arquivo selecionado é um arquivo de texto;
 *   - O código de cada caractere segue a tabela ASCII;
@@ -182,7 +221,7 @@ int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
     return vet_int;
 }
 
-/** função tx_qam_mapper
+/** Função tx_qam_mapper
 *   - Os dados de entrada é um vetor dos binários do arquivo-texto selecionado;
 *   - Para cada elemento do vetor indice, verifica o seu valor e atribui valores correspondentes ao campo real e img da estruct complex de seu índice;
 *   - O tráfego do vetor de índices é feito em pacotes de 0 a 3 bits(00-11).
@@ -216,6 +255,15 @@ struct Complex *tx_qam_mapper(int* indice, int size) {
     return symbol;
 }
 
+/** Função rx_data_write
+*   - Escreve os dados em um arquivo binário, utilizando recuperados de um vetor de inteiros dos bytes originais;
+*   - Recebe uma sequência de dígitos de 0 a 3;
+*   - A função então percorre cada elemento do vetor de inteiros e converte cada grupo de 4 inteiros em um único byte;
+*   - Operação OR bit a bit;
+*   - A função então executa a operação OR entre o valor de byte e o resultado da operação de deslocamento à esquerda do valor de bit por (2 * j) posições e atribui o resultado ao valor de byte
+*   - O byte resultante é escrito no arquivo binário usando a função fwrite.
+ *  @param[in] int entrada_vet_int, tamanho
+*/
 void rx_data_write(int* entrada_vet_int, long int tamanho) {
 
     tamanho -= 1;
@@ -244,7 +292,7 @@ void rx_data_write(int* entrada_vet_int, long int tamanho) {
     fclose(binario);
 }
 
-/** função rx_qam_demmaper
+/** Função rx_qam_demmaper
 *   - Desfaz o processamento feito pela função tx_qam_mapper;
 *   - Para cada elemento do vetor symbol é verificado os valores do campo real e img e atribui um valor corresponte do vetor de inteiro do mesmo índice.
  * @param[in] int Complex *symbol, size
@@ -274,7 +322,7 @@ int *rx_qam_demapper(struct Complex * symbol,int size){
     return indice;
 }
 
-/** função rx_layer_demapper
+/** Função rx_layer_demapper
 *   - Desfaz o processamento feito pela função tx_layer_mapper;
 *   - Percorre cada elemento do vetor s_mapped e atribui valores aos campos real e img das estruturas no vetor s.
  * @param[in] Complex a, Complex *s_mapped, Complex *s, Nstreams
@@ -291,7 +339,7 @@ struct Complex *rx_layer_demapper(int a, struct Complex **s_mapped,struct Comple
     return s;
 }
 
-/** função tx_layer_mapper
+/** Função tx_layer_mapper
 *   - Mapeia os símbolos da função "tx_qam_mapper" para cada stream;
 *   - percorre os elementos do vetor s e atribui seus valores aos campos real e img das estruturas no vetor s_mapped;
 *   - O valor de entrada é um vetor de números complexos.
@@ -309,7 +357,7 @@ struct Complex *tx_layer_mapper(int a, struct Complex *s,struct Complex *s_mappe
     return s_mapped;
 }
 
-/** função channel_gen
+/** Função channel_gen
 *   - Gera uma matriz de elementos aleatórios que representa o canal H;
 *   - Possui dimensão é Nr x Nt (Número de antenas receptoras x antenas transmissoras);
 *   - Inicializa a semente do gerador de números aleatórios com o tempo atual;
@@ -332,7 +380,7 @@ struct Complex **channel_gen(int Nr,struct Complex **H, int Nt) {
     return H;
 }
 
-/** função channel_transmission
+/** Função channel_transmission
 *   - Gera uma matriz que representa com ruído aleatório que ocorre durante a transmissão;
 *   - Os valores dessa matriz são um multiplicadores dos símbolos da matriz H;
 *   - Realiza a Operação produto matricial entre mtx_cod e H e armazena o resultado em rmtx;
@@ -355,7 +403,7 @@ struct Complex **channel_transmission(double rmax, double rmin, struct Complex *
 
 }
 
-/** função gera_estatísticas
+/** Função gera_estatísticas
 *   - Gera dados sobre a taxa de erros dos simbolos recebidos;
 *   - Os dados informados são: símbolos QAM transmitidos, símbolos QAM recebidos com erro e porcentagem dos símbolos QAM recebidos com erro;
 *   - A verificação é feita comparando os dados transmitidos na saída da função "tx-qam_mapper" com "rx_qam_demapper".
@@ -373,7 +421,15 @@ int gera_estatisticas(struct Complex *s,struct Complex *o, int size){
 
     return result;
 }
-
+/** Função tx_precoder
+*-  A variável x_aux é atribuída ao resultado da chamada da função malloc com o parâmetro Nstreams * sizeof(struct Complex *);
+*-  Dentro do primeiro laço o elemento de índice [i] de x_aux é atribuído ao resultado da função malloc com o parâmetro 1 * sizeof(struct Complex);
+*-  No próximo laço as propriedades real e img do elemento de índice [0] do elemento de índice [i] de x_aux são atribuídas aos valores das propriedades real e img, respectivamente, do elemento de índice [i] de x;
+*-  A variável x_aux2 é atribuída ao resultado da função hermitiano;
+*-  A variável rmtx é atribuída ao resultado da função produto_matricial.
+ *  @param[in] Complex Complex *x, Complex **V, Nr, Nstreams
+ *  #param[out] rmtx
+*/
 struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int Nt, int Nstreams){
     struct Complex **x_aux,**x_aux2,**rmtx;
 
@@ -396,6 +452,14 @@ struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int N
     return rmtx;
 }
 
+/** Função rx_combiner
+*-   Pré-codifica os códigos antes deles serem transmitidos;
+*-   A variável aux é atribuída ao resultado da função hermitiano;
+*-   A variável rmtx é atribuída ao resultado da função produto_matricial.
+ * @param[in] Complex Complex **Y, Complex **U, Nr, Ny, Nstreams
+ * @param[out] rmtx
+*/
+
 struct Complex **rx_combiner(struct Complex **Y,struct Complex **U, int Nr, int Nt, int Nstreams){
     struct Complex **rmtx, **aux;
 
@@ -407,6 +471,13 @@ struct Complex **rx_combiner(struct Complex **Y,struct Complex **U, int Nr, int 
     return rmtx;
 }
 
+/** Função rx_feq
+*-  A variável rmtx é atribuída ao resultado da função malloc com o parâmetro size * sizeof(struct Complex);
+*-  A função então executa um loop for que itera de 0 até Nstreams;
+*-  As propriedades real e img do elemento de índice [a + i] de rmtx são atribuídas aos valores de divisão das propriedades real e img do elemento de índice [i] de W, respectivamente, pela propriedade real do elemento de índice [i] de S.
+ *@param[in] Complex a, Complex *s, Complex *W, Nr, Nt, Nstreams, size
+ *@param[out] rmtx
+*/
 
 struct Complex *rx_feq(int a,struct Complex *S,struct Complex *W,int Nr, int Nt, int Nstreams,int size){
     struct Complex *rmtx;
