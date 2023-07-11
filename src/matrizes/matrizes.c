@@ -1101,46 +1101,140 @@ void teste_calc_svd()
 
 
     // Inicialização das matrizes
+    printf("Matriz 1:\n");
     for (i = 0; i < l1; i++)
     {
         for (j = 0; j < c1; j++)
         {
             matrix1[i][j].real = (rand() % 5) - 5;
             matrix1[i][j].img = 0;
+            printf("%.2f + %.2fi ", matrix1[i][j].real, matrix1[i][j].img);
         }
+        printf("\n");
     }
 
+    printf("\nMatriz 2:\n");
     for (i = 0; i < l2; i++)
     {
         for (j = 0; j < c2; j++)
         {
             matrix2[i][j].real = (rand() % 5) - 5;
             matrix2[i][j].img = 0;
+            printf("%%.2f + %.2fi ", matrix2[i][j].real, matrix2[i][j].img);
         }
+        printf("\n");
     }
 
+    printf("\nMatriz 3:\n");
     for (i = 0; i < l3; i++)
     {
         for (j = 0; j < c3; j++)
         {
             matrix3[i][j].real = (rand() % 5) - 5;
             matrix3[i][j].img = 0;
+            printf("%.2f + %.2fi ", matrix3[i][j].real, matrix3[i][j].img);
         }
+        printf("\n");
     }
 
+    printf("\nMatriz 4:\n");
     for (i = 0; i < l4; i++)
     {
         for (j = 0; j < c4; j++)
         {
             matrix4[i][j].real = (rand() % 5) - 5;
-            matrix4[i][j].img = 1;   //Aqui definimos a matrix complexa a ser testada
+            matrix4[i][j].img = 1; // Aqui definimos a matriz complexa a ser testada
+            printf("%.2f + %.2fi ", matrix4[i][j].real, matrix4[i][j].img);
         }
+        printf("\n");
     }
 
     calc_svd(matrix1, U1, S1, V1, l1, c1); // Chamada da função calc_svd para matriz 3 X 2
     calc_svd(matrix2, U2, S2, V2,  l2, c2); // Chamada da função calc_svd para matriz 4 X 4
     calc_svd(matrix3, U3, S3, V3,  l3, c3); // Chamada da função calc_svd para matriz 6 X 5
     calc_svd(matrix4, U4, S4, V4,  l4, c4); // Chamada da função calc_svd para matriz 5 X 6
+
+    printf("Matriz U1:\n");
+    for (i = 0; i < l1; i++) {
+        for (j = 0; j < c1; j++) {
+            printf("%.2f + %.2fi ", U1[i][j].real, U1[i][j].img);
+        }
+        printf("\n");
+    }
+    printf("\nVetor S1:\n");
+    for (i = 0; i < c1; i++) {
+        printf("%.2f + %.2fi\n", S1[i].real, S1[i].img);
+    }
+    printf("\nMatriz V1:\n");
+    for (i = 0; i < c1; i++) {
+        for (j = 0; j < c1; j++) {
+            printf("%.2f + %.2fi ", V1[i][j].real, V1[i][j].img);
+        }
+        printf("\n");
+    }
+
+    printf("\nMatriz U2:\n");
+    for (int i = 0; i < l2; i++) {
+        for (int j = 0; j < c2; j++) {
+            printf("%.2f + %.2fi ", U2[i][j].real, U2[i][j].img);
+        }
+        printf("\n");
+    }
+
+    printf("\nVetor S2:\n");
+    for (int i = 0; i < c2; i++) {
+        printf("%.2f + %.2fi\n", S2[i].real, S2[i].img);
+    }
+
+    printf("\nMatriz V2:\n");
+    for (int i = 0; i < c2; i++) {
+        for (int j = 0; j < c2; j++) {
+            printf("%.2f + %.2fi ", V2[i][j].real, V2[i][j].img);
+        }
+        printf("\n");
+    }
+
+    printf("\nMatriz U3:\n");
+    for (int i = 0; i < l3; i++) {
+        for (int j = 0; j < c3; j++) {
+            printf("%.2f + %.2fi ", U3[i][j].real, U3[i][j].img);
+        }
+        printf("\n");
+    }
+
+    printf("\nVetor S3:\n");
+    for (int i = 0; i < c3; i++) {
+        printf("%.2f + %.2fi\n", S3[i].real, S3[i].img);
+    }
+
+    printf("\nMatriz V3:\n");
+    for (int i = 0; i < c3; i++) {
+        for (int j = 0; j < c3; j++) {
+            printf("%.2f + %.2fi ", V3[i][j].real, V3[i][j].img);
+        }
+        printf("\n");
+    }
+
+    printf("\nMatriz U4:\n");
+    for (int i = 0; i < l4; i++) {
+        for (int j = 0; j < c4; j++) {
+            printf("%.2f + %.2fi ", U4[i][j].real, U4[i][j].img);
+        }
+        printf("\n");
+    }
+
+    printf("\nVetor S4:\n");
+    for (int i = 0; i < c4; i++) {
+        printf("%.2f + %.2fi\n", S4[i].real, S4[i].img);
+    }
+
+    printf("\nMatriz V4:\n");
+    for (int i = 0; i < c4; i++) {
+        for (int j = 0; j < c4; j++) {
+            printf("%.2f + %.2fi ", V4[i][j].real, V4[i][j].img);
+        }
+        printf("\n");
+    }
 
      // desalocar a memória alocada
      // desalocar a memória alocada
@@ -1208,6 +1302,7 @@ void teste_calc_svd()
     free(matrix3);
     free(matrix4);
 }
+
 
 void teste_todos()
 {
