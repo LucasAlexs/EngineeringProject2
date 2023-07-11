@@ -12,6 +12,7 @@ int main()
     struct Complex **H,**U,*S,**V;
     struct Complex **F, **Y, **W,*Z;
    //tx_data_read();
+    //tx_data_read();
    FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
 
 
@@ -93,7 +94,9 @@ int main()
 
     vetor_int = rx_qam_demapper(o,size);
 
-    printf("\n\n[Vetor de Inteiros Resultante de rx_qam_demapper]\n\n");
+
+
+    printf("\n\nElementos do vetor Etapa2:\n\n");
     for (int i = 0; i < size; i++) {
         printf(" %d", vetor_int[i]);
     }
@@ -105,35 +108,10 @@ int main()
     printf("\n Número de símbolos QAM recebidos com erro: %d \n",est);
     printf("\n Porcentagem de símbolos QAM recebidos com erro: %d% \n\n",est/size);
 
-    printf("\n[Escrevendo dados no Arquivo.bin com rx_data_write]\n\n");
+    printf("\n[Escrevendo dados no Arquivo bin com rx_data_write]\n\n");
 
     rx_data_write(vetor_int,q_bytes);
 
-    FILE *arquivo_bin = fopen("src/matrizes/arquivo.bin","rb");
-
-    int* vetor_int_bin = (int *)malloc(q_bytes * sizeof(int));
-
-    vetor_int_bin = tx_data_read(arquivo_bin,q_bytes);
-
-    printf("\n[Conteudo gerado pela função tx_data_read para arquivo.txt]\n\n");
-
-    for(int i = 0; i < size; i++){
-
-        printf("%d", vetor_int[i]);
-    }
-
-
-    printf("\n\n[Conteudo gerado pela função tx_data_read para arquivo.bin]\n\n");
-
-    for(int i = 0; i < size; i++){
-
-        printf("%d", vetor_int_bin[i]);
-
-    }
-    printf("\n\n");
-
-    fclose(arquivo_bin);
-    fclose(arquivo_txt);
     free(vetor_int);
     free(s_mapped);
     free(o);
