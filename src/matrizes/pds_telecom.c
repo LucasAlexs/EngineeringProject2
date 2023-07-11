@@ -6,8 +6,14 @@
 
 int main()
 {
+    int Nr = 4, Nt = 4 ,size = 12, Nstreams,Nqam = 4,est;
+    double rmax = 0, rmin = 0;
+    struct Complex *s,*s_mapped, *o, *lm,*ld;
+    struct Complex **H,**U,*S,**V;
+    struct Complex **F, **Y, **W,*Z;
    //tx_data_read();
    FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
+
 
     fseek(arquivo_txt,0,SEEK_END);
     long int q_bytes = ftell(arquivo_txt);
@@ -26,46 +32,63 @@ int main()
         printf(" %d", vetor_int[i]);
     }
 
-   int Nr = 4, Nt = 4 ,size = tamanho, Nstreams,Nqam = 4,est;
-    struct Complex *s,*s_mapped, *o;
-
    if (Nr < Nt) {
         Nstreams = Nr;
     } else {
         Nstreams = Nt;
     }
 
-//    int *vector;
-//    vector = (int *)malloc(size * sizeof(int));
+    int *vector2;
 
-    if (vetor_int == NULL) {
-        printf("\n\nErro ao alocar memória para o vetor.\n\n");
+    if (vector == NULL) {
+        printf("Erro ao alocar memória para o vetor.\n");
+
         return 1;
     }
 
-///ALTERAÇÃO: vector = vetor_int
-//    for (int i = 0; i < size; i++) {
-//        vector[i] = i % Nqam;
-//    }
-
-//    printf("\n\nElementos do vetor Etapa1:\n\n");
-//    for (int i = 0; i < size; i++) {
-//        printf(" %d", vetor_int[i]);
-//    }
-//    printf("\n");             ----> SUBSTITUIDO POR     printf("\n\n[Vetor de Inteiros Resultante de tx_data_read]\n\n");
-
-
-
     s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
+    ld = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
     o = (struct Complex *)malloc(Nt * sizeof(struct Complex ));
+
+    H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+    for (int i = 0; i < Nt; i++){
+        H[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+    }
+
+    H = channel_gen(Nr,H,Nt);
+
+    U = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
+    for (int i = 0; i < Nr; i++){
+        U[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+    }
+
+    S = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+
+    V = (struct Complex **)malloc(Nt * sizeof(struct Complex *));
+    for (int i = 0; i < Nt; i++)
+    {
+        V[i] = (struct Complex *)malloc(Nt * sizeof(struct Complex));
+    }
+
+    calc_svd(H,U,S,V,Nr,Nt);
+
 
     s = tx_qam_mapper(vetor_int,size);
 
     for (int a = 0; a < size; a+= Nstreams)
     {
-        s_mapped = tx_layer_mapper(a,s,s_mapped,Nstreams);
+        lm = tx_layer_mapper(a,s,s_mapped,Nstreams);
 
-        o = rx_layer_demapper(a,s_mapped,o,Nstreams);
+        F = tx_precoder(lm,V,Nr, Nt, Nstreams);
+        
+        Y = channel_transmission(rmax,rmin,F,H,Nr,Nt, Nstreams);
+        free(F);
+        W = rx_combiner(Y,U,Nr,Nt,Nstreams);
+        free(Y);
+        Z = rx_layer_demapper(a,W,ld,Nstreams);
+        free(W);
+        o = rx_feq(a,S,Z,Nr,Nt,Nstreams,size);
+        free(Z);
     }
 
     vetor_int = rx_qam_demapper(o,size);
@@ -203,16 +226,16 @@ int *rx_qam_demapper(struct Complex * symbol,int size){
     indice = (int*)malloc(size * sizeof( int ));
 
     for (int i = 0; i < size; i++) {
-        if (symbol[i].real == -1 && symbol[i].img == 1){
+        if (symbol[i].real < 0 && symbol[i].img > 0){
             indice[i] = 0;
         }
-        else if (symbol[i].real == -1 && symbol[i].img == -1){
+        else if (symbol[i].real < 0 && symbol[i].img > 0){
             indice[i] = 1;
         }
-        else if (symbol[i].real == 1 && symbol[i].img == 1){
+        else if (symbol[i].real > 0 && symbol[i].img > 0){
             indice[i] = 2;
         }
-        else if (symbol[i].real == 1 && symbol[i].img == -1){
+        else if (symbol[i].real > 0 && symbol[i].img < 0){
             indice[i] = 3;
         }
     }
@@ -220,13 +243,13 @@ int *rx_qam_demapper(struct Complex * symbol,int size){
     return indice;
 }
 
-struct Complex *rx_layer_demapper(int a, struct Complex *s_mapped,struct Complex *s, int Nstreams){
+struct Complex *rx_layer_demapper(int a, struct Complex **s_mapped,struct Complex *s, int Nstreams){
 
     // Loop para percorrer os símbolos de entrada
     for (int i = 0; i < Nstreams; i++) {
         // Mapeia o símbolo QAM para a stream correspondente
-        s[(a) + i ].real = s_mapped[i].real;
-        s[(a) + i ].img = s_mapped[i].img ;
+        s[(a) + i ].real = s_mapped[i][0].real;
+        s[(a) + i ].img = s_mapped[i][0].img ;
     }
     return s;
 }
@@ -257,16 +280,14 @@ struct Complex **channel_gen(int Nr,struct Complex **H, int Nt) {
     return H;
 }
 
-struct Complex **channel_transmission(double rmax, double rmin, struct Complex **mtx_cod, struct Complex **H, int Nr, int Nt){
+struct Complex **channel_transmission(double rmax, double rmin, struct Complex **mtx_cod, struct Complex **H,int Nr, int Nt, int Nstreams){
     struct Complex **rmtx;
 
-    rmtx = produto_matricial( mtx_cod, H, Nr, Nt);
+    rmtx = produto_matricial( H, mtx_cod,Nr,Nt,Nt,1);
 
-    for (int i = 0; i < Nr; i++) {
-        for (int j = 0; j < Nt; j++) {
-            rmtx[i][j].real = rmtx[i][j].real + ((double)rand() / RAND_MAX) * (rmax - rmin) + rmin;
-            rmtx[i][j].img = rmtx[i][j].img + ((double)rand() / RAND_MAX) * (rmax - rmin) + rmin;
-        }
+    for (int j = 0; j < Nstreams; j++) {
+        rmtx[0][j].real = rmtx[0][j].real + ((double)rand() / RAND_MAX) * (rmax - rmin) + rmin;
+        rmtx[0][j].img = rmtx[0][j].img + ((double)rand() / RAND_MAX) * (rmax - rmin) + rmin;
     }
 
     return rmtx;
@@ -277,9 +298,59 @@ int gera_estatisticas(struct Complex *s,struct Complex *o, int size){
     int result = 0;
 
     for (int i = 0; i < size ; i++) {
-        if (s[i].real == o[i].real && s[i].img == o[i].img)
+        if (s[i].real == o[i].real && s[i].img == o[i].img){
             result ++;
+        }
     }
     
     return result;
 }
+
+struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int Nt, int Nstreams){
+    struct Complex **x_aux,**x_aux2,**rmtx;
+
+    x_aux = (struct Complex **)malloc(Nstreams * sizeof(struct Complex *));
+    for(int i=0; i<Nstreams; i++){
+        x_aux[i] = (struct Complex *)malloc(1 * sizeof(struct Complex));
+    }
+
+    for(int i=0; i<Nstreams; i++){
+        x_aux[i][0].real = x[i].real;
+        x_aux[i][0].img = x[i].img;
+    }
+    x_aux2 = hermitiano(V,Nt,Nt);
+
+
+    rmtx = produto_matricial(V,x_aux2,Nt,Nstreams,Nt,1);
+
+    free(x_aux);
+
+    return rmtx;
+}
+
+struct Complex **rx_combiner(struct Complex **Y,struct Complex **U, int Nr, int Nt, int Nstreams){
+    struct Complex **rmtx, **aux;
+
+    aux = hermitiano(U,Nr,Nt);
+
+    rmtx = produto_matricial(U,Y,Nt,Nr,Nr,1);
+
+
+    return rmtx;
+}
+
+
+struct Complex *rx_feq(int a,struct Complex *S,struct Complex *W,int Nr, int Nt, int Nstreams,int size){
+    struct Complex *rmtx;
+
+    rmtx = (struct Complex *)malloc(size * sizeof(struct Complex));
+
+
+    for(int i=0; i<Nstreams; i++){
+        rmtx[a + i ].real = W[i].real / S[i].real;
+        rmtx[a + i ].img = W[i].img  / S[i].real;
+    }
+
+    return rmtx;
+}
+
