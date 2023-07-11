@@ -1,8 +1,6 @@
 #ifndef PDS_TELECOM_H
 #define PDS_TELECOM_H
 
-void print_binario(unsigned char byte, int* vetor, long* index);
-
 int * tx_data_read(FILE* entrada_arquivo, long int q_bytes);
 
 void rx_data_write(int* entrada_vet_int, long int tamanho);
