@@ -12,12 +12,7 @@
 int main()
 {
 
-    int Nr = 4, Nt = 4 ,size , Nstreams,Nqam = 4,est;
-    double rmax = 0, rmin = 0;
-    struct Complex *s,*s_mapped, *o, *lm,*ld;
-    struct Complex **H,**U,*S,**V;
-    struct Complex **F, **Y, **W,*Z;
-    FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
+   FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
 
     fseek(arquivo_txt,0,SEEK_END);
     long int q_bytes = ftell(arquivo_txt);
@@ -37,6 +32,11 @@ int main()
     }
     printf("\n");
 
+   int Nr = 4, Nt = 4 ,size = tamanho, Nstreams,Nqam = 4,est;
+   double rmax = 0, rmin = 0;
+   struct Complex *s,*s_mapped, *o, *lm,*ld;
+   struct Complex **H,**U,*S,**V;
+   struct Complex **F, **Y, **W,*Z;
 
    if (Nr < Nt) {
         Nstreams = Nr;
@@ -48,8 +48,7 @@ int main()
         printf("\n\nErro ao alocar memória para o vetor.\n\n");
         return 1;
     }
-
-    //atribuição de valores para s_mapped, ld, o, H, U, S, V e s.
+    //Atribuição de valores para s_mapped, ld, o, H, U, S, V e s.
     s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
     ld = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
     o = (struct Complex *)malloc(Nt * sizeof(struct Complex ));
@@ -75,24 +74,15 @@ int main()
     }
 
     calc_svd(H,U,S,V,Nr,Nt);
-    size = tamanho;
-    printf("%d\t %d",size, tamanho);
 
     s = tx_qam_mapper(vetor_int,size);
-
-    printf("\n\n[Vetor de Inteiros Resultante de tx_qam_mapper]\n\n");
-    for (int i = 0; i < size; i++) {
-        printf(" %0.2f\t%0.2f\n", s[i].real, s[i].img);
-    }
-    printf("\n");
-
 
     for (int a = 0; a < size; a+= Nstreams)
     {
         lm = tx_layer_mapper(a,s,s_mapped,Nstreams);
 
         F = tx_precoder(lm,V,Nr, Nt, Nstreams);
-
+        
         Y = channel_transmission(rmax,rmin,F,H,Nr,Nt, Nstreams);
         free(F);
         W = rx_combiner(Y,U,Nr,Nt,Nstreams);
@@ -102,9 +92,8 @@ int main()
         o = rx_feq(a,S,Z,Nr,Nt,Nstreams,size);
         free(Z);
     }
-
-    //valores recebidos
-
+    
+    //Valores recebidos
     vetor_int = rx_qam_demapper(o,size);
 
     printf("\n\n[Vetor de Inteiros Resultante de rx_qam_demapper]\n\n");
@@ -112,7 +101,7 @@ int main()
         printf(" %d", vetor_int[i]);
     }
     printf("\n");
-
+    
     //dados da transmissão
     est = gera_estatisticas(s,o,size);
 
@@ -154,6 +143,39 @@ int main()
     free(o);
 
     return 0;
+}
+
+/** Função tx_data_read
+*   - Esta funçao faz a leitura dos dados que entram no sistema;
+*   - O arquivo selecionado é um arquivo de texto;
+*   - O código de cada caractere segue a tabela ASCII;
+*   - A função separa cada byte do arquivo em 4 números inteiros de 0 a 3 (00-11);
+*   - o valor retornado é um vetor.
+ * @param[in] int entrada_arquivo, q_bytes
+ * @param[out] vet_int
+*/
+
+int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
+
+    int * vet_int = (int *)malloc(q_bytes * 4 * sizeof(int));
+    if (vet_int == NULL) {
+        printf("Erro na alocação de memória\n");
+        fclose(entrada_arquivo);
+        return (int *)1;
+    }
+
+    for (int i = 0; i < q_bytes; i++) {
+        char byte;
+        fread(&byte, sizeof(byte), 1, entrada_arquivo);
+
+        for (int j = 0; j <= 7; j=j+2) {
+            int bit = (byte >> j) & 3;
+            vet_int[(i*4) + (j/2)]= bit;
+        }
+
+    }
+
+    return vet_int;
 }
 
 /** função tx_data_read
