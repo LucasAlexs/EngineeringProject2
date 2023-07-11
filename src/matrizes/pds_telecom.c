@@ -367,22 +367,30 @@ struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int N
 
     x_aux = (struct Complex **)malloc(Nstreams * sizeof(struct Complex *));
     for(int i=0; i<Nstreams; i++){
-        x_aux[i] = (struct Complex *)malloc(1 * sizeof(struct Complex));
+        x_aux[i] = (struct Complex *)malloc(Nstreams * sizeof(struct Complex));
     }
 
     for(int i=0; i<Nstreams; i++){
         x_aux[i][0].real = x[i].real;
         x_aux[i][0].img = x[i].img;
     }
+    printf("\n\n[Vetor de Inteiros Resultante de tx_lprecoder]\n\n");
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < Nt; j++) {
+                printf(" %0.2f\t%0.2f\n", x[j].real, x[j].img);
+            } 
+        }
     x_aux2 = hermitiano(V,Nt,Nt);
-    
-    printf("\n");
-
-
-    rmtx = produto_matricial(V,x_aux2,Nt,Nstreams,Nt,1);
     printf("\n\n[Vetor de Inteiros Resultante de tx_lprecoder]\n\n");
         for (int i = 0; i < Nt; i++) {
             for (int j = 0; j < 1; j++) {
+                printf(" %0.2f\t%0.2f\n", x_aux[i][j].real, x_aux[i][j].img);
+            }
+        }
+    rmtx = produto_matricial(V,x_aux2,Nt,Nstreams,Nt,1);
+    printf("\n\n[Vetor de Inteiros Resultante de tx_lprecoder]\n\n");
+        for (int i = 0; i < Nt; i++) {
+            for (int j = 0; j < Nt; j++) {
                 printf(" %0.2f\t%0.2f\n", rmtx[i][j].real, rmtx[i][j].img);
             }
         }
