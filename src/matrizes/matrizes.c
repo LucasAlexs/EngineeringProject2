@@ -325,17 +325,13 @@ void teste_subtracao()
 
 struct Complex **transposta(struct Complex **matrix1, int linhas, int colunas)
 {
-   struct Complex **rmtx;
+   struct Complex **rmtx,aux;
    int i,j;
 
     // aloca memória para a matriz de saída
     rmtx = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
     for(int i=0; i<linhas; i++){
         rmtx[i] = (struct Complex *)malloc(colunas * sizeof(struct Complex));
-    }
-
-   for(i = 0; i < linhas; i++)
-   {
        for(j = 0; j < colunas; j++)
        {
            rmtx[i][j].real = matrix1[j][i].real;
@@ -561,7 +557,7 @@ struct Complex **hermitiano(struct Complex **matrix1, int linhas, int colunas)
        for(j = 0; j < colunas; j++)
        {
            aux=transposta(matrix1,linhas,colunas);
-           rmtx=conjugado(aux,linhas,colunas);
+           rmtx=conjugado(aux,colunas,linhas);
        }
    }
    return rmtx;
@@ -796,42 +792,39 @@ struct Complex multiplicacao(struct Complex x,struct Complex y)
     return rmtx;
 }
 
-struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **matrix2, int linhas, int colunas)
+struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **matrix2, int linhas1, int linhas2, int colunas1, int colunas2)
 {
     struct Complex **rmtx, aux, sum;
 
     // aloca memória para a matriz de saída
-    rmtx = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
-
-    for(int i=0; i<linhas; i++){
-        rmtx[i] = (struct Complex *)malloc(colunas * sizeof(struct Complex));
-
+    rmtx = (struct Complex **)malloc(linhas1 * sizeof(struct Complex *));
+    for(int i=0; i<linhas1; i++){
+        rmtx[i] = (struct Complex *)malloc(colunas2 * sizeof(struct Complex));
     }
-
-    if(linhas==colunas){
-
+    if(linhas2==colunas1){
         // somar as matrizes
-        for (int i = 0; i < linhas; i++) {
-            for (int j = 0; j < colunas; j++) {
+        for (int i = 0; i < linhas1; i++) {
+            
+            for (int j = 0; j < colunas2; j++) {
                 sum.real = 0;
                 sum.img = 0;
-                for (int k = 0; k < colunas; k++) {
+                for (int k = 0; k < linhas1; k++) {
                     aux = multiplicacao(matrix1[i][k], matrix2[k][j]);
                     sum = somanc(sum, aux);
                 }
             rmtx[i][j] = sum;
             }
         }
+
     }
     else{
 
-            printf("ERRO!\n\n");
-            printf("A operacao de Produto Matricial nao pode ser iniciada porque o numero de linhas e colunas nao coincidem.\n\n");
+            printf("Erro\n");
 
     }
+
     return rmtx;
 }
-
 /** Função teste_produto_matricial()
 * - Verifica a validade da operação produto matricial de matrizes complexas.
 * - Não possui parâmetros de entrada e não retorna nenhum valor.
@@ -839,110 +832,84 @@ struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **mat
 
 void teste_produto_matricial()
 {
-    int linhas = 3;
-    int colunas = 3;
+    int linhas1 = 2;
+    int colunas1 = 3;
+    int linhas2 = 3;
+    int colunas2 = 2;
+
     struct Complex **matrix1;
     struct Complex **matrix2;
     struct Complex **rmtx;
 
-     printf("==========Teste da Operacao de produto matricial==========\n\n");
+    printf("==========Teste da Operacao de produto matricial==========\n\n");
 
-    // alocar memória para as matrizes
-
-    if(linhas==colunas){
-
-    matrix1 = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
-    matrix2 = (struct Complex **)malloc(linhas * sizeof(struct Complex *));
-    for(int i=0; i<linhas; i++){
-        matrix1[i] = (struct Complex *)malloc(colunas * sizeof(struct Complex));
-        matrix2[i] = (struct Complex *)malloc(colunas * sizeof(struct Complex));
+    // Alocar memória para as matrizes
+    matrix1 = (struct Complex **)malloc(linhas1 * sizeof(struct Complex *));
+    matrix2 = (struct Complex **)malloc(linhas2 * sizeof(struct Complex *));
+    for(int i = 0; i < linhas1; i++) {
+        matrix1[i] = (struct Complex *)malloc(colunas1 * sizeof(struct Complex));
+    }
+    for(int i = 0; i < linhas2; i++) {
+        matrix2[i] = (struct Complex *)malloc(colunas2 * sizeof(struct Complex));
     }
 
-    // inicializar as matrizes
-    for(int i=0; i<linhas; i++){
-        for(int j=0; j<colunas; j++){
-            matrix1[i][j].real = 1;
-            matrix1[i][j].img = 1;
-            matrix2[i][j].real = -1;
-            matrix2[i][j].img = -1;
+    // Inicializar as matrizes
+    for(int i = 0; i < linhas1; i++) {
+        for(int j = 0; j < colunas1; j++) {
+            matrix1[i][j].real = i + 1;
+            matrix1[i][j].img = j + 1;
+        }
+    }
+    for(int i = 0; i < linhas2; i++) {
+        for(int j = 0; j < colunas2; j++) {
+            matrix2[i][j].real = j + 1;
+            matrix2[i][j].img = i + 1;
         }
     }
 
-    // imprimir as matrizes operandas
-
+    // Imprimir as matrizes operandas
     printf("Operando A:\n\n");
-    for(int i=0; i<linhas; i++){
-        for(int j=0; j<colunas; j++){
-            printf("%.2f\t", matrix1[i][j].real);
-        }
-        printf("\n\n");
-    }
-
-    printf("Operando B:\n\n");
-    for(int i=0; i<linhas; i++){
-        for(int j=0; j<colunas; j++){
-            printf("%.2f\t", matrix2[i][j].real);
-        }
-        printf("\n\n");
-    }
-
-    // formar o produto das matrizes usando a função auxiliar
-    rmtx = produto_matricial(matrix1, matrix2, linhas, colunas);
-
-    // imprimir o produto matricial
-    printf("A soma das matrizes :\n\n");
-    for(int i=0; i<linhas; i++){
-        for(int j=0; j<colunas; j++){
-            printf("%.2f\t", rmtx[i][j].real);
-        }
-        printf("\n\n");
-    }
-
-
-
-    printf("Operando C:\n\n");
-    for(int i=0; i<linhas; i++){
-        for(int j=0; j<colunas; j++){
+    for(int i = 0; i < linhas1; i++) {
+        for(int j = 0; j < colunas1; j++) {
             printf("%.2f + %.2fj\t", matrix1[i][j].real, matrix1[i][j].img);
         }
         printf("\n\n");
     }
 
-    printf("Operando D:\n\n");
-    for(int i=0; i<linhas; i++){
-        for(int j=0; j<colunas; j++){
+    printf("Operando B:\n\n");
+    for(int i = 0; i < linhas2; i++) {
+        for(int j = 0; j < colunas2; j++) {
             printf("%.2f + %.2fj\t", matrix2[i][j].real, matrix2[i][j].img);
         }
         printf("\n\n");
     }
 
-    // formar o produto das matrizes usando a função auxiliar
-    rmtx = produto_matricial(matrix1, matrix2, linhas, colunas);
+    // Formar o produto das matrizes usando a função auxiliar
+    rmtx = produto_matricial(matrix1, matrix2, linhas1, colunas1, linhas2, colunas2);
 
-    // imprimir o produto matricial
-    printf("A soma das matrizes :\n\n");
-    for(int i=0; i<linhas; i++){
-        for(int j=0; j<colunas; j++){
+    // Imprimir o produto matricial
+    printf("Produto das matrizes:\n\n");
+    for(int i = 0; i < linhas1; i++) {
+        for(int j = 0; j < colunas2; j++) {
             printf("%.2f + %.2fj\t", rmtx[i][j].real, rmtx[i][j].img);
         }
         printf("\n\n");
     }
 
-    // desalocar a memória alocada
-    for(int i=0; i<linhas; i++){
+    // Desalocar a memória alocada
+    for(int i = 0; i < linhas1; i++) {
         free(matrix1[i]);
+    }
+    for(int i = 0; i < linhas2; i++) {
         free(matrix2[i]);
+    }
+    for(int i = 0; i < linhas1; i++) {
         free(rmtx[i]);
     }
     free(matrix1);
     free(matrix2);
     free(rmtx);
-
-    }
-
-    else{rmtx = produto_matricial(matrix1, matrix2, linhas, colunas);}
 }
-
 
 /**### Função calc_svd()
 * Executa o cálculo da decomposição SVD (Singular Value Decomposition) da parte real de uma matriz complexa.
@@ -962,7 +929,7 @@ void teste_produto_matricial()
 
 */
 
-void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex **S, struct Complex **V, int linhas, int colunas)
+void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex *S, struct Complex **V, int linhas, int colunas)
 {
 
     int i, j;
@@ -986,15 +953,12 @@ void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex **S, st
     gsl_vector * Q = gsl_vector_alloc(colunas);
     gsl_vector * work = gsl_vector_alloc(colunas);
 
-    printf("Matriz de entrada %d X %d:\n\n",linhas, colunas);
     for (i = 0; i < linhas; i++)
     {
         for (j = 0; j < colunas; j++)
         {
-            printf("%.2f\t", matrix[i][j].real);
             gsl_matrix_set(A, i, j, matrix[i][j].real);
         }
-        printf("\n\n");
     }
 
     // Cálculo do SVD
@@ -1002,40 +966,41 @@ void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex **S, st
     {
         gsl_linalg_SV_decomp(A, W, Q, work);
 
-        printf("Matriz U:\n\n");
         for (i = 0; i < linhas; i++)
         {
             for (j = 0; j < colunas; j++)
             {
-                printf("%.2f\t", gsl_matrix_get(A, i, j));
                 U[i][j].real = gsl_matrix_get(A, i, j);
+                U[i][j].img = 0;
             }
-            printf("\n\n");
         }
 
-        printf("Vetor S:\n\n");
-        for (i = 0; i < colunas; i++)
-        {
-            printf("%.2f\n", gsl_vector_get(Q, i));
-        }
-        printf("\n\n");
-
-        printf("Matriz V:\n\n");
         for (i = 0; i < colunas; i++)
         {
             for (j = 0; j < colunas; j++)
             {
-                printf("%.2f\t", gsl_matrix_get(W, i, j));
+              
+                S[i].real = gsl_vector_get(Q, i);
+                S[i].img = 0;
+              
+            }    
+        }
+
+        for (i = 0; i < colunas; i++)
+        {
+            for (j = 0; j < colunas; j++)
+            {
                 V[i][j].real = gsl_matrix_get(W, i, j);
+                V[i][j].img = 0;
             }
-            printf("\n\n");
         }
     }
     else
     {
-        printf("A operacao nao pode ser concluída porque o numero de linhas eh menor que o numero de colunas\n\n");
+        printf("A operacao svd nao pode ser concluída porque o numero de linhas eh menor que o numero de colunas\n\n");
     }
 }
+
 
 /** função teste_calc_svd()
 * - Testa a função calc_svd() para a parte real de matrizes complexas.
@@ -1048,7 +1013,7 @@ void teste_calc_svd()
     srand(time(NULL));
     struct Complex **matrix1, **matrix2, **matrix3, **matrix4;
     struct Complex **U1, **U2, **U3, **U4;
-    struct Complex **S1, **S2, **S3, **S4;
+    struct Complex *S1, *S2, *S3, *S4;
     struct Complex **V1, **V2, **V3, **V4;
 
     printf("==========Teste da Operacao de SVD==========\n\n");
@@ -1105,26 +1070,10 @@ void teste_calc_svd()
 
      // Alocação de memória para os vetores de saida S
 
-    S1 = (struct Complex **)malloc(1 * sizeof(struct Complex *));
-    S2 = (struct Complex **)malloc(1 * sizeof(struct Complex *));
-    S3 = (struct Complex **)malloc(1 * sizeof(struct Complex *));
-    S4 = (struct Complex **)malloc(1 * sizeof(struct Complex *));
-    for (int i = 0; i < 1; i++)
-    {
-        S1[i] = (struct Complex *)malloc(c1 * sizeof(struct Complex));
-    }
-    for (int i = 0; i < 1; i++)
-    {
-        S2[i] = (struct Complex *)malloc(c2 * sizeof(struct Complex));
-    }
-    for (int i = 0; i < 1; i++)
-    {
-        S3[i] = (struct Complex *)malloc(c3 * sizeof(struct Complex));
-    }
-    for (int i = 0; i < 1; i++)
-    {
-        S4[i] = (struct Complex *)malloc(c4 * sizeof(struct Complex));
-    }
+    S1 = (struct Complex *)malloc(c1 * sizeof(struct Complex ));
+    S2 = (struct Complex *)malloc(c2 * sizeof(struct Complex ));
+    S3 = (struct Complex *)malloc(c3 * sizeof(struct Complex ));
+    S4 = (struct Complex *)malloc(c4 * sizeof(struct Complex ));
 
     // Alocação de memória para os vetores de saida S
 
@@ -1199,14 +1148,12 @@ void teste_calc_svd()
 
     }
     free(U1);
-    free(S1[0]);
     free(S1);
 
     for (int i = 0; i < l2; i++) {
         free(U2[i]);
     }
     free(U2);
-    free(S2[0]);
     free(S2);
 
     for (int i = 0; i < l3; i++) {
@@ -1214,7 +1161,6 @@ void teste_calc_svd()
 
     }
     free(U3);
-    free(S3[0]);
     free(S3);
 
     for (int i = 0; i < l4; i++) {
@@ -1222,7 +1168,6 @@ void teste_calc_svd()
 
     }
     free(U4);
-    free(S4[0]);
     free(S4);
 
     for (int i = 0; i < c1; i++) {
@@ -1278,3 +1223,46 @@ void teste_todos()
     teste_produto_matricial();
     teste_calc_svd();
 }
+
+struct Complex **inversa(struct Complex** matrix, int size) {
+    struct Complex** inversa = (struct Complex**)malloc(size * sizeof(struct Complex*));
+    for (int i = 0; i < size; i++) {
+        inversa[i] = (struct Complex*)malloc(size * sizeof(struct Complex));
+        for (int j = 0; j < size; j++) {
+            if(i == j){
+                inversa[i][j].real = 1; 
+                inversa[i][j].img = 0;
+            }
+            
+            else{
+                inversa[i][j].real = 0; 
+                inversa[i][j].img = 0;
+            }
+        }
+    }
+
+    for (int k = 0; k < size; k++) {
+        struct Complex pivot = matrix[k][k];
+        for (int j = 0; j < size; j++) {
+            matrix[k][j].real /= pivot.real;
+            matrix[k][j].img /= pivot.real;
+            inversa[k][j].real /= pivot.real;
+            inversa[k][j].img /= pivot.real;
+        }
+        
+        for (int i = 0; i < size; i++) {
+            if (i != k) {
+                struct Complex factor = matrix[i][k];
+                for (int j = 0; j < size; j++) {
+                    matrix[i][j].real -= factor.real * matrix[k][j].real - factor.img * matrix[k][j].img;
+                    matrix[i][j].img -= factor.real * matrix[k][j].img + factor.img * matrix[k][j].real;
+                    inversa[i][j].real -= factor.real * inversa[k][j].real - factor.img * inversa[k][j].img;
+                    inversa[i][j].img -= factor.real * inversa[k][j].img + factor.img * inversa[k][j].real;
+                }
+            }
+        }
+    }
+
+    return inversa;
+}
+
