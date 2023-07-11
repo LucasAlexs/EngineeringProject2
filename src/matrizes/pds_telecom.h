@@ -7,6 +7,8 @@
 
 int * tx_data_read(FILE* entrada_arquivo, long int q_bytes);
 
+int channel_simulator(int Nr,int Nt,int rmax,int rmin);
+
 void rx_data_write(int* entrada_vet_int, long int tamanho);
 
 struct Complex * tx_qam_mapper(int* indice, int size);

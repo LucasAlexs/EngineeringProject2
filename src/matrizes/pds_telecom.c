@@ -4,7 +4,29 @@
 #include "matrizes.h"
 #include "pds_telecom.h"
 
-/** FUNCÃO MAIN
+int main(){
+
+    channel_simulator(2,4,1,-1);
+    channel_simulator(2,4,0.5,-0.5);
+    channel_simulator(2,4,0.1,-0.1);
+    channel_simulator(2,4,0.01,-0.01);
+    channel_simulator(8,8,1,-1);
+    channel_simulator(8,8,0.5,-0.5);
+    channel_simulator(8,8,0.1,-0.1);
+    channel_simulator(8,8,0.01,-0.01);
+    channel_simulator(8,32,1,-1);
+    channel_simulator(8,32,0.5,-0.5);
+    channel_simulator(8,32,0.1,-0.1);
+    channel_simulator(8,32,0.01,-0.01);
+    channel_simulator(16,32,1,-1);
+    channel_simulator(16,32,0.5,-0.5);
+    channel_simulator(16,32,0.1,-0.1);
+    channel_simulator(16,32,0.01,-0.01);
+
+    return 0;
+}
+
+/** função chennel_simulator
 *
 *   - Esta função simula um sistema de transmissão usando modulação QAM.
 *   Ela lê dados do arquivo “arquivo.txt” e os converte em um vetor de inteiros usando a função tx_data_read.
@@ -20,8 +42,13 @@
 *   - A ordem de execução é a seguinte: tx_data_read(), tx_data_padding(),tx_qam_mapper(), tx_layer_mapper(), tx_precoder(), channel_gen(), channel_transmission(), rx_combiner(), rx_layer_demapper(), rx_feq(), rx_qam_demapper(), rx_data_write().
 */
 
-int main()
+int channel_simulator(int Nr,int Nt,int rmax,int rmin)
 {
+    if(Nr != Nt){
+        printf("Se você está vendo isso significa que não conseguimos implementar a transmissão para sistemas com Nr e Nt diferentes entre si.\n");
+        return 1;
+    }
+
     // Abertura do arquivo "arquivo.txt" em modo de leitura binária
    FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
 
@@ -48,8 +75,7 @@ int main()
     printf("\n");
 
     // Declaração de variáveis e ponteiros
-   int Nr = 4, Nt = 4 ,size = tamanho, Nstreams,Nqam = 4,est;
-   double rmax = 0, rmin = 0;
+   int size = tamanho, Nstreams,Nqam = 4,est;
    struct Complex *s,*s_mapped, *o, *lm,*ld;
    struct Complex **H,**U,*S,**V;
    struct Complex **F, **Y, **W,*Z;
@@ -127,13 +153,6 @@ int main()
 
     // Demapeamento dos símbolos QAM recebidos para dados inteiros
     vetor_int = rx_qam_demapper(o,size);
-
-    // Impressão dos valores do vetor de inteiros na tela
-    printf("\n\n[Vetor de Inteiros Resultante de rx_qam_demapper]\n\n");
-    for (int i = 0; i < size; i++) {
-        printf(" %d", vetor_int[i]);
-    }
-    printf("\n");
 
     // Geração de estatísticas sobre a transmissão
     est = gera_estatisticas(s,o,size);
@@ -432,12 +451,6 @@ struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int N
         x_aux[i][0].real = x[i].real;
         x_aux[i][0].img = x[i].img;
     }
-    printf("\n\n[Vetor de Inteiros Resultante de tx_lprecoder]\n\n");
-        for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < Nt; j++) {
-                printf(" %0.2f\t%0.2f\n", x[j].real, x[j].img);
-            } 
-        }
     x_aux2 = hermitiano(V,Nt,Nt);
 
     rmtx = produto_matricial(V,x_aux2,Nt,Nstreams,Nt,1);
