@@ -797,9 +797,9 @@ struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **mat
     struct Complex **rmtx, aux, sum;
 
     // aloca memória para a matriz de saída
-    rmtx = (struct Complex **)malloc(linhas1 * sizeof(struct Complex *));
+    rmtx = (struct Complex **)malloc(colunas2 * sizeof(struct Complex *));
     for(int i=0; i<linhas1; i++){
-        rmtx[i] = (struct Complex *)malloc(colunas2 * sizeof(struct Complex));
+        rmtx[i] = (struct Complex *)malloc(linhas1 * sizeof(struct Complex));
     }
     if(linhas2==colunas1){
         // somar as matrizes
@@ -808,12 +808,12 @@ struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **mat
             for (int j = 0; j < colunas2; j++) {
                 sum.real = 0;
                 sum.img = 0;
-                for (int k = 0; k < linhas1; k++) {
+                for (int k = 0; k < linhas2; k++) {
                     aux = multiplicacao(matrix1[i][k], matrix2[k][j]);
                     sum = somanc(sum, aux);
                 }
-            rmtx[i][j].real = sum.real;
-            rmtx[i][j].img = sum.img;
+            rmtx[j][i].real = sum.real;
+            rmtx[j][i].img = sum.img;
             }
         }
 

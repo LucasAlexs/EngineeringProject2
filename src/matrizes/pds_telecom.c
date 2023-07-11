@@ -84,11 +84,6 @@ int main()
     for (int a = 0; a < size; a+= Nstreams)
     {
         lm = tx_layer_mapper(a,s,s_mapped,Nstreams);
-        printf("\n\n[Vetor de Inteiros Resultante de tx_layrt_mapper]\n\n");
-        for (int i = 0; i < Nstreams; i++) {
-            printf(" %0.2f\t%0.2f\n", lm[i].real, lm[i].img);
-        }
-        printf("\n");
 
         F = tx_precoder(lm,V,Nr, Nt, Nstreams);
         
@@ -175,32 +170,6 @@ int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
     return vet_int;
 }
 
-struct Complex *tx_qam_mapper(int* indice, int size) {
-    struct Complex *symbol;
-
-    symbol = (struct Complex*)malloc(size * sizeof( struct Complex ));
-
-    for (int i = 0; i < size; i++) {
-        if (indice[i] == 0){
-            symbol[i].real = -1;
-            symbol[i].img = 1;
-        }
-        else if (indice[i] == 1){
-            symbol[i].real = -1;
-            symbol[i].img = -1;
-        }
-        else if (indice[i] == 2){
-            symbol[i].real = 1;
-            symbol[i].img = 1;
-        }
-        else if (indice[i] == 3){
-            symbol[i].real = 1;
-            symbol[i].img = -1;
-        }
-    }
-
-    return symbol;
-}
 
 void rx_data_write(int* entrada_vet_int, long int tamanho) {
 
@@ -253,6 +222,34 @@ int *rx_qam_demapper(struct Complex * symbol,int size){
 
     return indice;
 }
+
+struct Complex *tx_qam_mapper(int* indice, int size) {
+    struct Complex *symbol;
+
+    symbol = (struct Complex*)malloc(size * sizeof( struct Complex ));
+
+    for (int i = 0; i < size; i++) {
+        if (indice[i] == 0){
+            symbol[i].real = -1;
+            symbol[i].img = 1;
+        }
+        else if (indice[i] == 1){
+            symbol[i].real = -1;
+            symbol[i].img = -1;
+        }
+        else if (indice[i] == 2){
+            symbol[i].real = 1;
+            symbol[i].img = 1;
+        }
+        else if (indice[i] == 3){
+            symbol[i].real = 1;
+            symbol[i].img = -1;
+        }
+    }
+
+    return symbol;
+}
+
 
 struct Complex *rx_layer_demapper(int a, struct Complex **s_mapped,struct Complex *s, int Nstreams){
 
@@ -330,10 +327,17 @@ struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int N
         x_aux[i][0].img = x[i].img;
     }
     x_aux2 = hermitiano(V,Nt,Nt);
+    
+    printf("\n");
 
 
     rmtx = produto_matricial(V,x_aux2,Nt,Nstreams,Nt,1);
-
+    printf("\n\n[Vetor de Inteiros Resultante de tx_lprecoder]\n\n");
+        for (int i = 0; i < Nt; i++) {
+            for (int j = 0; j < 1; j++) {
+                printf(" %0.2f\t%0.2f\n", rmtx[i][j].real, rmtx[i][j].img);
+            }
+        }
     free(x_aux);
 
     return rmtx;
