@@ -68,59 +68,28 @@ int main()
     return 0;
 }
 
-void print_binario(unsigned char byte, int* vetor, long int* index) {
-    for (int i = 6; i >= 0; i -= 2) {
-        int num = ((byte >> i) & 1) + ((byte >> (i + 1)) & 1) * 2;
-        vetor[(*index)++] = num;
+int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
+
+    int * vet_int = (int *)malloc(q_bytes * 4 * sizeof(int));
+    if (vet_int == NULL) {
+        printf("Erro na alocação de memória\n");
+        fclose(entrada_arquivo);
+        return (int *)1;
     }
+
+    for (int i = 0; i < q_bytes; i++) {
+        char byte;
+        fread(&byte, sizeof(byte), 1, entrada_arquivo);
+
+        for (int j = 0; j <= 7; j=j+2) {
+            int bit = (byte >> j) & 3;
+            vet_int[(i*4) + (j/2)]= bit;
+        }
+
+    }
+
+    return vet_int;
 }
-
-int* tx_data_read(const char* texto_str, long* tamanho_retornado) {
-    FILE* file = fopen(texto_str, "rb");
-    if (file == NULL) {
-        printf("Erro! O arquivo não pode ser aberto.\n");
-        return NULL;
-    }
-
-    fseek(file, 0, SEEK_END);
-    long tamanho = ftell(file);
-    rewind(file);
-    unsigned char* buffer = (unsigned char*)malloc(tamanho);
-    if (buffer == NULL) {
-        printf("Erro! Memória não pode ser alocada.\n");
-        fclose(file);
-        return NULL;
-    }
-  
-      size_t leitura_bytes = fread(buffer, 1, tamanho, file);
-    if (leitura_bytes != tamanho) {
-        printf("Erro ao ler o arquivo.\n");
-        free(buffer);
-        fclose(file);
-        return NULL;
-    }
-
-    int* vetor = (int*)malloc((tamanho * 4) * sizeof(int)); // Cada byte gera 4 dígitos de 2 bits
-    if (vetor == NULL) {
-        printf("Erro! Memória não pode ser alocada.\n");
-        free(buffer);
-        fclose(file);
-        return NULL;
-    }
-
-    long int index = 0;
-    for (long i = 0; i < tamanho; i++) {
-        print_binario(buffer[i - 1], vetor, &index);
-    }
-
-    free(buffer);
-    fclose(file);
-
-    *tamanho_retornado = tamanho * 4;
-    return vetor;
-}
-
-
 
 struct Complex *tx_qam_mapper(int* indice, int size) {
     struct Complex *symbol;
