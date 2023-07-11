@@ -8,8 +8,8 @@ int main()
 {
    //tx_data_read();
 
-   int Nr = 4, Nt = 4 ,size = 8, Nstreams,Nqam = 4;
-    double rmax, rmin;
+   int Nr = 4, Nt = 4 ,size = 32, Nstreams,Nqam = 4;
+    double rmax = 0, rmin = 0;
     struct Complex *s,*s_mapped, *o, *lm,*ld;
     struct Complex **H,**U,*S,**V;
     struct Complex **F, **Y, **W,*Z;
@@ -47,7 +47,7 @@ int main()
 
     o = (struct Complex *)malloc(Nt * sizeof(struct Complex ));
 
-    s = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
+    s = (struct Complex *)malloc(size * sizeof(struct Complex ));
 
     H = (struct Complex **)malloc(Nr * sizeof(struct Complex *));
     for (int i = 0; i < Nt; i++){
@@ -73,9 +73,22 @@ int main()
 
     s_mapped = tx_qam_mapper(vector,size);
 
+    printf("Em tx_qm_mapper:\n\n");
+    for(int i = 0; i < size; i++) {
+        printf("%.2f + %.2fj\t", s_mapped[i].real, s_mapped[i].img);
+        printf("\n");
+    }
+
     for (int a = 0; a < size; a+= Nstreams)
     {
-        lm = tx_layer_mapper(a,s,s_mapped,Nstreams);
+        lm = tx_layer_mapper(a,s_mapped,s,Nstreams);
+
+        printf("Em tx_layer_mapper:\n\n");
+        for(int i = 0; i < size; i++) {
+            printf("%.2f + %.2fj\t", lm[i].real, lm[i].img);
+            printf("%d\n",a);
+        }
+
         F = tx_precoder(lm,V,Nr, Nt, Nstreams);
         Y = channel_transmission(rmax,rmin,F,H,Nr,Nt, Nstreams);
         free(F);
@@ -221,9 +234,11 @@ struct Complex *tx_layer_mapper(int a, struct Complex *s,struct Complex *s_mappe
     // Loop para percorrer os símbolos de entrada
     for (int i = 0; i < Nstreams; i++) {
         // Mapeia o símbolo QAM para a stream correspondente
-        s_mapped[i].real = s[(a ) + i ].real;
-        s_mapped[i].img = s[(a) + i ].img;
+        s_mapped[i].real = s[(a)+i].real;
+        s_mapped[i].img = s[(a)+i].img;
+            printf("%d\n",i);
     }
+
     return s_mapped;
 }
 
