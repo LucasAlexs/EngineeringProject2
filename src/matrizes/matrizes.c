@@ -1303,6 +1303,7 @@ void teste_calc_svd()
     free(matrix4);
 }
 
+
 void teste_todos()
 {
     printf("==========Teste Global==========\n\n");
