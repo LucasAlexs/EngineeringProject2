@@ -792,6 +792,14 @@ struct Complex multiplicacao(struct Complex x,struct Complex y)
     return rmtx;
 }
 
+/** Função produto_matricial
+*-  A função verifica se o número de linhas da segunda matriz é igual ao número de colunas da primeira matriz antes de calcular o produto matricial;
+*-  Dentro do terceiro loop, a função calcula o produto dos elementos das duas matrizes e acumula o resultado na variável `sum`;
+*-  a função armazena o valor acumulado na matriz de saída;
+*-  Se a condição for falsa, a função não calcula o produto matricial.
+ *  @param[in] Complex Complex **matrix1, Complex **matrix2, linhas1, linhas2, colunas1, colunas2
+ *  @param[out] rmtx
+*/
 struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **matrix2, int linhas1, int linhas2, int colunas1, int colunas2)
 {
     struct Complex **rmtx, aux, sum;
@@ -804,7 +812,7 @@ struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **mat
     if(linhas2==colunas1){
         // somar as matrizes
         for (int i = 0; i < linhas1; i++) {
-            
+
             for (int j = 0; j < colunas2; j++) {
                 sum.real = 0;
                 sum.img = 0;
@@ -980,11 +988,11 @@ void calc_svd(struct Complex **matrix,struct Complex **U, struct Complex *S, str
         {
             for (j = 0; j < colunas; j++)
             {
-              
+
                 S[i].real = gsl_vector_get(Q, i);
                 S[i].img = 0;
-              
-            }    
+
+            }
         }
 
         for (i = 0; i < colunas; i++)
@@ -1225,18 +1233,25 @@ void teste_todos()
     teste_calc_svd();
 }
 
+/** Função inversa
+*-  Calcula a matriz inversa de uma matriz quadrada de números complexos;
+*-  A função struct Complex **inversa recebe o valor da função malloc;
+*-  a função aplica as operações elementares.
+ *  @param[in] Complex Complex **matrix, size
+ *  @param[out] inversa
+*/
 struct Complex **inversa(struct Complex** matrix, int size) {
     struct Complex** inversa = (struct Complex**)malloc(size * sizeof(struct Complex*));
     for (int i = 0; i < size; i++) {
         inversa[i] = (struct Complex*)malloc(size * sizeof(struct Complex));
         for (int j = 0; j < size; j++) {
             if(i == j){
-                inversa[i][j].real = 1; 
+                inversa[i][j].real = 1;
                 inversa[i][j].img = 0;
             }
-            
+
             else{
-                inversa[i][j].real = 0; 
+                inversa[i][j].real = 0;
                 inversa[i][j].img = 0;
             }
         }
@@ -1250,7 +1265,7 @@ struct Complex **inversa(struct Complex** matrix, int size) {
             inversa[k][j].real /= pivot.real;
             inversa[k][j].img /= pivot.real;
         }
-        
+
         for (int i = 0; i < size; i++) {
             if (i != k) {
                 struct Complex factor = matrix[i][k];
