@@ -6,13 +6,31 @@
 
 int main()
 {
-   //tx_data_read();
-
     int Nr = 4, Nt = 4 ,size = 12, Nstreams,Nqam = 4,est;
     double rmax = 0, rmin = 0;
     struct Complex *s,*s_mapped, *o, *lm,*ld;
     struct Complex **H,**U,*S,**V;
     struct Complex **F, **Y, **W,*Z;
+   //tx_data_read();
+   FILE *arquivo_txt = fopen("src/matrizes/arquivo.txt","rb");
+
+
+    fseek(arquivo_txt,0,SEEK_END);
+    long int q_bytes = ftell(arquivo_txt);
+    fseek(arquivo_txt,0,SEEK_SET);
+
+
+    int* vetor_int = (int *)malloc(q_bytes * sizeof(int));
+
+    vetor_int = tx_data_read(arquivo_txt,q_bytes);
+
+    long int tamanho = (q_bytes*2*((sizeof(arquivo_txt)) / 4)) - 4;
+
+    printf("\n\n[Vetor de Inteiros Resultante de tx_data_read]\n\n");
+
+    for(int i = 0; i < tamanho; i++){
+        printf(" %d", vetor_int[i]);
+    }
 
    if (Nr < Nt) {
         Nstreams = Nr;
@@ -20,26 +38,13 @@ int main()
         Nstreams = Nt;
     }
 
-    int *vector;
-    vector = (int *)malloc(size * sizeof(int));
-
     int *vector2;
 
     if (vector == NULL) {
         printf("Erro ao alocar memória para o vetor.\n");
+
         return 1;
     }
-
-    for (int i = 0; i < size; i++) {
-        vector[i] = i % Nqam;
-    }
-
-    printf("Elementos do vetor Etapa1:\n");
-    for (int i = 0; i < size; i++) {
-        printf("%d ", vector[i]);
-    }
-    printf("\n");
-
 
     s_mapped = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
     ld = (struct Complex *)malloc(Nstreams * sizeof(struct Complex ));
@@ -67,7 +72,8 @@ int main()
 
     calc_svd(H,U,S,V,Nr,Nt);
 
-    s = tx_qam_mapper(vector,size);
+
+    s = tx_qam_mapper(vetor_int,size);
 
     for (int a = 0; a < size; a+= Nstreams)
     {
@@ -85,79 +91,78 @@ int main()
         free(Z);
     }
 
-    vector2 = rx_qam_demapper(o,size);
+    vetor_int = rx_qam_demapper(o,size);
 
-    printf("Elementos do vetor Etapa2:\n");
+    printf("\n\n[Vetor de Inteiros Resultante de rx_qam_demapper]\n\n");
     for (int i = 0; i < size; i++) {
-        printf("%d ", vector[i]);
+        printf(" %d", vetor_int[i]);
     }
     printf("\n");
 
     est = gera_estatisticas(s,o,size);
 
-    printf(" Número de símbolos QAM transmitidos: %d \n",size);
-    printf(" Número de símbolos QAM recebidos com erro: %d \n",est);
-    printf(" Porcentagem de símbolos QAM recebidos com erro: %d% \n",est/size);
+    printf("\n\n Número de símbolos QAM transmitidos: %d \n",size);
+    printf("\n Número de símbolos QAM recebidos com erro: %d \n",est);
+    printf("\n Porcentagem de símbolos QAM recebidos com erro: %d% \n\n",est/size);
 
-    free(vector);
+    printf("\n[Escrevendo dados no Arquivo.bin com rx_data_write]\n\n");
+
+    rx_data_write(vetor_int,q_bytes);
+
+    FILE *arquivo_bin = fopen("src/matrizes/arquivo.bin","rb");
+
+    int* vetor_int_bin = (int *)malloc(q_bytes * sizeof(int));
+
+    vetor_int_bin = tx_data_read(arquivo_bin,q_bytes);
+
+    printf("\n[Conteudo gerado pela função tx_data_read para arquivo.txt]\n\n");
+
+    for(int i = 0; i < size; i++){
+
+        printf("%d", vetor_int[i]);
+    }
+
+
+    printf("\n\n[Conteudo gerado pela função tx_data_read para arquivo.bin]\n\n");
+
+    for(int i = 0; i < size; i++){
+
+        printf("%d", vetor_int_bin[i]);
+
+    }
+    printf("\n\n");
+
+    fclose(arquivo_bin);
+    fclose(arquivo_txt);
+    free(vetor_int);
     free(s_mapped);
+    free(o);
 
     return 0;
 }
 
-void print_binario(unsigned char byte, int* vetor, long int* index) {
-    for (int i = 6; i >= 0; i -= 2) {
-        int num = ((byte >> i) & 1) + ((byte >> (i + 1)) & 1) * 2;
-        vetor[(*index)++] = num;
+int * tx_data_read(FILE* entrada_arquivo, long int q_bytes){
+
+    int * vet_int = (int *)malloc(q_bytes * 4 * sizeof(int));
+    if (vet_int == NULL) {
+        printf("Erro na alocação de memória\n");
+        fclose(entrada_arquivo);
+        return (int *)1;
     }
+
+    for (int i = 0; i < q_bytes; i++) {
+        char byte;
+        fread(&byte, sizeof(byte), 1, entrada_arquivo);
+
+        for (int j = 0; j <= 7; j=j+2) {
+            int bit = (byte >> j) & 3;
+            vet_int[(i*4) + (j/2)]= bit;
+        }
+
+    }
+
+    return vet_int;
 }
-
-int* tx_data_read(const char* texto_str, long* tamanho_retornado) {
-    FILE* file = fopen(texto_str, "rb");
-    if (file == NULL) {
-        printf("Erro! O arquivo não pode ser aberto.\n");
-        return NULL;
-    }
-
-    fseek(file, 0, SEEK_END);
-    long tamanho = ftell(file);
-    rewind(file);
-    unsigned char* buffer = (unsigned char*)malloc(tamanho);
-    if (buffer == NULL) {
-        printf("Erro! Memória não pode ser alocada.\n");
-        fclose(file);
-        return NULL;
-    }
-  
-      size_t leitura_bytes = fread(buffer, 1, tamanho, file);
-    if (leitura_bytes != tamanho) {
-        printf("Erro ao ler o arquivo.\n");
-        free(buffer);
-        fclose(file);
-        return NULL;
-    }
-
-    int* vetor = (int*)malloc((tamanho * 4) * sizeof(int)); // Cada byte gera 4 dígitos de 2 bits
-    if (vetor == NULL) {
-        printf("Erro! Memória não pode ser alocada.\n");
-        free(buffer);
-        fclose(file);
-        return NULL;
-    }
-
-    long int index = 0;
-    for (long i = 0; i < tamanho; i++) {
-        print_binario(buffer[i - 1], vetor, &index);
-    }
-
-    free(buffer);
-    fclose(file);
-
-    *tamanho_retornado = tamanho * 4;
-    return vetor;
-}
-
-
 
 struct Complex *tx_qam_mapper(int* indice, int size) {
     struct Complex *symbol;
@@ -184,6 +189,34 @@ struct Complex *tx_qam_mapper(int* indice, int size) {
     }
 
     return symbol;
+}
+
+void rx_data_write(int* entrada_vet_int, long int tamanho) {
+
+    tamanho -= 1;
+
+    FILE* binario = fopen("src/matrizes/arquivo.bin", "wb");
+
+    if (binario == NULL) {
+        printf("Erro! Arquivo.bin nao pode ser aberto!\n");
+        return;
+
+    } else {
+        printf("Arquivo.bin gerado com sucesso.\n");
+    }
+
+    for (int i = 0; i < tamanho; i++) {
+
+        unsigned char byte = 0;
+        for (int j = 0; j < 4; j++)
+        {
+            unsigned int bit = entrada_vet_int[(i * 4) + j];
+            byte |= (bit << (2 * j));
+        }
+        fwrite(&byte, sizeof(byte), 1, binario);
+        }
+
+    fclose(binario);
 }
 
 int *rx_qam_demapper(struct Complex * symbol,int size){
@@ -320,3 +353,4 @@ struct Complex *rx_feq(int a,struct Complex *S,struct Complex *W,int Nr, int Nt,
 
     return rmtx;
 }
+

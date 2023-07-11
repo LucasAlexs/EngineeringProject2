@@ -3,7 +3,9 @@
 
 void print_binario(unsigned char byte, int* vetor, long* index);
 
-int *tx_data_read(const char *texto_str, long *tamanho_retornado);
+int * tx_data_read(FILE* entrada_arquivo, long int q_bytes);
+
+void rx_data_write(int* entrada_vet_int, long int tamanho);
 
 struct Complex * tx_qam_mapper(int* indice, int size);
 
