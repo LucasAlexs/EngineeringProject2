@@ -149,6 +149,34 @@ struct Complex *tx_qam_mapper(int* indice, int size) {
     return symbol;
 }
 
+void rx_data_write(int* entrada_vet_int, long int tamanho) {
+
+    tamanho -= 1;
+
+    FILE* binario = fopen("src/matrizes/arquivo.bin", "wb");
+
+    if (binario == NULL) {
+        printf("Erro! Arquivo.bin nao pode ser aberto!\n");
+        return;
+
+    } else {
+        printf("Arquivo.bin gerado com sucesso.\n");
+    }
+
+    for (int i = 0; i < tamanho; i++) {
+
+        unsigned char byte = 0;
+        for (int j = 0; j < 4; j++)
+        {
+            unsigned int bit = entrada_vet_int[(i * 4) + j];
+            byte |= (bit << (2 * j));
+        }
+        fwrite(&byte, sizeof(byte), 1, binario);
+        }
+
+    fclose(binario);
+}
+
 int *rx_qam_demapper(struct Complex * symbol,int size){
 
     int *indice;
