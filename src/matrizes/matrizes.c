@@ -792,38 +792,37 @@ struct Complex multiplicacao(struct Complex x,struct Complex y)
     return rmtx;
 }
 
-struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **matrix2, int linhas1, int linhas2, int colunas1, int colunas2)
+struct Complex **produto_matricial(struct Complex **matrix1, struct Complex **matrix2, int linhas1, int linhas2, int colunas1, int colunas2)
 {
     struct Complex **rmtx, aux, sum;
 
     // aloca memória para a matriz de saída
-    rmtx = (struct Complex **)malloc(colunas2 * sizeof(struct Complex *));
-    for(int i=0; i<linhas1; i++){
-        rmtx[i] = (struct Complex *)malloc(linhas1 * sizeof(struct Complex));
+    rmtx = (struct Complex **)malloc(linhas1 * sizeof(struct Complex *));
+    for(int i = 0; i < linhas1; i++){
+        rmtx[i] = (struct Complex *)malloc(colunas2 * sizeof(struct Complex));
     }
-    if(linhas2==colunas1){
+    
+    if(linhas2 == colunas1){
         // somar as matrizes
-        for (int i = 0; i < linhas1; i++) {
-            
+        for (int i = 0; i < linhas1 ; i++) {
             for (int j = 0; j < colunas2; j++) {
                 sum.real = 0;
                 sum.img = 0;
                 for (int k = 0; k < linhas2; k++) {
-                    aux = multiplicacao(matrix1[i][k], matrix2[k][j]);
-                    sum = somanc(sum, aux);
+                    aux.real = (matrix1[j][k].real * matrix2[k][i].real) + (matrix1[j][k].img * matrix2[k][i].img) * (-1);
+                    aux.img = (matrix1[j][k].real * matrix2[k][i].img)  +  (matrix1[j][k].img * matrix2[k][i].real);
+                    sum.real = sum.real + aux.real;
+                    sum.img = sum.img + aux.img;
                 }
-            rmtx[j][i].real = sum.real;
-            rmtx[j][i].img = sum.img;
+                rmtx[i][j].real = sum.real;
+                rmtx[i][j].img = sum.img;
             }
         }
-
     }
-    else{
-
-            printf("Erro\n");
-
+    else {
+        printf("Erro\n");
     }
-
+    
     return rmtx;
 }
 /** Função teste_produto_matricial()
