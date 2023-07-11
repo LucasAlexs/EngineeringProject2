@@ -812,7 +812,8 @@ struct Complex **produto_matricial(struct Complex **matrix1,struct Complex **mat
                     aux = multiplicacao(matrix1[i][k], matrix2[k][j]);
                     sum = somanc(sum, aux);
                 }
-            rmtx[i][j] = sum;
+            rmtx[i][j].real = sum.real;
+            rmtx[i][j].img = sum.img;
             }
         }
 

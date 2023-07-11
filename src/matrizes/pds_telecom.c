@@ -23,6 +23,8 @@ int main()
     int *vector;
     vector = (int *)malloc(size * sizeof(int));
 
+    int *vector2;
+
     if (vector == NULL) {
         printf("Erro ao alocar memória para o vetor.\n");
         return 1;
@@ -65,28 +67,14 @@ int main()
 
     calc_svd(H,U,S,V,Nr,Nt);
 
-    printf("Em tx_qm_mapper:\n\n");
-    for(int i = 0; i < Nt; i++) {
-        for(int j = 0; j < Nt; j++) {
-            printf("%.2f + %.2fj\t", V[i][j].real, V[i][j].img);
-        }
-        printf("\n");
-     }
-
     s = tx_qam_mapper(vector,size);
-
-    printf("Em tx_qm_mapper:\n\n");
-    for(int i = 0; i < size; i++) {
-        printf("%.2f + %.2fj\t", s[i].real, s[i].img);
-        printf("\n");
-    }
 
     for (int a = 0; a < size; a+= Nstreams)
     {
         lm = tx_layer_mapper(a,s,s_mapped,Nstreams);
 
         F = tx_precoder(lm,V,Nr, Nt, Nstreams);
-
+        
         Y = channel_transmission(rmax,rmin,F,H,Nr,Nt, Nstreams);
         free(F);
         W = rx_combiner(Y,U,Nr,Nt,Nstreams);
@@ -97,7 +85,7 @@ int main()
         free(Z);
     }
 
-    vector = rx_qam_demapper(o,size);
+    vector2 = rx_qam_demapper(o,size);
 
     printf("Elementos do vetor Etapa2:\n");
     for (int i = 0; i < size; i++) {
@@ -299,13 +287,6 @@ struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int N
     }
     x_aux2 = hermitiano(V,Nt,Nt);
 
-        printf("Em tx_layer_mapper:\n\n");
-    for(int i = 0; i < Nt; i++) {
-        for(int i = 0; i < Nt; i++) {
-            printf("%.2f + %.2fj\t", x_aux2[i][0].real, x_aux2[i][0].img);
-            printf("\n");
-        }
-    }
 
     rmtx = produto_matricial(V,x_aux2,Nt,Nstreams,Nt,1);
 
