@@ -473,7 +473,7 @@ struct Complex **rx_combiner(struct Complex **Y,struct Complex **U, int Nr, int 
 
     aux = hermitiano(U,Nr,Nt);
 
-    rmtx = produto_matricial(U,Y,Nt,Nr,Nr,1);
+    rmtx = produto_matricial(aux,Y,Nt,Nr,Nr,1);
 
 
     return rmtx;
