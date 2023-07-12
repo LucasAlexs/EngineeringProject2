@@ -453,7 +453,7 @@ struct Complex **tx_precoder(struct Complex *x,struct Complex **V, int Nr, int N
     }
     x_aux2 = hermitiano(V,Nt,Nt);
 
-    rmtx = produto_matricial(V,x_aux2,Nt,Nstreams,Nt,1);
+    rmtx = produto_matricial(x_aux2,x_aux,Nt,Nstreams,Nt,1);
 
     free(x_aux);
 
