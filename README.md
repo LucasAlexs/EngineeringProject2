@@ -14,3 +14,4 @@ Para este projeto ser aberto no seu dispostivo é preciso alguns pré-requisitos
 
 - Caso necessário, instalar o wsl para sistemas Windows.
 
+obs: A implementação neste repositório fora interrompida com o termino da atividade avaliativa mas continuarei no repositório https://github.com/LucasAlexs/EngineeringProject2.git
