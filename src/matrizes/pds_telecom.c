@@ -3,7 +3,12 @@
 #include <time.h>
 #include "matrizes.h"
 #include "pds_telecom.h"
-
+/** Função int main
+*   Executa a função channel_simulator com vários parâmetros de entrada diferentes alterando:
+*-  Número de antenas receptoras
+*-  Número de antenas transmissoras
+*-  Intensidade do sinal
+*/
 int main(){
 
     channel_simulator(2,4,1,-1);
@@ -39,7 +44,7 @@ int main(){
 *
 *   - As funções denotadas por "tx" são as transmissoras, estão no início da comunicação digital, enquanto as denotadas por "rx" são as receptoras.
 *
-*   - A ordem de execução é a seguinte: tx_data_read(), tx_data_padding(),tx_qam_mapper(), tx_layer_mapper(), tx_precoder(), channel_gen(), channel_transmission(), rx_combiner(), rx_layer_demapper(), rx_feq(), rx_qam_demapper(), rx_data_write().
+*   - A ordem de execução é a seguinte: tx_data_read(),tx_qam_mapper(), tx_layer_mapper(), tx_precoder(), channel_gen(), channel_transmission(), rx_combiner(), rx_layer_demapper(), rx_feq(), rx_qam_demapper(), rx_data_write().
 */
 
 int channel_simulator(int Nr,int Nt,int rmax,int rmin)
