@@ -11,6 +11,7 @@ all:	doc aplicacao teste
 build:
 	@if [ ! -d "build" ]; then \
 		mkdir -m 777 build; \
+		chmod 777 makefile; \
 	fi
 aplicacao: build
 	gcc -c src/main.c -o build/main.o
